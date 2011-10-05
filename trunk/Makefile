@@ -1,9 +1,9 @@
 CC=gcc
 CFLAGS = -c -O3 -pg
-LDFLAGS = -static -lz -lm 
-SOURCES = ref_alignment.c
+LDFLAGS = -lz -lm 
+SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = ref_alignment
+EXECUTABLE = ref_db_generator
 
 all: $(SOURCES) $(EXECUTABLE)
 	rm -rf *.o
