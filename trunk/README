@@ -1,0 +1,7 @@
+ref_db_generator.c:
+	Mantained by: Donghuyk
+	Functionality: take machine generated reference as input. Filter out irralavence characters. Generate data bases.
+	Make command: make db_generator
+	Executable: ref_db_generator
+	Example: ref_db_generator $ref
+					$ref: machine generated reference sequence file.
