@@ -13,6 +13,4 @@
 #define HASH_FILE_POW 2
 #define HASH_FILE_NUM (1 << (2 * HASH_FILE_POW) )
 
-char **hashfile;
-
 #endif /* COMMOM_H_ */
