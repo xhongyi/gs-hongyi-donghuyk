@@ -12,8 +12,8 @@ int main()
  	FILE * pFileW;
  	char mystring [string_size];
  	char newstring [string_size+1];
-	int size1;
-	int size2;
+//	int size1;
+//	int size2;
 	int size_ref_read = string_size;
 	int i = 0;
 	int j = 0;
