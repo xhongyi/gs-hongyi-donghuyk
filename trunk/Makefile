@@ -14,4 +14,4 @@ db_generator: ref_db_generator.c
 	$(CC) $(CFLAGS) ref_db_generator.c -o ref_db_generator
 
 hash_generator: hash_generator.h hash_generator.cpp common.h
-	$(CC) $(CFLAGS) test.cpp hash_generator.cpp -o test
+	$(CC) $(CFLAGS) test.cpp -o test
