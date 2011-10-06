@@ -147,7 +147,7 @@ void hashTableGenerator(string ref_name) {
 
 		//Increment counter
 		counter++;
-	} while (!ref_file.good() );
+	} while (ref_file.good() );
 
 	ref_file.close();
 }
