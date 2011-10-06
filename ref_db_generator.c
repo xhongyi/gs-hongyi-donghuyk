@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-void getRefSeq(char * result_string, int coordinate, int size, int sting_size);
-void RefGenerator(char * gen_file, char * ref_file, int string_size);
+#include "ref_db_generator.h"
 
 int main() {
 	int string_size = 30;
@@ -13,9 +8,9 @@ int main() {
  	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
  	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
-	gen_file[0] = 'r';
-	gen_file[1] = 'e';
-	gen_file[2] = 'f';
+	ref_file[0] = 'r';
+	ref_file[1] = 'e';
+	ref_file[2] = 'f';
 	gen_file[0] = 'r';
 	gen_file[1] = 'e';
 	gen_file[2] = 's';
