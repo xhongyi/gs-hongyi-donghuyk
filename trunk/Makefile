@@ -1,4 +1,4 @@
-CC=gcc
+CC=g++
 CFLAGS = -c -O3 -pg
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
