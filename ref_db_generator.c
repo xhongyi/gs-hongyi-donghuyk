@@ -3,6 +3,7 @@
 int main() {
 	int string_size = 100;
 	int coordinate  = 570+50;
+	int size     	= 200;
  	char * result_string 	= (char*) malloc(size+1);
  	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
  	char * gen_file 	= (char*) malloc(sizeof(char)*7);
@@ -15,7 +16,6 @@ int main() {
  	fprintf (stdout,"generated file name : %s \n", gen_file);
 
 // getRefSeq Test Bench
-	int size     	= 200;
 	getRefSeq(result_string, coordinate, size, string_size);	
  	fprintf (stdout,"search : %s \n", result_string);
 
@@ -76,8 +76,8 @@ void HashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_
 	FILE * pFileR;
 	pFileR        = fopen (hash_table_name, "r");
 	read_number   = read_number + fread(total_number, sizeof(int), 1, pFileR);
-	*index_db      = malloc(sizeof(int)*index_size);
-	*coordinate_db = malloc(sizeof(int)*(*total_number));
+	*index_db      = (int*) malloc(sizeof(int)*index_size);
+	*coordinate_db = (int*) malloc(sizeof(int)*(*total_number));
 	for (i = 0; i< index_size ;i++) { 
 		read_number = read_number + fread(index, sizeof(int), 1, pFileR);
 		(*index_db)[i] = *index;

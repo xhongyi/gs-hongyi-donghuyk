@@ -10,7 +10,7 @@ all: db_generator hash_generator
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-db_generator: ref_db_generator.c
+db_generator: ref_db_generator.h ref_db_generator.c
 	$(CC) $(CFLAGS) ref_db_generator.c -o ref_db_generator
 
 hash_generator: hash_generator.h hash_generator.cpp common.h
