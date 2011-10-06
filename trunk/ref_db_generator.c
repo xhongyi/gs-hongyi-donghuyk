@@ -1,32 +1,101 @@
 #include "ref_db_generator.h"
 
 int main() {
-	int string_size = 30;
+	int string_size = 100;
 	int coordinate  = 570+50;
-	int size     	= 200;
  	char * result_string 	= (char*) malloc(size+1);
  	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
  	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
-	ref_file[0] = 'r';
-	ref_file[1] = 'e';
-	ref_file[2] = 'f';
-	gen_file[0] = 'r';
-	gen_file[1] = 'e';
-	gen_file[2] = 's';
-	gen_file[3] = 'u';
-	gen_file[4] = 'l';
-	gen_file[5] = 't';
+// RefGenerator Test Bench
+	strcpy(ref_file,"ref");
+	strcpy(gen_file,"result");
 	RefGenerator(gen_file, ref_file, string_size);
+ 	fprintf (stdout,"reference file name : %s \n", ref_file);
+ 	fprintf (stdout,"generated file name : %s \n", gen_file);
+
+// getRefSeq Test Bench
+	int size     	= 200;
 	getRefSeq(result_string, coordinate, size, string_size);	
  	fprintf (stdout,"search : %s \n", result_string);
 
- 	fprintf (stdout,"reference file name : %s \n", ref_file);
- 	fprintf (stdout,"generated file name : %s \n", gen_file);
  	free(result_string);
  	free(ref_file);
 	free(gen_file);
+
+// Hash Reconstructor Test Bench
+ 	int  * index_db; 
+ 	int  * coordinate_db; 
+ 	char * hash_file 	= (char*) malloc(sizeof(char)*20);
+	int  * hash_gen		= (int*)  malloc(sizeof(int)*1);
+	int  * hash_read	= (int*)  malloc(sizeof(int)*10);
+	int  i = 0;
+	int  read_number = 0;
+	FILE * pFileH;
+	FILE * pFileHR;
+
+	strcpy(hash_file,"hash_table");
+ 	pFileH = fopen (hash_file, "w");
+
+	(*hash_gen) = 100;
+	fwrite (hash_gen, sizeof(int), 1, pFileH);
+	for (i = 1; i < 100; i++) {
+		(*hash_gen) = i;
+		//fprintf (stdout,"hash gen : %i \n", *hash_gen);
+		fwrite (hash_gen, sizeof(int), 1, pFileH);
+	}
+ 	fclose (pFileH);
+
+ 	pFileHR = fopen (hash_file, "r");
+	read_number = fread(hash_read, sizeof(int), 10, pFileHR);
+	for (i = 0; i < 10; i++) {
+		//fprintf (stdout,": %i ", hash_read[i]);
+	}
+ 	fclose (pFileHR);
+
+	HashReconstructor(&index_db, &coordinate_db, hash_file);
+	fprintf (stdout,"aaa\n");
+	for (i = 0; i < 5; i++) {
+		fprintf (stdout,": %i ", index_db[i]);
+	}	
+	free(hash_file);
+	free(hash_gen);
+	free(hash_read);
  	return 0;
+}
+
+void HashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name){
+	int * total_number = (int*) malloc(sizeof(int));
+	int * index = (int*) malloc(sizeof(int));
+	int * data = (int*) malloc(sizeof(int));
+	int read_number = 0;
+	int coordinate_index = 0;
+	int index_size = 5;
+	int i = 0;
+	int j = 0;
+	FILE * pFileR;
+	pFileR        = fopen (hash_table_name, "r");
+	read_number   = read_number + fread(total_number, sizeof(int), 1, pFileR);
+	*index_db      = malloc(sizeof(int)*index_size);
+	*coordinate_db = malloc(sizeof(int)*(*total_number));
+	for (i = 0; i< index_size ;i++) { 
+		read_number = read_number + fread(index, sizeof(int), 1, pFileR);
+		(*index_db)[i] = *index;
+		(*coordinate_db)[coordinate_index] = *index;
+		coordinate_index = coordinate_index + 1;
+		for (j = 0; j < *index; j++){
+			//fprintf (stdout,"i: %i,j: %i \n", i, j);
+			read_number = read_number + fread(data,sizeof(int),1,pFileR);
+			(*coordinate_db)[coordinate_index] = *data;
+			coordinate_index = coordinate_index + 1;
+		}
+	}
+	free(index);
+	free(data);
+	free(total_number);
+	fprintf (stdout,"aaa\n");
+	fclose(pFileR);
+	//fprintf (stdout,": %i ", *index_db[1]);
 }
 
 void RefGenerator(char * gen_file, char * ref_file, int string_size) {
