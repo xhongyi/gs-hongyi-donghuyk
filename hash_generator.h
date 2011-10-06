@@ -30,7 +30,7 @@ void hashTableGenerator(string ref_name);
  * file will be stored as "hash_name_x", where x is the value computed
  * by int hashIdx(char* key)
  */
-void hashFileWriter(string hash_name);
+//void hashFileWriter(string hash_name);
 
 /*
  * Function: Given a key sequence, compute the hash table value
@@ -46,4 +46,6 @@ int hashVal(string key);
  * Return: hash_index
  */
 int hashIdx(string key);
+
+#include "hash_generator.cpp"
 #endif /* HASH_GENERATOR_H_ */
