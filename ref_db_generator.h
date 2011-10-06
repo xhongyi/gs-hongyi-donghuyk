@@ -33,7 +33,7 @@ void RefGenerator(char * gen_file, char * ref_file, int string_size);
  * Function: 
  * Input: 
  */
-void HashReconstructor(char * index_db, char * coordinate_db, FILE * hash_table);
+void HashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
 #endif /* REF_DBGENERATOR_ */
 

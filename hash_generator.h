@@ -11,6 +11,7 @@
 #include "common.h"
 #include <string>
 #include <deque>
+#include <cstdlib>
 
 using namespace std;
 
