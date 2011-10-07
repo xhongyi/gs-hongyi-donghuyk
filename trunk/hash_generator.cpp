@@ -53,7 +53,7 @@ int hashIdx(string key) {
 	int bp_val = 0;
 	int hash_idx = 0;
 
-	cout << "Key: " << key << " || Length: "<< key.length() << endl;
+//	cout << "Key: " << key << " || Length: "<< key.length() << endl;
 	assert(key.length() == KEY_LENGTH);
 
 	for (int i = 0; i < HASH_FILE_POW; i++) {
@@ -139,6 +139,7 @@ void hashTableGenerator(string ref_name) {
 		cout << "hash_value: " << hash_value << endl;
 
 		//Add to hash_table
+		cout << "counter: " << counter << endl;
 		hash_table[idx][hash_value].push_front(counter);
 		hash_table_counter[idx]++;
 /*
@@ -179,9 +180,10 @@ void hashFileWriter(string hash_name) {
 		store_file << hash_table_counter[i] + 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) << endl;
 		for (int j = 0; j < 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ); j++) {
 			int entry_size = hash_table[i][j].size();
-			store_file << entry_size << endl;
+			store_file << entry_size;
 			for (int k = 0; k < entry_size; k++)
 				store_file << hash_table[i][j][k] << " ";
+			cout << endl;
 		}
 		store_file.close();
 	}
