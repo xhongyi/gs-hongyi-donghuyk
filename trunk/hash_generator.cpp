@@ -177,7 +177,9 @@ void hashFileWriter(string hash_name) {
 		sprintf(store_file_name, "%s_%d", hash_name.c_str(), i);
 		store_file_name[hash_name.size() + 3 + i/10] = '\0';
 		store_file.open(store_file_name);
-		store_file << hash_table_counter[i] + 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) << endl;
+		//store_file << "**Debug: hash_table_counter: " << hash_table_counter[i] << endl;
+		//store_file << "**Debug: 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ): " << (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
+		store_file << hash_table_counter[i] + (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
 		for (int j = 0; j < 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ); j++) {
 			int entry_size = hash_table[i][j].size();
 			store_file << entry_size << endl;
