@@ -30,10 +30,16 @@ void getRefSeq(char * result_string, int coordinate, int size, int sting_size);
 void RefGenerator(char * gen_file, char * ref_file, int string_size);
 
 /*
- * Function: 
- * Input: 
+ * Function: Read hash table information from file and reconstruct hash table in memory. 
+ * Input: index_db pointer / coordinate_db pointer / hash_table_name
  */
 void HashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name);
+
+/*
+ * Function: Read hash table information from file and reconstruct hash table in memory. 
+ * Input: index_db pointer / coordinate_db pointer / hash_table_name
+ */
+void HashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
 #endif /* REF_DBGENERATOR_ */
 
