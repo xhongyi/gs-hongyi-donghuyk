@@ -6,9 +6,17 @@
  */
 //#include "hash_generator.h"
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <assert.h>
+
+//Hash table stored here
+deque<deque<deque<int> > > hash_table;
+
+//Hash table size counter
+deque<int> hash_table_counter;
 
 int hashVal(string key) {
 	int bp_val = 0;
@@ -94,27 +102,30 @@ void hashTableGenerator(string ref_name) {
 	hash_table.resize(HASH_FILE_NUM);
 	for (int i = 0; i < HASH_FILE_NUM; i++) {
 		hash_table[i].resize(1 << (2 * (KEY_LENGTH - HASH_FILE_POW)));
+		hash_table_counter[i] = 0;
 		cout << "i: " << i << endl;
 	}
 
 	cout << "Hello1" << endl;
 
 	//Read in the first key
-	char temp_key[KEY_LENGTH];
+	char temp_key[KEY_LENGTH + 1];
 	char temp_char;
 	string keystr(KEY_LENGTH, 'A');
 	cout << "keystr: " << keystr << endl;
 
-	for (int i = 0; i < KEY_LENGTH; i++) {
-		ref_file.read(temp_key, KEY_LENGTH);
+	//Read the first 12 characters
+	ref_file.read(temp_key, KEY_LENGTH);
 
-		//Check if ref file is too short
-		if (ref_file.eof()) {
-			cerr << "file too short";
-			exit(1);
-		}
-		keystr.copy(temp_key, KEY_LENGTH);
+	//Check if ref file is too short
+	if (ref_file.eof()) {
+		cerr << "file too short";
+		exit(1);
 	}
+	temp_key[12] = '\0';
+	keystr = temp_key;
+	cout << "temp_key: " << temp_key << endl;
+	cout << "keystr: " << keystr << endl;
 
 	deque<int>::iterator iter;
 	int counter = 0;
@@ -125,7 +136,12 @@ void hashTableGenerator(string ref_name) {
 		int idx = hashIdx(keystr);
 		int hash_value = hashVal(keystr);
 		cout << "idx: " << idx << endl;
+		cout << "hash_value: " << hash_value << endl;
 
+		//Add to hash_table
+		hash_table[idx][hash_value].push_front(counter);
+		hash_table_counter[idx]++;
+/*
 		//Add to hash_table list
 		if (hash_table[idx][hash_value].size() == 0) {
 			cout << "first saw" << endl;
@@ -133,12 +149,13 @@ void hashTableGenerator(string ref_name) {
 		}
 		else {
 			iter = hash_table[idx][hash_value].begin();
-			while (iter != hash_table[idx][hash_value].end() && counter < *iter) {
+			while (iter != hash_table[idx][hash_value].end() && counter > *iter) {
 				cout << "*iter: " << *iter << endl;
 				iter++;
 			}
 			hash_table[idx][hash_value].insert(iter, counter);
 		}
+*/
 
 		//Read next character
 		ref_file >> temp_char;
@@ -151,11 +168,22 @@ void hashTableGenerator(string ref_name) {
 
 	ref_file.close();
 }
-/*
+
 void hashFileWriter(string hash_name) {
-	string temp_name;
+	char* store_file_name = new char [hash_name.size() + 1 + HASH_FILE_POW];
+	ofstream store_file;
 	for (int i = 0; i < HASH_FILE_NUM; i++) {
-		for ()
+		sprintf(store_file_name, "%s_%d", hash_name.c_str(), i);
+		store_file_name[hash_name.size() + 3 + i/10] = '\0';
+		store_file.open(store_file_name);
+		store_file << hash_table_counter[i] + 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) << endl;
+		for (int j = 0; j < 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ); j++) {
+			int entry_size = hash_table[i][j].size();
+			store_file << entry_size << endl;
+			for (int k = 0; k < entry_size; k++)
+				store_file << hash_table[i][j][k] << " ";
+		}
+		store_file.close();
 	}
 }
-*/
+
