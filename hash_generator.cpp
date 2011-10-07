@@ -180,10 +180,11 @@ void hashFileWriter(string hash_name) {
 		store_file << hash_table_counter[i] + 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) << endl;
 		for (int j = 0; j < 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ); j++) {
 			int entry_size = hash_table[i][j].size();
-			store_file << entry_size;
+			store_file << entry_size << endl;
 			for (int k = 0; k < entry_size; k++)
 				store_file << hash_table[i][j][k] << " ";
-			cout << endl;
+			if (entry_size != 0)
+				store_file << endl;
 		}
 		store_file.close();
 	}
