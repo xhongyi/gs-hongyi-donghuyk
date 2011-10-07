@@ -15,9 +15,6 @@
 
 using namespace std;
 
-//Hash table stored here
-deque<deque<deque<int> > > hash_table;
-
 /*
  * Function: Generates hash table. Store it in hash_table
  * Input: reference file name
@@ -31,7 +28,7 @@ void hashTableGenerator(string ref_name);
  * file will be stored as "hash_name_x", where x is the value computed
  * by int hashIdx(char* key)
  */
-//void hashFileWriter(string hash_name);
+void hashFileWriter(string hash_name);
 
 /*
  * Function: Given a key sequence, compute the hash table value

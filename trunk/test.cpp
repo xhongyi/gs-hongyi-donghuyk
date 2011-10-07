@@ -11,5 +11,6 @@ using namespace std;
 
 int main() {
 	hashTableGenerator("result");
+	hashFileWriter("testResult");
 	return 0;
 }
