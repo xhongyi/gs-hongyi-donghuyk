@@ -1,3 +1,4 @@
+//#define DEBUG
 #include "ref_db_generator.h"
 
 void refGenerator(char * gen_file, char * ref_file, int string_size) {
@@ -33,16 +34,20 @@ void refGenerator(char * gen_file, char * ref_file, int string_size) {
 		i = i - 1;
  			//fprintf (stdout,"i: %i j:%i \n",i,j);
 		if (j == string_size) {
+			#ifdef DEBUG
 			newstring[j] = '\0';
  			fprintf (stdout,"%s \n", newstring);
+			#endif 
 			newstring[j] = '\n';
 			fwrite (newstring, 1, j+1, pFileW);
 			j = 0;
 		} 
 		else if ((size_ref_read < string_size)&&(i<=0)) {
+			#ifdef DEBUG
 			//fprintf (stdout,"Here \n");
 			newstring[j] = '\0';
  			fprintf (stdout,"%s \n", newstring);
+			#endif
 			newstring[j] = '\n';
 			fwrite (newstring, 1, j+1, pFileW);
 			j = 0;
@@ -61,6 +66,7 @@ void getRefSeq(char *result_string, int coordinate, int size, int string_size) {
 	int  size_opt;
 	int  coordinate_opt;
 	int  boundary;
+	int  boundary_detect = 0;
 	int  read_number;
 	int  i;
 
@@ -73,6 +79,9 @@ void getRefSeq(char *result_string, int coordinate, int size, int string_size) {
 	read_number = fread (search_string, 1, size_opt, pFileS);
 	for (i = 0; i<size ; i++) {
 		if (search_string[i] == '\n') {
+			boundary_detect = 1;
+		}
+		if (boundary_detect == 1){
 			result_string[i] = search_string[i+1];
 		}
 		else {
