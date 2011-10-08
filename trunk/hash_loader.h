@@ -22,13 +22,13 @@
  * HashReconstructor(&index, &coordinate, "Input");
  * ...
  */
-void hashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name);
+void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
 /*
  * Function: Read hash table information from file and reconstruct hash table in memory.
  * Input: index_db pointer / coordinate_db pointer / hash_table_name
  */
-void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table_name);
+void hashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
 
 #endif /* HASH_LOADER_H_ */

@@ -45,5 +45,4 @@ int hashVal(string key);
  */
 int hashIdx(string key);
 
-#include "hash_generator.cpp"
 #endif /* HASH_GENERATOR_H_ */
