@@ -4,13 +4,15 @@
  *  Created on: Oct 5, 2011
  *      Author: mac
  */
-//#include "hash_generator.h"
+#include "hash_generator.h"
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <assert.h>
+
+using namespace std;
 
 //Hash table stored here
 deque<deque<deque<int> > > hash_table;
