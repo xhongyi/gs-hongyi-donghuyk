@@ -1,3 +1,4 @@
+//#define DEBUG
 #include "hash_loader.h"
 
 void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table_name){
@@ -23,11 +24,12 @@ void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table
 	FILE * pFileR;
 	pFileR = fopen (hash_table_name, "r");
 	i = 0;
-
+	#ifdef DEBUG
 	fprintf (stdout,"file: %s\n", hash_table_name);
+	#endif
 	total_char_number = 0;
 
-	for (ii = 0; ii< total_data_size ;ii++) { 
+	for (ii = 0; ii< total_data_size+1 ;ii++) { 
 		i = 0;
 		while (!end_detector) {
 			read_number   = fread(char_each, sizeof(char), 1, pFileR);
@@ -68,18 +70,24 @@ void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table
 			*coordinate_db = (int*) malloc(sizeof(int)*(*total_number));
 			first_flag = 0;
 			total_data_size = *total_number;
+			#ifdef DEBUG
 			fprintf (stdout,"mamory allocate index:%i coordinate:%i\n", index_size, *total_number);
+			#endif
 		} else {
 			if (index_update==0){
 				(*index_db)[kk] = coordinate_index; //(*index_db)[kk] = *total_number;
 				index_update    = *total_number;
+				#ifdef DEBUG
 				fprintf (stdout,"index: %i # of index:%i \n", (*index_db)[kk], kk);
+				#endif
 				kk = kk +1;
 			} else { 
 				index_update = index_update - 1;
 			}
 			(*coordinate_db)[coordinate_index] = *total_number;
+			#ifdef DEBUG
 			fprintf (stdout,"coordinate: %i # of coordinate:%i \n", (*coordinate_db)[coordinate_index], coordinate_index);
+			#endif
 			coordinate_index = coordinate_index + 1;
 		}
 	}
@@ -118,7 +126,6 @@ void hashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_
 	free(index);
 	free(data);
 	free(total_number);
-	fprintf (stdout,"aaa\n");
 	fclose(pFileR);
 	//fprintf (stdout,": %i ", *index_db[1]);
 }

@@ -76,7 +76,7 @@ int hashIdx(string key) {
 			cerr << "Wrong bp: " << key[i];
 			exit(1);
 		}
-		cout << "bp_val" << bp_val << endl;
+		//cout << "bp_val" << bp_val << endl;	// DHL
 
 		hash_idx = (hash_idx << 2) | bp_val;
 	}
