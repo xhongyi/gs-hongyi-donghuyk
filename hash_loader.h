@@ -19,10 +19,11 @@
  * Example:
  * int * index;
  * int * coordinate;
- * HashReconstructor(&index, &coordinate, "Input");
+ * HashReconstructor_char(&index, &coordinate, "Input"); Hash Reconstructor for char base
+ * format. --> Now We use this one
  * ...
  */
-void hashReconstructor2(int ** index_db, int ** coordinate_db, char * hash_table_name);
+void hashReconstructor_char(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
 /*
  * Function: Read hash table information from file and reconstruct hash table in memory.
