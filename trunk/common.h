@@ -12,5 +12,26 @@
 //How many files hash table should break up to. Must be pow of 4
 #define HASH_FILE_POW 2
 #define HASH_FILE_NUM (1 << (2 * HASH_FILE_POW) )
+#define RELEVENCE_NUM 5
+#define FRAGMENT_MAX_LENGTH 200;
+
+#include <string>
+
+using namespace std;
+
+/*
+ * Function: Given a key sequence, compute the hash table value
+ * Input: Key_sequence
+ * Return: hash_value
+ */
+int hashVal(string key);
+
+/*
+ * Function: Given a key sequence, compute the index value of which
+ * hash table to address to.
+ * Input: Key_sequence
+ * Return: hash_index
+ */
+int hashIdx(string key);
 
 #endif /* COMMOM_H_ */
