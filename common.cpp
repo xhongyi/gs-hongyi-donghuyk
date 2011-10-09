@@ -7,6 +7,7 @@
 #include <assert.h>
 #include "common.h"
 #include <iostream>
+#include <cstdlib>
 
 int hashVal(string key) {
 	int bp_val = 0;
@@ -64,7 +65,7 @@ int hashIdx(string key) {
 			cerr << "Wrong bp: " << key[i];
 			exit(1);
 		}
-		cout << "bp_val" << bp_val << endl;
+		//cout << "bp_val" << bp_val << endl;		
 
 		hash_idx = (hash_idx << 2) | bp_val;
 	}

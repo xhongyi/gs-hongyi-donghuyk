@@ -10,6 +10,7 @@
 #include "hash_loader.h"
 #include "hash_test.h"
 #include "hash_generator.h"
+#include "common.h"
 
 
 char intToChar(int number);
