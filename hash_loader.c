@@ -1,7 +1,7 @@
 //#define DEBUG
 #include "hash_loader.h"
 
-void hashReconstructor_char(int ** index_db, int ** coordinate_db, char * hash_table_name){
+void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_table_name){
 	int * total_number = (int*) malloc(sizeof(int));
 	int * index = (int*) malloc(sizeof(int));
 	int * data = (int*) malloc(sizeof(int));
