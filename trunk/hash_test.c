@@ -4,6 +4,7 @@
 #include "hash_loader.h"
 #include "hash_test.h"
 #include "hash_generator.h"
+#include "common.h"
 
 void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_name) {
 	int  string_size = 100;
