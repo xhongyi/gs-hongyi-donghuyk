@@ -42,7 +42,7 @@ void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_na
                 fprintf (stdout,": %s \n", hash_file_wIndex[i+10]);
         }
         for (int i = 0; i <16 ; i++) {
-                hashReconstructor2(&index_db[i], &coordinate_db[i], hash_file_wIndex[i]);
+                hashReconstructor_char(&index_db[i], &coordinate_db[i], hash_file_wIndex[i]);
         }
 
 	pFileOut  = fopen (output_file_name, "w");
