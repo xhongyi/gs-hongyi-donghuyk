@@ -30,19 +30,4 @@ void hashTableGenerator(string ref_name);
  */
 void hashFileWriter(string hash_name);
 
-/*
- * Function: Given a key sequence, compute the hash table value
- * Input: Key_sequence
- * Return: hash_value
- */
-int hashVal(string key);
-
-/*
- * Function: Given a key sequence, compute the index value of which
- * hash table to address to.
- * Input: Key_sequence
- * Return: hash_index
- */
-int hashIdx(string key);
-
 #endif /* HASH_GENERATOR_H_ */
