@@ -12,37 +12,31 @@
 #include "hash_generator.h"
 #include "common.h"
 
-
-char intToChar(int number);
-void reconstruct_seq (char * decoded_char,int number);
-
 int main() {
-// RefGenerator Test Bench
-	int string_size = 100;
-	int size     	= 12;
- 	char * result_string 	= (char*) malloc(size+1);
+// RefGenerator Testbench
+ 	char * result_string 	= (char*) malloc(KEY_LENGTH+1);
  	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
  	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
 	strcpy(ref_file,"ref");
 	strcpy(gen_file,"result");
-	refGenerator(gen_file, ref_file, string_size);
+	refGenerator(gen_file, ref_file, REF_TABLE_SIZE);
 
 	#ifdef DEBUG
  	fprintf (stdout,"reference file name : %s \n", ref_file);
  	fprintf (stdout,"generated file name : %s \n", gen_file);
 	#endif
 
-// getRefSeq Test Bench
+// getRefSeq Testbench
 	int coordinate  = 570;
 
-	getRefSeq(result_string, coordinate, size, string_size);	
+	getRefSeq(result_string, coordinate, KEY_LENGTH, REF_TABLE_SIZE);	
 
 	#ifdef DEBUG
  	fprintf (stdout,"search : %s \n", result_string);
 	#endif
 
-// Hash Reconstructor Test Bench
+// Hash Test Testbench
  	char * hash_file_name 	= (char*) malloc(sizeof(char)*20);
  	char * ref_file_name 	= (char*) malloc(sizeof(char)*20);
  	char * out_file_name 	= (char*) malloc(sizeof(char)*20);
@@ -50,8 +44,16 @@ int main() {
 	strcpy(hash_file_name, "testResult_");
 	strcpy(ref_file_name,  "result");
 	strcpy(out_file_name,  "verify_output");
-	
 	hashTest(hash_file_name, ref_file_name, out_file_name);
+
+// Hash Reconstructor Testbench
+	//int  * index_db;
+	//int  * coordinate_db;
+	//char hash_file_wIndex[] = "testResult_0";
+
+	//hashReconstructorChar(&index_db, &coordinate_db, hash_file_wIndex);
+	//fprintf(stdout,"index %i / coord %i \n", index_db[0], coordinate_db[0]);
+
 
 // Fee Memory Allocation 
  	free(result_string);

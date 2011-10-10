@@ -7,58 +7,35 @@
 #include "common.h"
 
 void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_name) {
-	int  string_size = 100;
-	int  size        = 12;
-	int  total_index_number  = 16777216;
-	int  total_file_number   = 16;
 	int  fragment_pointer;
 	int  fragment_number;
 	int  fragment_coord;
-        int  * index_db[16];
-        int  * coordinate_db[16];
-        char * hash_file_wIndex[16];
-	char * fragment_seq     = (char*) malloc(size+1);
-	char * reconstructed_seq= (char *)malloc(sizeof(char)*12);
-        char * hash_file_prefix = (char *)malloc(sizeof(char)*20);
-        char * decoded_char	= (char *)malloc(sizeof(char)*13);
+        int  * index_db[HASH_FILE_NUM];
+        int  * coordinate_db[HASH_FILE_NUM];
+        char * hash_file[HASH_FILE_NUM];
+	char * fragment_seq     = (char*) malloc(KEY_LENGTH+1);
+	char * reconstructed_seq= (char *)malloc(sizeof(char)*KEY_LENGTH);
+        char * decoded_char	= (char *)malloc(sizeof(char)*(KEY_LENGTH+1));
         FILE * pFileOut;
-
-        strcpy(hash_file_prefix, hash_file_name);
-        for (int i = 0; i <10 ; i++) {
-                hash_file_wIndex[i] = (char*)malloc(sizeof(hash_file_prefix)+4);
-                strcpy(hash_file_wIndex[i], hash_file_name);
-                hash_file_wIndex[i][sizeof(hash_file_prefix)+2] = '_';
-                hash_file_wIndex[i][sizeof(hash_file_prefix)+3] = intToChar(i);
-                hash_file_wIndex[i][sizeof(hash_file_prefix)+4] = '\0';
-                fprintf (stdout,": %s \n", hash_file_wIndex[i]);
-        }
-        for (int i = 0; i <6 ; i++) {
-                hash_file_wIndex[i+10] = (char*)malloc(sizeof(hash_file_prefix)+5);
-                strcpy(hash_file_wIndex[i+10], hash_file_name);
-                hash_file_wIndex[i+10][sizeof(hash_file_prefix)+2] = '_';
-                hash_file_wIndex[i+10][sizeof(hash_file_prefix)+3] = '1';
-                hash_file_wIndex[i+10][sizeof(hash_file_prefix)+4] = intToChar(i);
-                hash_file_wIndex[i+10][sizeof(hash_file_prefix)+5] = '\0';
-                fprintf (stdout,": %s \n", hash_file_wIndex[i+10]);
-        }
-        for (int i = 0; i <16 ; i++) {
-                hashReconstructorChar(&index_db[i], &coordinate_db[i], hash_file_wIndex[i]);
+        for (int i = 0; i <HASH_FILE_NUM ; i++) {
+                hash_file[i] = (char*)malloc(sizeof(output_file_name)+i/10+1);
+		sprintf (hash_file[i], "%s%i", hash_file_name ,i);
+		fprintf (stdout,"Read Hash Table: %s \n", hash_file[i]);
+                hashReconstructorChar(&index_db[i], &coordinate_db[i], hash_file[i]);
         }
 
 	pFileOut  = fopen (output_file_name, "w");
-	for (int i = 0 ; i < total_index_number ; i++) { 
+	for (int i = 0 ; i < (INDEX_NUM*HASH_FILE_NUM) ; i++) { 
 		reconstructSeq(decoded_char, i);
 		fragment_pointer = index_db[hashIdx(decoded_char)][hashVal(decoded_char)]; 
-		fragment_number = coordinate_db[hashIdx(decoded_char)][fragment_pointer];
+		fragment_number  = coordinate_db[hashIdx(decoded_char)][fragment_pointer];
 		if (fragment_number != 0 ){
-			fprintf (pFileOut,"\nseq %s: ", decoded_char);
-			fprintf (pFileOut,"pointer %i: ", fragment_pointer);
-			fprintf (pFileOut,"frag# %i----> ", fragment_number);
+			fprintf (pFileOut,"\nseq %s: pointer %i: frag# %i---->", decoded_char, fragment_pointer, fragment_number);
 		}
 		for (int j = 0 ; j < fragment_number ; j++) {
 			fragment_coord = coordinate_db[hashIdx(decoded_char)][fragment_pointer+1+j];
-			getRefSeq(fragment_seq, fragment_coord, size, string_size);
-			if (strncmp(fragment_seq, decoded_char, 12) == 0) {	
+			getRefSeq(fragment_seq, fragment_coord, KEY_LENGTH, REF_TABLE_SIZE);
+			if (strncmp(fragment_seq, decoded_char, KEY_LENGTH) == 0) {	
 				fprintf (pFileOut,"_P%i", j);
 			} else {
 				fprintf (pFileOut,"_F%i(%i/%s)", j, fragment_coord, fragment_seq);
@@ -66,23 +43,21 @@ void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_na
 		}
 	}
 	fclose(pFileOut);
-
 // free allocated memory
  	free(fragment_seq);
 	free(reconstructed_seq);
-        free(hash_file_prefix);
         free(decoded_char);
 }
 
 void reconstructSeq (char * decoded_char, int number){
-	int decoded_number[13];
-	int divider = 4194304;
-	for (int i=0 ; i < 12 ; i++){
+	int decoded_number[KEY_LENGTH+1];
+	int divider = INDEX_NUM*4;
+	for (int i=0 ; i < KEY_LENGTH ; i++){
 		decoded_number[i]=number/divider;
 		number = number - decoded_number[i]*divider;
 		divider = divider/4;
 	}
-	for (int i=0 ; i<12 ; i++){
+	for (int i=0 ; i<KEY_LENGTH ; i++){
 		switch (decoded_number[i]){
 			case 0: decoded_char[i] = 'A'; break;
 			case 1: decoded_char[i] = 'C'; break;
@@ -91,7 +66,7 @@ void reconstructSeq (char * decoded_char, int number){
 			default: break;
 		}
 	}
-	decoded_char[12] = '\0';
+	decoded_char[KEY_LENGTH] = '\0';
 }
 
 char intToChar(int number) {
