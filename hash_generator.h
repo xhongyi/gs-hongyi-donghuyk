@@ -16,17 +16,17 @@
 using namespace std;
 
 /*
- * Function: Generates hash table. Store it in hash_table
- * Input: reference file name
+ * Function:	Generates hash table. Store it in hash_table
+ * Input:		reference file name
  */
 void hashTableGenerator(string ref_name);
 
 /*
- * Function: Dump all the memory stuff to off-line files. It will
- * store multiple files determined by HASH_FILE_NUM.
- * Input: The starting name of the hash file. All the hash_table
- * file will be stored as "hash_name_x", where x is the value computed
- * by int hashIdx(char* key)
+ * Function:	Dump all the memory stuff to off-line files. It will
+ * 				store multiple files determined by HASH_FILE_NUM.
+ * Input:		The starting name of the hash file. All the hash_table
+ * 				file will be stored as "hash_name_x", where x is the value computed
+ * 				by int hashIdx(char* key)
  */
 void hashFileWriter(string hash_name);
 

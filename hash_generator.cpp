@@ -5,31 +5,30 @@
  *      Author: mac
  */
 #include "hash_generator.h"
-#include "common.h"
+#include <deque>
+#include <list>
 #include <iostream>
-#include <cstdlib>
 #include <cstdio>
-#include <cstring>
 #include <fstream>
 #include <assert.h>
 
-using namespace std;
+list<int> _hash_entry;
 
 //Hash table stored here
-deque<deque<deque<int> > > hash_table;
+deque<list<int> > hash_table(1 << (2 * KEY_LENGTH), _hash_entry);
 
 //Hash table size counter
-deque<int> hash_table_counter;
+int hash_table_counter = 0;
 
 void hashTableGenerator(string ref_name) {
-	//Open and read the refernce file
+	//Open and read the reference file
 	ifstream ref_file;
 	char * file_name;
-	file_name = new char (ref_name.size() + 1);
-	strcpy(file_name, ref_name.c_str() );
+	file_name = new char(ref_name.size() + 1);
+	strcpy(file_name, ref_name.c_str());
 
 	ref_file.open(file_name);
-	if (!ref_file.good() ){
+	if (!ref_file.good()) {
 		cerr << "reference file cannot open." << endl;
 		exit(1);
 	}
@@ -37,13 +36,10 @@ void hashTableGenerator(string ref_name) {
 	delete file_name;
 
 	cout << "Hello0" << endl;
+
 	//Initialize hash_table.
-	hash_table.resize(HASH_FILE_NUM);
-	for (int i = 0; i < HASH_FILE_NUM; i++) {
-		hash_table[i].resize(1 << (2 * (KEY_LENGTH - HASH_FILE_POW)));
-		hash_table_counter[i] = 0;
-		cout << "i: " << i << endl;
-	}
+//	hash_table.resize(1 << (2 * KEY_LENGTH) );
+//	hash_table_counter = 0;
 
 	cout << "Hello1" << endl;
 
@@ -72,30 +68,28 @@ void hashTableGenerator(string ref_name) {
 	//Read the ref file until the end of file.
 	do {
 		//Compute idx and hash_value
-		int idx = hashIdx(keystr);
 		int hash_value = hashVal(keystr);
-		cout << "idx: " << idx << endl;
 		cout << "hash_value: " << hash_value << endl;
 
 		//Add to hash_table
 		cout << "counter: " << counter << endl;
-		hash_table[idx][hash_value].push_front(counter);
-		hash_table_counter[idx]++;
-/*
-		//Add to hash_table list
-		if (hash_table[idx][hash_value].size() == 0) {
-			cout << "first saw" << endl;
-			hash_table[idx][hash_value].push_back(counter);
-		}
-		else {
-			iter = hash_table[idx][hash_value].begin();
-			while (iter != hash_table[idx][hash_value].end() && counter > *iter) {
-				cout << "*iter: " << *iter << endl;
-				iter++;
-			}
-			hash_table[idx][hash_value].insert(iter, counter);
-		}
-*/
+		hash_table[hash_value].push_front(counter);
+		hash_table_counter++;
+		/*
+		 //Add to hash_table list
+		 if (hash_table[idx][hash_value].size() == 0) {
+		 cout << "first saw" << endl;
+		 hash_table[idx][hash_value].push_back(counter);
+		 }
+		 else {
+		 iter = hash_table[idx][hash_value].begin();
+		 while (iter != hash_table[idx][hash_value].end() && counter > *iter) {
+		 cout << "*iter: " << *iter << endl;
+		 iter++;
+		 }
+		 hash_table[idx][hash_value].insert(iter, counter);
+		 }
+		 */
 
 		//Read next character
 		ref_file >> temp_char;
@@ -104,30 +98,27 @@ void hashTableGenerator(string ref_name) {
 
 		//Increment counter
 		counter++;
-	} while (ref_file.good() );
+	} while (ref_file.good());
 
 	ref_file.close();
 }
 
 void hashFileWriter(string hash_name) {
-	char* store_file_name = new char [hash_name.size() + 1 + HASH_FILE_POW];
 	ofstream store_file;
-	for (int i = 0; i < HASH_FILE_NUM; i++) {
-		sprintf(store_file_name, "%s_%d", hash_name.c_str(), i);
-		store_file_name[hash_name.size() + 3 + i/10] = '\0';
-		store_file.open(store_file_name);
-		//store_file << "**Debug: hash_table_counter: " << hash_table_counter[i] << endl;
-		//store_file << "**Debug: 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ): " << (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
-		store_file << hash_table_counter[i] + (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
-		for (int j = 0; j < 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ); j++) {
-			int entry_size = hash_table[i][j].size();
-			store_file << entry_size << endl;
-			for (int k = 0; k < entry_size; k++)
-				store_file << hash_table[i][j][k] << " ";
-			if (entry_size != 0)
-				store_file << endl;
+	store_file.open(hash_name.c_str());
+	//store_file << "**Debug: hash_table_counter: " << hash_table_counter[i] << endl;
+	//store_file << "**Debug: 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ): " << (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
+	store_file << hash_table_counter + (1 << (2 * KEY_LENGTH)) << endl;
+	for (int j = 0; j < 1 << (2 * KEY_LENGTH); j++) {
+		int entry_size = hash_table[j].size();
+		store_file << entry_size << endl;
+		while (!hash_table[j].empty() ) {
+			store_file << hash_table[j].front() << " ";
+			hash_table[j].pop_front();
 		}
-		store_file.close();
+		if (entry_size != 0)
+			store_file << endl;
 	}
+	store_file.close();
 }
 
