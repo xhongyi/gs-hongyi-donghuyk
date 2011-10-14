@@ -24,18 +24,26 @@
 
 using namespace std;
 
+//int max_indel_num = 0;
+
 /*
- * Function: Given a key sequence, compute the hash table value
- * Input: Key_sequence
- * Return: hash_value
+ * Function: 		Set maximum indel_num that should be tolerated.
+ * Modification:	indel_num
+ */
+//void set_max_indel_num(int num);
+
+/*
+ * Function:		Given a key sequence, compute the hash table value
+ * Input: 			Key_sequence
+ * Return: 			hash_value
  */
 int hashVal(string key);
 
 /*
- * Function: Given a key sequence, compute the index value of which
- * hash table to address to.
- * Input: Key_sequence
- * Return: hash_index
+ * Function: 		Given a key sequence, compute the index value of which
+ * 					hash table to address to.
+ * Input: 			Key_sequence
+ * Return: 			hash_index
  */
 int hashIdx(string key);
 
