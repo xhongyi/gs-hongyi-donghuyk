@@ -15,7 +15,10 @@
 #define INDEX_NUM     (1 << (2 * (KEY_LENGTH - 2) ) )
 #define RELEVENCE_NUM 5
 #define REF_TABLE_SIZE 100
-#define FRAGMENT_MAX_LENGTH 200;
+#define FRAGMENT_MAX_LENGTH 200
+#define MAX_CONTIG_NAME     400
+#define MAX_CONTIG_NUMBER   100
+#define MAX_CONTIG_FILE	     22
 
 #include <string>
 
