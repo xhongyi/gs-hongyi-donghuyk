@@ -18,8 +18,9 @@ int main() {
  	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
  	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
+//	strcpy(ref_file,"human_g1k_v37.fasta");
 	strcpy(ref_file,"ref");
-	strcpy(gen_file,"result");
+	strcpy(gen_file,"db_result_");
 	refGenerator(gen_file, ref_file, REF_TABLE_SIZE);
 
 	#ifdef DEBUG
@@ -30,10 +31,10 @@ int main() {
 // getRefSeq Testbench
 	int coordinate  = 570;
 
-	getRefSeq(result_string, coordinate, KEY_LENGTH, REF_TABLE_SIZE);	
+	//getRefSeq(result_string, coordinate, KEY_LENGTH, REF_TABLE_SIZE);	
 
 	#ifdef DEBUG
- 	fprintf (stdout,"search : %s \n", result_string);
+ 	//fprintf (stdout,"search : %s \n", result_string);
 	#endif
 
 // Hash Test Testbench
@@ -44,7 +45,7 @@ int main() {
 	strcpy(hash_file_name, "testResult_");
 	strcpy(ref_file_name,  "result");
 	strcpy(out_file_name,  "verify_output");
-	hashTest(hash_file_name, ref_file_name, out_file_name);
+	//hashTest(hash_file_name, ref_file_name, out_file_name);
 
 // Hash Reconstructor Testbench
 	//int  * index_db;
