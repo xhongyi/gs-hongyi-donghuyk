@@ -15,7 +15,7 @@
 list<int> _hash_entry;
 
 //Hash table stored here
-deque<list<int> > hash_table(1 << (2 * KEY_LENGTH), _hash_entry);
+deque<list<int> > hash_table(INDEX_NUM, _hash_entry);
 
 //Hash table size counter
 int hash_table_counter = 0;
@@ -103,8 +103,8 @@ void hashFileWriter(string hash_name) {
 	store_file.open(hash_name.c_str());
 	//store_file << "**Debug: hash_table_counter: " << hash_table_counter[i] << endl;
 	//store_file << "**Debug: 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ): " << (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
-	store_file << hash_table_counter + (1 << (2 * KEY_LENGTH)) << endl;
-	for (int j = 0; j < 1 << (2 * KEY_LENGTH); j++) {
+	store_file << hash_table_counter + INDEX_NUM << endl;
+	for (int j = 0; j < INDEX_NUM; j++) {
 		int entry_size = hash_table[j].size();
 		store_file << entry_size << endl;
 		while (!hash_table[j].empty() ) {
