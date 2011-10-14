@@ -15,7 +15,7 @@ int hashVal(string key) {
 
 	assert(key.length() == KEY_LENGTH);
 
-	for (int i = HASH_FILE_POW; i < KEY_LENGTH; i++) {
+	for (int i = 0; i < KEY_LENGTH; i++) {
 		switch (key[i]) {
 		case 'A':
 			bp_val = 0;
@@ -40,6 +40,7 @@ int hashVal(string key) {
 	return hash_val;
 }
 
+/*
 int hashIdx(string key) {
 	int bp_val = 0;
 	int hash_idx = 0;
@@ -72,3 +73,4 @@ int hashIdx(string key) {
 
 	return hash_idx;
 }
+*/

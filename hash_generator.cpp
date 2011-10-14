@@ -108,8 +108,8 @@ void hashFileWriter(string hash_name) {
 		int entry_size = hash_table[j].size();
 		store_file << entry_size << endl;
 		while (!hash_table[j].empty() ) {
-			store_file << hash_table[j].front() << " ";
-			hash_table[j].pop_front();
+			store_file << hash_table[j].back() << " ";
+			hash_table[j].pop_back();
 		}
 		if (entry_size != 0)
 			store_file << endl;
