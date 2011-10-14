@@ -10,8 +10,6 @@
 
 #define KEY_LENGTH 12
 //How many files hash table should break up to. Must be pow of 4
-#define HASH_FILE_POW 2
-#define HASH_FILE_NUM (1 << (2 * HASH_FILE_POW) )
 #define INDEX_NUM     (1 << (2 * (KEY_LENGTH - 2) ) )
 #define RELEVENCE_NUM 5
 #define REF_TABLE_SIZE 100
