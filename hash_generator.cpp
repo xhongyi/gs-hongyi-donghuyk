@@ -23,17 +23,12 @@ int hash_table_counter = 0;
 void hashTableGenerator(string ref_name) {
 	//Open and read the reference file
 	ifstream ref_file;
-	char * file_name;
-	file_name = new char(ref_name.size() + 1);
-	strcpy(file_name, ref_name.c_str());
 
-	ref_file.open(file_name);
+	ref_file.open(ref_name.c_str() );
 	if (!ref_file.good()) {
 		cerr << "reference file cannot open." << endl;
 		exit(1);
 	}
-
-	delete file_name;
 
 	cout << "Hello0" << endl;
 
