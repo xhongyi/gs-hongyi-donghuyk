@@ -12,7 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <iostream>
+#include <string>
+
+using namespace std;
 
 /*
  * Function: verifying hash table and generated reference file
@@ -20,7 +22,7 @@
  * Output: generating the output file which contains verifying informain with given
  * name. 
  */
-void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_name); 
+void hashTestFull(char * hash_file_name, char * ref_file_name, char * output_file_name);
 
 /*
  * Function: change integer(1,2,3...) to character('1','2','3'...)
