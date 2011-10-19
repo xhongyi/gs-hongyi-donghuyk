@@ -6,34 +6,31 @@
 #include "hash_generator.h"
 #include "common.h"
 
-void hashTest(char * hash_file_name, char * ref_file_name, char * output_file_name) {
+
+void hashTestFull(char * hash_file_name, char * ref_file_name, char * output_file_name) {
 	int  fragment_pointer;
 	int  fragment_number;
 	int  fragment_coord;
-        int  * index_db[HASH_FILE_NUM];
-        int  * coordinate_db[HASH_FILE_NUM];
-        char * hash_file[HASH_FILE_NUM];
+        int  * index_db;
+        int  * coordinate_db;
 	char * fragment_seq     = (char*) malloc(KEY_LENGTH+1);
 	char * reconstructed_seq= (char *)malloc(sizeof(char)*KEY_LENGTH);
         char * decoded_char	= (char *)malloc(sizeof(char)*(KEY_LENGTH+1));
         FILE * pFileOut;
-        for (int i = 0; i <HASH_FILE_NUM ; i++) {
-                hash_file[i] = (char*)malloc(sizeof(output_file_name)+i/10+1);
-		sprintf (hash_file[i], "%s%i", hash_file_name ,i);
-		fprintf (stdout,"Read Hash Table: %s \n", hash_file[i]);
-                hashReconstructorChar(&index_db[i], &coordinate_db[i], hash_file[i]);
-        }
 
+
+	fprintf (stdout,"Read Hash Table: %s \n", hash_file_name);
+	hashReconstructorChar(&index_db, &coordinate_db, hash_file_name);
 	pFileOut  = fopen (output_file_name, "w");
-	for (int i = 0 ; i < (INDEX_NUM*HASH_FILE_NUM) ; i++) { 
+	for (int i = 0 ; i < INDEX_NUM ; i++) { 
 		reconstructSeq(decoded_char, i);
-		fragment_pointer = index_db[hashIdx(decoded_char)][hashVal(decoded_char)]; 
-		fragment_number  = coordinate_db[hashIdx(decoded_char)][fragment_pointer];
+		fragment_pointer = index_db[hashVal(decoded_char)]; 
+		fragment_number  = coordinate_db[fragment_pointer];
 		if (fragment_number != 0 ){
 			fprintf (pFileOut,"\nseq %s: pointer %i: frag# %i---->", decoded_char, fragment_pointer, fragment_number);
 		}
 		for (int j = 0 ; j < fragment_number ; j++) {
-			fragment_coord = coordinate_db[hashIdx(decoded_char)][fragment_pointer+1+j];
+			fragment_coord = coordinate_db[fragment_pointer+1+j];
 			getRefSeq(fragment_seq, fragment_coord, KEY_LENGTH, REF_TABLE_SIZE);
 			if (strncmp(fragment_seq, decoded_char, KEY_LENGTH) == 0) {	
 				fprintf (pFileOut,"_P%i", j);
