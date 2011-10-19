@@ -23,12 +23,19 @@
 using namespace std;
 
 static int max_indel_num = 0;
+static int max_diff_num = 0;
 
 /*
  * Function: 		Set maximum indel_num that should be tolerated.
- * Modification:	indel_num
+ * Modification:	max_indel_num
  */
 void set_max_indel_num(int num);
+
+/*
+ * Function: 		Set maximum diff_num that should be tolerated.
+ * Modification:	max_diff_num
+ */
+void set_max_diff_num(int num);
 
 /*
  * Function:		Given a key sequence, compute the hash table value

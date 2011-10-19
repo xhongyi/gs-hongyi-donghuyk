@@ -12,13 +12,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <string>
+
+using namespace std;
 
 /*
  * Function: Find out charaster stream with specific coordinate and size.
  * Input: result string pointer(char *result_string) / coordinate of string / size of 
  * string(size) / alignment character size(string_size)
  */
-void getRefSeq(char * result_string, int coordinate, int size, int sting_size);
+string getRefSeq(int coordinate, int size, int sting_size, string ref_filename);
 
 /*
  * Function: Generates reference sequence file with filtering illegal and 'N' character
