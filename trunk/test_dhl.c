@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <iostream>
 
 #include "ref_db_generator.h"
 #include "hash_loader.h"
