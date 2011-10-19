@@ -10,7 +10,7 @@
 using namespace std;
 
 int main() {
-	hashTableGenerator("result");
+	hashTableGenerator("db_result_0");
 	hashFileWriter("testResult");
 	return 0;
 }

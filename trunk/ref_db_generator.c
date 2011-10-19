@@ -117,7 +117,7 @@ void getRefSeq(char *result_string, int coordinate, int size, int string_size) {
 	size_opt   	= size + boundary / string_size;				// size optimization
 	coordinate_opt 	= coordinate+coordinate/string_size;				// add # of new line characters
  	search_string = (char*) malloc(size_opt+1);	
- 	pFileS = fopen ("result" , "r");
+ 	pFileS = fopen ("ref_result_0" , "r");
 	fseek (pFileS, coordinate_opt, SEEK_SET );
 	read_number = fread (search_string, 1, size_opt, pFileS);
 	for (int i = 0; i<size ; i++) {
