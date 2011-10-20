@@ -13,6 +13,9 @@
 #include <string.h>
 #include <math.h>
 
+void hashDistribution(char * hash_table_name);
+
+
 /*
  * Function:	Read hash table information from file and reconstruct hash table in memory.
  * Input:		index_db pointer / coordinate_db pointer / hash_table_name
