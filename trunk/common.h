@@ -10,7 +10,7 @@
 
 #define KEY_LENGTH 12
 //How many files hash table should break up to. Must be pow of 4
-#define INDEX_NUM     (1 << (2 * (KEY_LENGTH) ) )
+#define INDEX_NUM     (1 << (2 * KEY_LENGTH ) )
 #define RELEVENCE_NUM 5
 #define REF_TABLE_SIZE 100
 #define FRAGMENT_MAX_LENGTH 200
@@ -22,13 +22,20 @@
 
 using namespace std;
 
-//int max_indel_num = 0;
+static int max_indel_num = 0;
+static int max_diff_num = 0;
 
 /*
  * Function: 		Set maximum indel_num that should be tolerated.
- * Modification:	indel_num
+ * Modification:	max_indel_num
  */
-//void set_max_indel_num(int num);
+void set_max_indel_num(int num);
+
+/*
+ * Function: 		Set maximum diff_num that should be tolerated.
+ * Modification:	max_diff_num
+ */
+void set_max_diff_num(int num);
 
 /*
  * Function:		Given a key sequence, compute the hash table value
@@ -43,6 +50,6 @@ int hashVal(string key);
  * Input: 			Key_sequence
  * Return: 			hash_index
  */
-int hashIdx(string key);
+//int hashIdx(string key);
 
 #endif /* COMMOM_H_ */

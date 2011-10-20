@@ -48,7 +48,7 @@ void hashTestFull(char * hash_file_name, char * ref_file_name,
 
 void reconstructSeq(char * decoded_char, int number) {
 	int decoded_number[KEY_LENGTH + 1];
-	int divider = INDEX_NUM / 4 ;
+	int divider = INDEX_NUM / 4;
 	for (int i = 0; i < KEY_LENGTH; i++) {
 		decoded_number[i] = number / divider;
 		number = number - decoded_number[i] * divider;
