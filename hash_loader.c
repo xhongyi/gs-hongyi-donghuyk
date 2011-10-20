@@ -2,6 +2,8 @@
 #include "common.h"
 #include "hash_loader.h"
 
+void hashDistribution(char * hash_table_name, int index);
+
 void hashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name){
 	int *  total_number = (int*) malloc(sizeof(int));
 	int *  index = (int*) malloc(sizeof(int));
@@ -40,8 +42,11 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_ta
 	int    coordinate_index = 0;
 	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+14);
 	FILE * pFileR;
+	FILE * pFileW;
 
 	// Read total number of hash table
+	sprintf (gen_distribution_file, "%s%s", hash_table_name, "_distribution");
+	pFileW = fopen (gen_distribution_file, "w");
 	pFileR = fopen (hash_table_name, "r");
 	fscanf(pFileR, "%i", &total_number);
 	*index_db      = (int*) malloc(sizeof(int)*INDEX_NUM);
@@ -53,6 +58,7 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_ta
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
 		coordinate_index = coordinate_index + 1;
+        	fprintf (pFileW,"indel_number: %i\n", index);
 		
 	// Read coordinate	
 		for (int j = 0; j < index; j++){
@@ -62,5 +68,9 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_ta
 		}
 	}
 	fclose(pFileR);
+	fclose(pFileW);
 }
 
+
+void hashDistribution(char * hash_table_name, int index){
+}

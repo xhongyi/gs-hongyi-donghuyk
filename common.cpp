@@ -40,6 +40,15 @@ int hashVal(string key) {
 	return hash_val;
 }
 
+
+void set_max_indel_num(int num) {
+	max_indel_num = num;
+}
+
+void set_max_diff_num(int num) {
+	max_diff_num = num;
+}
+
 /*
 int hashIdx(string key) {
 	int bp_val = 0;
