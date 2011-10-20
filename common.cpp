@@ -40,7 +40,6 @@ int hashVal(string key) {
 	return hash_val;
 }
 
-
 /*
 int hashIdx(string key) {
 	int bp_val = 0;
