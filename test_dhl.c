@@ -20,11 +20,11 @@ int main() {
 //	strcpy(ref_file,"human_g1k_v37.fasta");
 	strcpy(ref_file,"ref");
 	strcpy(gen_file,"ref_result_");
-//	refGenerator(gen_file, ref_file, REF_TABLE_SIZE);
+	refGenerator(gen_file, ref_file, REF_TABLE_SIZE);
 
 // Hash File Generator
- //       hashTableGenerator("ref_result_0");
-  //      hashFileWriter("testResult");
+	hashTableGenerator("ref_result_0");
+	hashFileWriter("testResult");
 
 // Hash Test Testbench
  	char * hash_file_name 	= (char*) malloc(sizeof(char)*20);
@@ -34,7 +34,7 @@ int main() {
 	strcpy(hash_file_name, "testResult");
 	strcpy(ref_file_name,  "ref_result_0");
 	strcpy(out_file_name,  "verify_output");
-//	hashTestFull(hash_file_name, ref_file_name, out_file_name);
+	hashTestFull(hash_file_name, ref_file_name, out_file_name);
 	hashDistribution(hash_file_name);
 
 // getRefSeq Testbench
