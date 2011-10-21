@@ -23,8 +23,10 @@ int hash_table_counter = 0;
 void hashTableGenerator(string ref_name) {
 	//Open and read the reference file
 	ifstream ref_file;
+	deque<int>::iterator iter;
+	int coor_counter = -12;
 
-	ref_file.open(ref_name.c_str() );
+	ref_file.open(ref_name.c_str());
 	if (!ref_file.good()) {
 		cerr << "reference file cannot open." << endl;
 		exit(1);
@@ -33,8 +35,8 @@ void hashTableGenerator(string ref_name) {
 	cout << "Hello0" << endl;
 
 	//Initialize hash_table.
-//	hash_table.resize(1 << (2 * KEY_LENGTH) );
-//	hash_table_counter = 0;
+	//	hash_table.resize(1 << (2 * KEY_LENGTH) );
+	//	hash_table_counter = 0;
 
 	cout << "Hello1" << endl;
 
@@ -44,21 +46,41 @@ void hashTableGenerator(string ref_name) {
 	string keystr(KEY_LENGTH, 'A');
 	cout << "keystr: " << keystr << endl;
 
-	//Read the first 12 characters
-	ref_file.read(temp_key, KEY_LENGTH);
+	//throw out the first several Ns
+	do {
+		ref_file >> temp_char;
+		coor_counter++;
+		cout << "coor_counter: " << coor_counter << endl;
+	} while (temp_char == 'N');
 
-	//Check if ref file is too short
-	if (ref_file.eof()) {
-		cerr << "file too short";
-		exit(1);
+	//update the first non N character
+	temp_key[0] = temp_char;
+	cout << "temp_char: " << temp_char << endl;
+
+	//Read the first 12 characters
+	for (int i = 1; i < 12; i++) {
+		cout << "i: " << i << endl;
+		ref_file >> temp_char;
+		coor_counter++;
+		cout << "coor_counter: " << coor_counter << endl;
+		temp_key[i] = temp_char;
+
+		//Check if the file is too short
+		if (ref_file.eof()) {
+			cerr << "file too short";
+			exit(1);
+		}
+		//Check if next N come too close
+		if (temp_char == 'N') {
+			cerr << "Too short useful String" << endl;
+			exit(1);
+		}
 	}
+
 	temp_key[12] = '\0';
 	keystr = temp_key;
 	cout << "temp_key: " << temp_key << endl;
 	cout << "keystr: " << keystr << endl;
-
-	deque<int>::iterator iter;
-	int counter = 0;
 
 	//Read the ref file until the end of file.
 	do {
@@ -67,8 +89,8 @@ void hashTableGenerator(string ref_name) {
 		cout << "hash_value: " << hash_value << endl;
 
 		//Add to hash_table
-		cout << "counter: " << counter << endl;
-		hash_table[hash_value].push_front(counter);
+		cout << "coor_counter: " << coor_counter << endl;
+		hash_table[hash_value].push_front(coor_counter);
 		hash_table_counter++;
 		/*
 		 //Add to hash_table list
@@ -88,11 +110,36 @@ void hashTableGenerator(string ref_name) {
 
 		//Read next character
 		ref_file >> temp_char;
-		keystr = keystr.substr(1, KEY_LENGTH - 1) + temp_char;
+		//Increment counter
+		coor_counter++;
+
+		bool fresh_start = false; //indicater for a new start after large area of N
+		//If enters N area, throw them away
+		while (temp_char == 'N') {
+			fresh_start = true;
+			ref_file >> temp_char;
+			coor_counter++;
+			cout << "coor_counter: " << coor_counter << endl;
+		}
+		if (fresh_start) {
+			cout << "In a fresh start!" << endl;
+			keystr[0] = temp_char;
+			for (int i = 1; i < 12; i++) {
+				cout << 'i' << i << endl;
+				ref_file >> temp_char;
+				coor_counter++;
+				cout << "coor_counter: " << coor_counter << endl;
+				//Check if next N come too close
+				if (temp_char == 'N') {
+					cerr << "Too short useful String" << endl;
+					exit(1);
+				}
+				keystr[i] = temp_char;
+			}
+		} else
+			keystr = keystr.substr(1, KEY_LENGTH - 1) + temp_char;
 		cout << "keystr: " << keystr << endl;
 
-		//Increment counter
-		counter++;
 	} while (ref_file.good());
 
 	ref_file.close();
@@ -107,7 +154,7 @@ void hashFileWriter(string hash_name) {
 	for (int j = 0; j < INDEX_NUM; j++) {
 		int entry_size = hash_table[j].size();
 		store_file << entry_size << endl;
-		while (!hash_table[j].empty() ) {
+		while (!hash_table[j].empty()) {
 			store_file << hash_table[j].back() << " ";
 			hash_table[j].pop_back();
 		}
