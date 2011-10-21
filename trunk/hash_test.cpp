@@ -31,7 +31,7 @@ void hashTestFull(char * hash_file_name, char * ref_file_name,
 		}
 		for (int j = 0; j < fragment_number; j++) {
 			fragment_coord = coordinate_db[fragment_pointer + 1 + j];
-			fragment_seq = getRefSeq(fragment_coord, KEY_LENGTH, REF_TABLE_SIZE, "ref_result_0");
+			fragment_seq = getRefSeq(fragment_coord, KEY_LENGTH, "ref_result_0");
 			if (strncmp(fragment_seq.c_str(), decoded_char, KEY_LENGTH) == 0) {
 				fprintf(pFileOut, "_P%i", j);
 			} else {

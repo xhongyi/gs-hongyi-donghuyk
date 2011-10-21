@@ -20,7 +20,7 @@ int main() {
 //	strcpy(ref_file,"human_g1k_v37.fasta");
 	strcpy(ref_file,"ref");
 	strcpy(gen_file,"ref_result_");
-	refGenerator(gen_file, ref_file, REF_TABLE_SIZE);
+	refGenerator(gen_file, ref_file);
 
 // Hash File Generator
 	hashTableGenerator("ref_result_0");
