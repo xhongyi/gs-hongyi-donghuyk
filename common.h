@@ -12,11 +12,9 @@
 //How many files hash table should break up to. Must be pow of 4
 #define INDEX_NUM     (1 << (2 * KEY_LENGTH ) )
 #define RELEVENCE_NUM 5
-#define REF_TABLE_SIZE 100
-#define FRAGMENT_MAX_LENGTH 200
-#define MAX_CONTIG_NAME     400
-#define MAX_CONTIG_NUMBER   100
-#define MAX_CONTIG_FILE	     22
+#define REF_TABLE_SIZE 	100	// # of reference seqnence within one line.
+#define MAX_CONTIG_NAME 400	// # of character to make contig name string.
+#define MAX_CONTIG_FILE	22	// # of contig.
 
 #include <string>
 

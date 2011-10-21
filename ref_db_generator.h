@@ -19,17 +19,16 @@ using namespace std;
 /*
  * Function: Find out charaster stream with specific coordinate and size.
  * Input: result string pointer(char *result_string) / coordinate of string / size of 
- * string(size) / alignment character size(string_size)
+ * string(size) 
  */
-string getRefSeq(int coordinate, int size, int sting_size, string ref_filename);
+string getRefSeq(int coordinate, int size, string ref_filename);
 
 /*
  * Function: Generates reference sequence file with filtering illegal and 'N' character
  * It also make an alignment with specific size. It will generate reference output file.
  * Input: reference input file name(ref_file) / reference output file name(gen_file) / 
- * alignment character size(string_size)
  */
-void refGenerator(char * gen_file, char * ref_file, int string_size);
+void refGenerator(char * gen_file, char * ref_file);
 
 #endif /* REF_DBGENERATOR_ */
 

@@ -1,10 +1,11 @@
 #include "common.h"
 #include "ref_db_generator.h"
 
-void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
- 	char * mystring  = (char*) malloc(string_size);
- 	char * newstring = (char*) malloc(string_size+1);
-	int size_ref_read = string_size;
+//void refGenerator(char * gen_file_name, char * ref_file, int REF_TABLE_SIZE) {
+void refGenerator(char * gen_file_name, char * ref_file) {
+ 	char * mystring  = (char*) malloc(REF_TABLE_SIZE);
+ 	char * newstring = (char*) malloc(REF_TABLE_SIZE+1);
+	int size_ref_read = REF_TABLE_SIZE;
 	int i = 0;
 	int j = 0;
 	int flag_ref_end = 0;
@@ -26,15 +27,15 @@ void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
 			for (int flush_num = 0 ; flush_num < size_ref_read ; flush_num++) {
 				mystring[flush_num] = '\0';
 			}
-			size_ref_read = fread (mystring, 1, string_size, pFileR);
+			size_ref_read = fread (mystring, 1, REF_TABLE_SIZE, pFileR);
 			i = size_ref_read;
 		}
-		if ((mystring[string_size-i]=='>')||(flag_contig_name ==1)){
-			if((flag_first)&&(mystring[string_size-i]=='>')){	// First
+		if ((mystring[REF_TABLE_SIZE-i]=='>')||(flag_contig_name ==1)){
+			if((flag_first)&&(mystring[REF_TABLE_SIZE-i]=='>')){	// First
 				flag_first = 0;
 				flag_contig_name = 1;
 			} 
-			else if (mystring[string_size-i]=='>'){			// Others
+			else if (mystring[REF_TABLE_SIZE-i]=='>'){			// Others
                                 newstring[j] = '\n';
                                 fwrite (newstring, 1, j+1, pFileW);
                                 j = 0;
@@ -46,10 +47,10 @@ void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
 					flag_ref_end = 1;
 				}
 			}
-			contig_name[contig_num] = mystring[string_size-i];
+			contig_name[contig_num] = mystring[REF_TABLE_SIZE-i];
 			contig_num = contig_num + 1;
 			i = i - 1;
-			if (mystring[string_size-i] == '\n'){
+			if (mystring[REF_TABLE_SIZE-i] == '\n'){
                			gen_file[file_num] = (char*)malloc(sizeof(gen_file_name)+file_num/10+1);
                 		sprintf (gen_file[file_num], "%s%i", gen_file_name ,file_num);
                 		fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
@@ -70,7 +71,7 @@ void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
 				flag_first = 0;
                 		fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
 			}
-			switch (mystring[string_size-i]){
+			switch (mystring[REF_TABLE_SIZE-i]){
 				case 'A': newstring[j]='A'; j=j+1; break;
 				case 'C': newstring[j]='C'; j=j+1; break;
 				case 'G': newstring[j]='G'; j=j+1; break;
@@ -84,12 +85,12 @@ void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
 				default: break;
 			}
 			i = i - 1;
-			if (j == string_size) {
+			if (j == REF_TABLE_SIZE) {
 				newstring[j] = '\n';
 				fwrite (newstring, 1, j+1, pFileW);
 				j = 0;
 			} 
-			else if ((size_ref_read < string_size)&&(i<=0)) {
+			else if ((size_ref_read < REF_TABLE_SIZE)&&(i<=0)) {
 				newstring[j] = '\n';
 				fwrite (newstring, 1, j+1, pFileW);
 				j = 0;
@@ -104,7 +105,8 @@ void refGenerator(char * gen_file_name, char * ref_file, int string_size) {
 	free (newstring);
 }
 
-string getRefSeq(int coordinate, int size, int string_size,  string ref_filename) {
+//string getRefSeq(int coordinate, int size, int REF_TABLE_SIZE,  string ref_filename) {
+string getRefSeq(int coordinate, int size,  string ref_filename) {
 	string result_string;
  	FILE * pFileS;
 	char * search_string;
@@ -115,12 +117,12 @@ string getRefSeq(int coordinate, int size, int string_size,  string ref_filename
 	int  read_number;
 
 	//Initialize string size
-	result_string.resize(string_size);
+	result_string.resize(REF_TABLE_SIZE);
 
-	boundary   	= coordinate-(coordinate/string_size)*string_size + size;	// boundary checking
-	size_opt   	= size + boundary / string_size;				// size optimization
-	coordinate_opt 	= coordinate+coordinate/string_size;				// add # of new line characters
- 	search_string = (char*) malloc(size_opt+1);	
+	boundary   	= coordinate-(coordinate/REF_TABLE_SIZE)*REF_TABLE_SIZE + size;	// boundary checking
+	size_opt   	= size + boundary / REF_TABLE_SIZE;				// size optimization
+	coordinate_opt 	= coordinate+coordinate/REF_TABLE_SIZE;				// add # of new line characters
+ 	search_string   = (char*) malloc(size_opt+1);	
  	pFileS = fopen (ref_filename.c_str(), "r");
 	fseek (pFileS, coordinate_opt, SEEK_SET );
 	read_number = fread (search_string, 1, size_opt, pFileS);
