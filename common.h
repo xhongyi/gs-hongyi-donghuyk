@@ -20,8 +20,8 @@
 
 using namespace std;
 
-static int max_indel_num = 0;
-static int max_diff_num = 0;
+extern int max_indel_num;
+extern int max_diff_num;
 
 /*
  * Function: 		Set maximum indel_num that should be tolerated.

@@ -18,7 +18,7 @@ using namespace std;
 
 /*
  * Function: Find out charaster stream with specific coordinate and size.
- * Input: result string pointer(char *result_string) / coordinate of string / size of 
+ * Input: coordinate of string / size of
  * string(size) 
  */
 string getRefSeq(int coordinate, int size, string ref_filename);

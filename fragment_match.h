@@ -8,8 +8,10 @@
 #ifndef FRAGMENT_MATCH_H_
 #define FRAGMENT_MATCH_H_
 
+#include <list>
 #include "hash_loader.h"
 #include "common.h"
+#include "ref_db_generator.h"
 
 using namespace std;
 
@@ -18,12 +20,8 @@ struct match_result {
 	int mismatch_num;
 	int insersion_num;
 	int deletion_num;
-	int relevance = FRAGMENT_MAX_LENGTH;
+	int relevance;
 };
-
-int* hash_table;
-
-int* coordinate;
 
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
@@ -42,7 +40,7 @@ void loadHash(string hash_name);
  * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
  * 					be the mapping location.
  */
-void searchFragment (match_result result[], string fragment);
+list<match_result> searchFragment (string fragment);
 
 /*
  * Function:		Binary search if there exits an exact match on a target coordinate.
@@ -50,7 +48,7 @@ void searchFragment (match_result result[], string fragment);
  * Modification:	result_idx will be changed to the index of the first possible match.
  * 					result_scope will be changed to the number of possible matches.
  */
-bool searchKey (int &result_idx, int &result_coor, string key, int target_coor);
+bool searchKey (string key, int target_coor);
 
 /*
  * Function:		Free the allocated memory.
