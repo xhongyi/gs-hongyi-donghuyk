@@ -69,17 +69,18 @@ void hashDistribution(char * hash_table_name){
 	int    data;	
 	int    coordinate_index = 0;
 	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+14);
-	int  * index_num = (int*) malloc(sizeof(int)*INDEX_NUM);
+	char * hash_file = (char*) malloc(sizeof(hash_table_name)+14);
+	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM);
 	FILE * pFileR;
-	FILE * pFileW;
+	FILE * pFileOut;
 
 	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
+	strcpy(hash_file, hash_table_name);
+	pFileR = fopen (hash_file, "r");
 	sprintf(gen_distribution_file, "%s%s", hash_table_name, "_distribution");
-	pFileW = fopen (gen_distribution_file, "w");
+	pFileOut = fopen (gen_distribution_file, "w");
 	fscanf(pFileR, "%i", &total_number);
-	fprintf(pFileW, "total_number : %i \n", total_number);
-	
+	fprintf(pFileOut, "total_number : %i \n", total_number);
 
 	// Read index number & coordinate based on index number
 	for (int i = 0 ; i < INDEX_NUM ; i++) { 
@@ -89,17 +90,17 @@ void hashDistribution(char * hash_table_name){
 	// Read coordinate	
 		for (int j = 0; j < index; j++){
 			fscanf(pFileR, "%i", &data);
+			sum_number = sum_number + 1;
 		}
 	}
 	for (int k = 0 ; k < INDEX_NUM ; k++) {
 		if (index_num[k] != 0) {
-			fprintf(pFileW, "%i : %i \n", k, index_num[k]);
+			fprintf(pFileOut, "%i : %li \n", k, index_num[k]);
 		}
 	}
-	fprintf(pFileW, "sum_number : %i \n", total_number);
+	fprintf(pFileOut, "sum_number : %i \n", sum_number);
+	fclose(pFileOut);
+	fclose(pFileR);
 	free(gen_distribution_file);
 	free(index_num);
-	fclose(pFileW);
-	fclose(pFileR);
 }
-

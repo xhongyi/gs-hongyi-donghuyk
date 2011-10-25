@@ -1,5 +1,4 @@
 //#define DEBUG
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,28 +13,59 @@
 int main() {
 // RefGenerator Testbench
  	char * result_string 	= (char*) malloc(KEY_LENGTH+1);
- 	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
- 	char * gen_file 	= (char*) malloc(sizeof(char)*7);
+	char * ref_file 	= (char*) malloc(sizeof(char)*4);	
+	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
 //	strcpy(ref_file,"human_g1k_v37.fasta");
-	strcpy(ref_file,"ref");
-	strcpy(gen_file,"ref_result_");
-	refGenerator(gen_file, ref_file);
+//	strcpy(ref_file,"ref");
+//	strcpy(gen_file,"ref_result_");
+//	refGenerator(gen_file, ref_file);
 
 // Hash File Generator
-	hashTableGenerator("ref_result_0");
-	hashFileWriter("testResult");
+//	hashTableGenerator("ref_result_0");
+//	hashFileWriter("testResult_0");
 
 // Hash Test Testbench
- 	char * hash_file_name 	= (char*) malloc(sizeof(char)*20);
- 	char * ref_file_name 	= (char*) malloc(sizeof(char)*20);
- 	char * out_file_name 	= (char*) malloc(sizeof(char)*20);
+//	char * hash_file_name 	= (char*) malloc(sizeof(char)*20);
+//	char * ref_file_name 	= (char*) malloc(sizeof(char)*20);
+//	char * out_file_name 	= (char*) malloc(sizeof(char)*20);
+//	strcpy(hash_file_name, "testResult_0");
+//	strcpy(ref_file_name,  "ref_result_0");
+//	strcpy(out_file_name,  "verify_output_0");
+//	hashTestFull(hash_file_name, ref_file_name, out_file_name);
+//	hashDistribution(hash_file_name);
 
-	strcpy(hash_file_name, "testResult");
-	strcpy(ref_file_name,  "ref_result_0");
-	strcpy(out_file_name,  "verify_output");
-	hashTestFull(hash_file_name, ref_file_name, out_file_name);
-	hashDistribution(hash_file_name);
+	char * file_ref		= (char*) malloc(sizeof(char)*20);	
+	char * file_hash	= (char*) malloc(sizeof(char)*20);
+	char * file_test	= (char*) malloc(sizeof(char)*20);
+	for (int i = 1; i < 22 ; i++) {
+		sprintf(file_ref,  "%s%i", "result_ref_", i);
+		sprintf(file_hash, "%s%i", "result_hash_", i);
+		sprintf(file_test, "%s%i", "result_verify_", i);
+		fprintf(stdout, "reference : %s\n", file_ref);
+		fprintf(stdout, "hash table: %s\n", file_hash);
+		fprintf(stdout, "verify    : %s\n", file_test);
+		hashTableGenerator(file_ref);
+		hashFileWriter(file_hash);
+	}
+	for (int i = 1; i < 22 ; i++) {
+		sprintf(file_ref,  "%s%i", "result_ref_", i);
+		sprintf(file_hash, "%s%i", "result_hash_", i);
+		sprintf(file_test, "%s%i", "result_verify_", i);
+		fprintf(stdout, "reference : %s\n", file_ref);
+		fprintf(stdout, "hash table: %s\n", file_hash);
+		fprintf(stdout, "verify    : %s\n", file_test);
+		hashDistribution(file_hash);
+	}
+	for (int i = 1; i < 22 ; i++) {
+		sprintf(file_ref,  "%s%i", "result_ref_", i);
+		sprintf(file_hash, "%s%i", "result_hash_", i);
+		sprintf(file_test, "%s%i", "result_verify_", i);
+		fprintf(stdout, "reference : %s\n", file_ref);
+		fprintf(stdout, "hash table: %s\n", file_hash);
+		fprintf(stdout, "verify    : %s\n", file_test);
+		hashTestFull(file_hash, file_ref, file_test);
+	}
 
 // getRefSeq Testbench
 	//int coordinate  = 570;
@@ -65,5 +95,8 @@ int main() {
  	free(result_string);
  	free(ref_file);
 	free(gen_file);
- 	return 0;
+	free(file_ref);
+	free(file_hash);
+	free(file_test);
+	return 0;
 }
