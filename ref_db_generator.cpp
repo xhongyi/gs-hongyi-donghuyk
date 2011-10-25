@@ -120,14 +120,21 @@ string getRefSeq(int coordinate, int size,  string ref_filename) {
 	result_string.resize(REF_TABLE_SIZE);
 
 	boundary   	= coordinate-(coordinate/REF_TABLE_SIZE)*REF_TABLE_SIZE + size;	// boundary checking
-	size_opt   	= size + boundary / REF_TABLE_SIZE;				// size optimization
+	size_opt   	= size + boundary / REF_TABLE_SIZE + 1;				// size optimization
 	coordinate_opt 	= coordinate+coordinate/REF_TABLE_SIZE;				// add # of new line characters
- 	search_string   = (char*) malloc(size_opt+1);	
+ 	search_string   = (char*) malloc(size_opt);	
  	pFileS = fopen (ref_filename.c_str(), "r");
-	fseek (pFileS, coordinate_opt, SEEK_SET );
+	fseek (pFileS, 0, SEEK_SET );
 	read_number = fread (search_string, 1, size_opt, pFileS);
+	if (search_string[0] == '\n') {
+		fseek (pFileS, coordinate_opt+1, SEEK_SET );
+		read_number = fread (search_string, 1, size_opt, pFileS);
+	} else {
+		fseek (pFileS, coordinate_opt, SEEK_SET );
+		read_number = fread (search_string, 1, size_opt, pFileS);
+	}
 	for (int i = 0; i<size ; i++) {
-		if (search_string[i] == '\n') {
+		if ((search_string[i] == '\n')) {
 			boundary_detect = 1;
 		}
 		if (boundary_detect == 1){
