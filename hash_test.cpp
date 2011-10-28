@@ -27,32 +27,28 @@ void hashTestFull(char * hash_file_name, char * ref_file_name,
 		reconstructSeq(decoded_char, i);
 		fragment_pointer = index_db[hashVal(decoded_char)];
 		fragment_number  = coordinate_db[fragment_pointer];
-		//if (fragment_number != 0) {
-		//	fprintf(pFileOut, "\nseq %s: pointer %i: frag# %i---->",
-		//			decoded_char, fragment_pointer, fragment_number);
-		//}
+		if (fragment_number != 0) {
+			fprintf(pFileOut, "\nseq %s: pointer %i: frag# %i---->",
+					decoded_char, fragment_pointer, fragment_number);
+		}
 		for (int j = 0; j < fragment_number; j++) {
 			fragment_coord = coordinate_db[fragment_pointer + 1 + j];
-			fragment_seq = getRefSeq(fragment_coord, KEY_LENGTH, "ref_result_0");
+			fragment_seq = getRefSeq(fragment_coord, KEY_LENGTH, ref_file_name);
 			if (strncmp(fragment_seq.c_str(), decoded_char, KEY_LENGTH) == 0) {
-				//fprintf(pFileOut, "_P%i(%i/%s)", j, fragment_coord,
-				//		fragment_seq.c_str() );
+			//	fprintf(pFileOut, "_P%i", j );
 			} else {
 				fprintf(pFileOut, "F%i(%i/%s)_", j, fragment_coord, fragment_seq.c_str() );
 				error_count = error_count + 1;
 			}
 		}
-		//if ((error_count == 0)&&(fragment_number != 0)) {
-		//	fprintf(pFileOut, "ALL PASS");
-		//}
-		if ((error_count != 0)&&(fragment_number != 0)) {
-			fprintf(pFileOut, "<--- -seq %s: pointer %i: frag# %i\n", decoded_char, fragment_pointer, fragment_number);
+		if ((error_count == 0)&&(fragment_number != 0)) {
+			fprintf(pFileOut, "ALL PASS");
 		}
 		total_error_count = total_error_count + error_count;
 		error_count = 0;
 	}
 	if (total_error_count == 0) {
-		fprintf(pFileOut, "ALL PASS\n");
+		fprintf(pFileOut, "Finally, ALL PASS\n");
 	} 
 
 	fclose(pFileOut);
