@@ -182,6 +182,7 @@ void hashFileWriter(string hash_name) {
         for (int j = 0; j < INDEX_NUM; j++) {
                 int entry_size = hash_table[j].size();
                 store_file << entry_size << endl;
+                monitor_counter  = monitor_counter  +1;  
                 //cout << "hash writer_entry_size: " << entry_size << endl;
                 while (!hash_table[j].empty()) {
                         store_file << hash_table[j].back() << " ";
