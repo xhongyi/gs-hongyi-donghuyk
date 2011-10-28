@@ -48,7 +48,7 @@ void hashTestFull(char * hash_file_name, char * ref_file_name,
 		error_count = 0;
 	}
 	if (total_error_count == 0) {
-		fprintf(pFileOut, "Finally, ALL PASS\n");
+		fprintf(pFileOut, "\nFinally, ALL PASS\n");
 	} 
 
 	fclose(pFileOut);
