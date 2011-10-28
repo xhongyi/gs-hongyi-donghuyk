@@ -47,7 +47,7 @@ bool searchKey(string key, int target_coor) {
 		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
 
-	assert(mid > entry_coor && mid <= entry_coor + entry_size);
+	//assert(mid > entry_coor && mid <= entry_coor + entry_size);
 
 	if (coordinate[mid] <= target_coor + max_indel_num
 			&& coordinate[mid] >= target_coor - max_indel_num)
@@ -65,25 +65,28 @@ list<match_result> searchFragment(string fragment) {
 	int key_hash = hashVal(key);
 	int key_entry = hash_table[key_hash];
 	int key_entry_size = coordinate[key_entry];
-
+	//cout << "key:"<<key<< "key_entry:"<<key_entry << "key_entry_size" << key_entry_size << endl;
 	//start probing the key entry in hash table and calculate the
 	for (int i = key_entry + 1; i <= key_entry + key_entry_size; i++) {
 		int coor_value = coordinate[i];
 		int diff_num = 0;
 		for (int j = 1; j < key_number; j++) {
 			string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
-			if (!searchKey(segment_str, coor_value + j * KEY_LENGTH) )
+			if (!searchKey(segment_str, coor_value + j * KEY_LENGTH) ){
 				diff_num++;
+				//cout << "x" << j;
+			}
 			else
-				cout << "j" << j << endl;
+				//cout << "m" << j;
 			if (diff_num > max_diff_num)
 				break;
 		}
-		cout << "Hello!!!!" << endl;
-		cout << "Diffnumber: " << diff_num << endl;
-		cout << "max_diff_num: " << max_diff_num << endl;
+		//cout << endl;
+		//cout << "Hello!!!!" << endl;
+		//cout << "Diffnumber: " << diff_num << endl;
+		//cout << "max_diff_num: " << max_diff_num << endl;
 		if (diff_num <= max_diff_num) {
-			cout << "found_match at: " << coor_value << endl;
+			//cout << "found_match at: " << coor_value << endl;
 			match_result temp;
 			temp.coordinate = coor_value;
 			temp.relevance = diff_num;

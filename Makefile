@@ -3,9 +3,9 @@ CFLAGS = -g
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = ref_db_generator
+EXECUTABLE = db_generator ref_db_generator
 
-all: db_generator hash_generator fragment_test
+all: db_generator distribution_test
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -18,3 +18,6 @@ hash_generator: hash_generator.h hash_generator.cpp common.h
 
 fragment_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp
 	$(CC) $(CFLAGS) test_match.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.c common.cpp -o fragment_match_test
+
+distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.cpp
+	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.c common.cpp test_distribution.c -o test_distribution

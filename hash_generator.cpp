@@ -98,14 +98,16 @@ void hashTableGenerator(string ref_name) {
                         hash_table_counter++;
                 } else {
                         flag_ignore = 0;
-                        //      cout << "check ignore: "; 
                         for (int i = 0; i < 12; i++ ) {
-                        //      cout << keystr[i];
                                 if (keystr[i] == 'N') {
                                         flag_ignore = 1;
                                 }       
                         }
-                        //cout << endl;
+			if (flag_ignore == 0) {
+                        	int hash_value = hashVal(keystr);
+                        	//hash_table[hash_value].push_front(coor_counter);
+                        	//hash_table_counter++;
+			}
                 }
                 /*
                  //Add to hash_table list
