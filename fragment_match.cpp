@@ -108,7 +108,6 @@ list<match_result> searchFragment(string fragment) {
 		}
 	}
 
-	start_key_entry = 0;
 	cout << "key number:" << key_number << "  start key entry :" << start_key_entry;
 	key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
 	key_hash  = hashVal(key);
