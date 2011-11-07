@@ -28,6 +28,8 @@ void hashDistribution(char * hash_table_name);
  */
 void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_table_name);
 
+void hashReconstructorChar(int ** index_db, int ** coordinate_db, int ** prefilter_db, const char * hash_table_name);
+
 /*
  * Function:	Read hash table information from file and reconstruct hash table in memory.
  * Input:		index_db pointer / coordinate_db pointer / hash_table_name
