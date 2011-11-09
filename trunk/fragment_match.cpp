@@ -14,11 +14,45 @@ int* hash_table;
 int* coordinate;
 int* prefilter;
 
+list<sort_result> sortPrefilter(string fragment); 
+bool sort_function (sort_result first, sort_result second);
+
 void loadHash(string hash_name) {
 	char * temp = new char [hash_name.size() + 1];
 	hash_name.copy(temp, hash_name.size(), 0);
 	hashReconstructorChar(&hash_table, &coordinate, &prefilter, temp);
 	delete [] temp;
+}
+
+bool sort_function (sort_result first, sort_result second) {
+	unsigned int i = 0;
+	if (first.key_entry_size < second.key_entry_size) return true;
+	else if (first.key_entry_size == second.key_entry_size) {
+		if (first.key_number < second.key_number) return true;
+		else return false;
+	} 
+	else return false;
+}
+
+list<sort_result> sortPrefilter(string fragment) {
+	list<sort_result> result;
+	sort_result tmp;
+	string key;
+	int key_hash; 
+	int key_entry;
+	int key_entry_size;
+	int key_number = fragment.size() / KEY_LENGTH;
+	for (int i = 0; i < key_number; i++) {
+		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
+		key_hash  = hashVal(key);
+		key_entry = hash_table[key_hash];
+		key_entry_size = coordinate[key_entry];
+		tmp.key_number = i;
+		tmp.key_entry_size = key_entry_size;
+		result.push_back(tmp);
+	}
+	result.sort(sort_function);
+	return result;
 }
 
 bool searchPrefilter(string key) {
@@ -79,36 +113,85 @@ bool searchKey(string key, int target_coor) {
 		return false;
 }
 
-list<match_result> searchFragment(string fragment) {
+
+list<match_result> searchMultiFragment(string fragment) {
+	list<match_result> result;
+	list<match_result> tmp;
+	list<match_result>::iterator it_match = result.begin();
+	int  key_number = fragment.size() / KEY_LENGTH;
+	int  start_key_entry[3];
+	int  *key_entry = (int*)malloc(sizeof(int)*key_number);
+	int  status = 0;
+	int  upper_bound = 0;
+	int  lower_bound = key_number;
+	bool upper_detect = false;
+	bool lower_detect = false;
+	list<sort_result> sorted_result;
+	sorted_result = sortPrefilter(fragment);
+	for(list<sort_result>::iterator it_sort=sorted_result.begin(); it_sort !=sorted_result.end(); ++it_sort) {
+		cout << " " << (*it_sort).key_number << "(" << (*it_sort).key_entry_size << ")" ;
+		if (((*it_sort).key_entry_size > MIN_LOWER_BOUND )&&(lower_detect == false)) {
+			lower_bound = status;
+			lower_detect = true;
+		}	
+		if (((*it_sort).key_entry_size > MAX_UPPER_BOUND )&&(upper_detect == false)) {
+			upper_bound = status-1;
+			upper_detect = true;
+		}	
+		key_entry[status] = (*it_sort).key_number;	
+		status = status + 1;
+	}
+	if ((upper_detect == true)&&(lower_detect == true)) {
+		if ((upper_bound - lower_bound) > 0 ) {
+			start_key_entry[0] = key_entry[lower_bound];	
+			start_key_entry[1] = key_entry[(lower_bound+upper_bound)/2];	
+			start_key_entry[2] = key_entry[upper_bound];	
+		} else if ((lower_bound <= key_number/2)) {
+			start_key_entry[0] = key_entry[lower_bound];	
+			start_key_entry[1] = key_entry[lower_bound+1];	
+			start_key_entry[2] = key_entry[lower_bound+2];	
+		} else if ((lower_bound > key_number/2)) {
+			start_key_entry[0] = key_entry[lower_bound];	
+			start_key_entry[1] = key_entry[lower_bound-1];	
+			start_key_entry[2] = key_entry[lower_bound-2];	
+		}	
+	} else if ((upper_detect == true) && (lower_detect == false)) {
+		cout << "ERROR 1 !!!" << endl;
+	} else if ((upper_detect == false) && (lower_detect == true)) {
+		if ((lower_bound <= key_number/2)) {
+			start_key_entry[0] = key_entry[lower_bound];	
+			start_key_entry[1] = key_entry[lower_bound+1];	
+			start_key_entry[2] = key_entry[lower_bound+2];	
+		} else if ((lower_bound > key_number/2)) {
+			start_key_entry[0] = key_entry[lower_bound];	
+			start_key_entry[1] = key_entry[lower_bound-1];	
+			start_key_entry[2] = key_entry[lower_bound-2];	
+		}	
+	} else if ((upper_detect == false) && (lower_detect == false)) {
+		start_key_entry[0] = key_entry[key_number-1];	
+		start_key_entry[1] = key_entry[key_number-2];	
+		start_key_entry[2] = key_entry[key_number-3];	
+		
+	} else {
+		cout << "ERROR 2 !!!" << endl;
+	}
+	cout << "\n XXX " << "key_number " << key_number <<" ## upper_bound "<< upper_bound << " ## lower_bound "<< lower_bound << endl;
+	for (int i = 0; i < 3; i++) {	
+		tmp = searchFragment(fragment, start_key_entry[i]);
+		result.insert(it_match, tmp.begin(), tmp.end());
+	}
+	free(key_entry);
+	return result;
+}
+
+list<match_result> searchFragment(string fragment, int start_key_entry) {
 	list<match_result> result;
 	int key_number = fragment.size() / KEY_LENGTH;
 	string key;
 	int key_hash; 
 	int key_entry;
 	int key_entry_size;
-	int start_key_entry = 0;
 	
-////	for (int i = 0; i < key_number; i++) {
-//		key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
-//		key_hash  = hashVal(key);
-//		key_entry = hash_table[key_hash];
-//		key_entry_size = coordinate[key_entry];
-////		if (key_entry_size <= max_entry_size){
-//			break;
-//		} else {
-//			start_key_entry++;
-//		}
-//	}
-	for (int i = 0; i < key_number; i++){
-//		key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
-		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
-		if(!searchPrefilter(key)) {
-			start_key_entry = i;
-			break;
-		}
-	}
-
-	cout << "key number:" << key_number << "  start key entry :" << start_key_entry;
 	key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
 	key_hash  = hashVal(key);
 	key_entry = hash_table[key_hash];
@@ -178,3 +261,22 @@ list<match_result> searchFragment(string fragment) {
 //	return result;
 //}
 
+//	for (int i = 0; i < key_number; i++){
+//		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
+//		if(!searchPrefilter(key)) {
+//			start_key_entry = i;
+//			break;
+//		}
+//	}
+
+//	for (int i = 0; i < key_number; i++) {
+//		key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
+//		key_hash  = hashVal(key);
+//		key_entry = hash_table[key_hash];
+//		key_entry_size = coordinate[key_entry];
+//		if (key_entry_size <= max_entry_size){
+//			break;
+//		} else {
+//			start_key_entry++;
+//		}
+//	}
