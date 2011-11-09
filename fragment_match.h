@@ -13,6 +13,9 @@
 #include "common.h"
 #include "ref_db_generator.h"
 
+#define MAX_UPPER_BOUND 10
+#define MIN_LOWER_BOUND 2
+
 using namespace std;
 
 struct match_result {
@@ -22,6 +25,17 @@ struct match_result {
 	int deletion_num;
 	int relevance;
 };
+
+struct sort_result {
+	int key_entry_size;
+	int key_number;
+};
+
+//template<struct sort_result>
+//struct sort_result {
+//	int key_entry_size;
+//	int key_number;
+//};
 
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
@@ -66,9 +80,14 @@ bool searchKey (string key, int target_coor);
  * 			
  */
 bool searchPrefilter (string key);
+
 /*
  * Function:		Free the allocated memory.
  */
 void freeMem();
 
+/*
+ * Function:		
+ */
+list<match_result> searchMultiFragment(string fragment); 
 #endif /* FRAGMENT_MATCH_H_ */
