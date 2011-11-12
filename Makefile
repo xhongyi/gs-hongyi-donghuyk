@@ -17,7 +17,7 @@ hash_generator: hash_generator.h hash_generator.cpp common.h
 	$(CC) $(CFLAGS) hash_generator.cpp common.cpp test.cpp -o test
 
 fragment_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp
-	$(CC) $(CFLAGS) test_match.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp -o fragment_match_test
+	$(CC) $(CFLAGS) test_match.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.c common.cpp -o fragment_match_test
 
-distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.cpp
-	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp test_distribution.c -o test_dist
+ED_test: common.h common.cpp edit_distance.h edit_distance.cpp ED_test.cpp
+	$(CC) $(CFLAGS) edit_distance.cpp common.cpp ED_test.cpp -o ed_test
