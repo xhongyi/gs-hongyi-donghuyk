@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <assert.h>
+#include "common.h"
 #include "fragment_match.h"
 
 int* hash_table;
@@ -119,7 +120,7 @@ list<match_result> searchMultiFragment(string fragment) {
 	list<match_result> tmp;
 	list<match_result>::iterator it_match = result.begin();
 	int  key_number = fragment.size() / KEY_LENGTH;
-	int  start_key_entry[3];
+	int  start_key_entry[max_diff_num + 1];
 	int  *key_entry = (int*)malloc(sizeof(int)*key_number);
 	int  status = 0;
 	int  upper_bound = 0;
@@ -129,57 +130,23 @@ list<match_result> searchMultiFragment(string fragment) {
 	list<sort_result> sorted_result;
 	sorted_result = sortPrefilter(fragment);
 	for(list<sort_result>::iterator it_sort=sorted_result.begin(); it_sort !=sorted_result.end(); ++it_sort) {
-		cout << " " << (*it_sort).key_number << "(" << (*it_sort).key_entry_size << ")" ;
-		if (((*it_sort).key_entry_size > MIN_LOWER_BOUND )&&(lower_detect == false)) {
-			lower_bound = status;
-			lower_detect = true;
-		}	
-		if (((*it_sort).key_entry_size > MAX_UPPER_BOUND )&&(upper_detect == false)) {
-			upper_bound = status-1;
-			upper_detect = true;
-		}	
-		key_entry[status] = (*it_sort).key_number;	
+		if (select_cheapest == true) {
+			start_key_entry[status] = (*it_sort).key_number;	
+//cout << " " << (*it_sort).key_number << "(" << (*it_sort).key_entry_size << ")" ;
+		} else {
+			start_key_entry[status] = status;
+//cout << " " << start_key_entry[status] ;
+		}
 		status = status + 1;
 	}
-	if ((upper_detect == true)&&(lower_detect == true)) {
-		if ((upper_bound - lower_bound) > 0 ) {
-			start_key_entry[0] = key_entry[lower_bound];	
-			start_key_entry[1] = key_entry[(lower_bound+upper_bound)/2];	
-			start_key_entry[2] = key_entry[upper_bound];	
-		} else if ((lower_bound <= key_number/2)) {
-			start_key_entry[0] = key_entry[lower_bound];	
-			start_key_entry[1] = key_entry[lower_bound+1];	
-			start_key_entry[2] = key_entry[lower_bound+2];	
-		} else if ((lower_bound > key_number/2)) {
-			start_key_entry[0] = key_entry[lower_bound];	
-			start_key_entry[1] = key_entry[lower_bound-1];	
-			start_key_entry[2] = key_entry[lower_bound-2];	
-		}	
-	} else if ((upper_detect == true) && (lower_detect == false)) {
-		cout << "ERROR 1 !!!" << endl;
-	} else if ((upper_detect == false) && (lower_detect == true)) {
-		if ((lower_bound <= key_number/2)) {
-			start_key_entry[0] = key_entry[lower_bound];	
-			start_key_entry[1] = key_entry[lower_bound+1];	
-			start_key_entry[2] = key_entry[lower_bound+2];	
-		} else if ((lower_bound > key_number/2)) {
-			start_key_entry[0] = key_entry[lower_bound];	
-			start_key_entry[1] = key_entry[lower_bound-1];	
-			start_key_entry[2] = key_entry[lower_bound-2];	
-		}	
-	} else if ((upper_detect == false) && (lower_detect == false)) {
-		start_key_entry[0] = key_entry[key_number-1];	
-		start_key_entry[1] = key_entry[key_number-2];	
-		start_key_entry[2] = key_entry[key_number-3];	
-		
-	} else {
-		cout << "ERROR 2 !!!" << endl;
-	}
-	cout << "\n XXX " << "key_number " << key_number <<" ## upper_bound "<< upper_bound << " ## lower_bound "<< lower_bound << endl;
-	for (int i = 0; i < 3; i++) {	
+
+//cout << endl << "sub size ";
+	for (int i = 0; i < max_diff_num +1; i++) {	
 		tmp = searchFragment(fragment, start_key_entry[i]);
+//cout << "(" << tmp.size() <<") ";
 		result.insert(it_match, tmp.begin(), tmp.end());
 	}
+//cout << endl << "total: " << result.size() << endl;
 	free(key_entry);
 	return result;
 }

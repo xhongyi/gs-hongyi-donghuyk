@@ -58,7 +58,7 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, int ** prefilt
 		if (index > max_coordinate_num) {
 			prefilter_tmp[prefilter_index] = i;
 			prefilter_index = prefilter_index + 1;
-			fprintf(stdout, "prefilter %i : %i \n", i, index);
+//			fprintf(stdout, "prefilter %i : %i \n", i, index);
 		}
 	// Read coordinate	
 		for (int j = 0; j < index; j++){

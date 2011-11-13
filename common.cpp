@@ -11,6 +11,7 @@
 
 int max_indel_num = 0;
 int max_diff_num = 0;
+bool select_cheapest = true;
 
 int hashVal(string key) {
 	int bp_val = 0;
@@ -50,6 +51,10 @@ void set_max_indel_num(int num) {
 
 void set_max_diff_num(int num) {
 	max_diff_num = num;
+}
+
+void set_select_cheapest(bool choose) {
+	select_cheapest = choose;
 }
 
 /*
