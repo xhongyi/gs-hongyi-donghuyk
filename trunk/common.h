@@ -23,6 +23,9 @@ using namespace std;
 
 extern int max_indel_num;
 extern int max_diff_num;
+extern bool select_cheapest;
+
+void set_select_cheapest(bool choose); 
 
 /*
  * Function: 		Set maximum indel_num that should be tolerated.

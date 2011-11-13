@@ -34,7 +34,7 @@ void match_distribution(string hash_file_name, string ref_file_name, string outp
 	cout << "Status : Start load hash table" << endl;
 	loadHash(hash_file_name.c_str());
 	cout << "Status : End load hash table" << endl;
-	cout << "Status : hash file size" << sizeof(ref_file) << endl;
+
         do {
                 ref_file >> test_char;
         } while (test_char == 'N');
@@ -68,7 +68,7 @@ void match_distribution(string hash_file_name, string ref_file_name, string outp
 
 		result = searchMultiFragment(testee);
 		distribution[result.size()]++;
-		cout <<" result: " << result.size() << endl;
+//		cout <<" result: " << result.size() << endl;
 		monitor_counter = monitor_counter + 1;
 		monitor_counter2 = monitor_counter2 + 1;
 		//cout <<" monitor: " << monitor_counter << endl;
