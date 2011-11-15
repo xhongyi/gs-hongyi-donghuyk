@@ -18,7 +18,7 @@ int main() {
 	list<match_result> result;
 //	string testee = "ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCTAACCCTA";
 	string testee = "ACCCTAACCCTAACCCTAACCCAAACCCTAACCCTAACCCAAACCCTAACCCTAACCCAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCTAACCCTA";
-	result = searchMultiFragment(testee);
+	result = searchFragment(testee);
 	for (list<match_result>::iterator iter = result.begin(); iter != result.end(); iter++) {
 		cout << "coordinate: " << iter->coordinate << endl;
 		cout << "diff_num: " << iter->relevance << endl;
