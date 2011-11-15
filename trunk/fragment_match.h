@@ -51,15 +51,6 @@ void loadHash(string hash_name);
 list<match_result> searchFragment (string fragment);
 
 /*
- * Function:		Search the possible locations and calculate their relevance.
- * Input:		Fragment is the target gene sequence need to be mapped. 
- *			Start_key_entry is the start entry between entries of fragment.
- * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
- * 					be the mapping location.
- */
-list<match_result> searchFragment (string fragment, int max_entry_size, list<match_result> previous_result);
-
-/*
  * Function:		Binary search if there exits an exact match on a target coordinate.
  * Input:			key is the searching target, and coordinate will be the target coordinate.
  * Modification:	result_idx will be changed to the index of the first possible match.
@@ -79,11 +70,6 @@ bool searchPrefilter (int coor, list<int> searched_coor);
  * Function:		Free the allocated memory.
  */
 void freeMem();
-
-/*
- * Function:		
- */
-list<match_result> searchMultiFragment(string fragment); 
 
 /*
  * Function:		

@@ -66,7 +66,7 @@ void match_distribution(string hash_file_name, string ref_file_name, string outp
 			testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
 		}
 
-		result = searchMultiFragment(testee);
+		result = searchFragment(testee);
 		distribution[result.size()]++;
 //		cout <<" result: " << result.size() << endl;
 		monitor_counter = monitor_counter + 1;

@@ -89,7 +89,6 @@ bool searchKey(string key, int target_coor) {
 	//in the case the entry is empty, we can't find it.
 	if (entry_size == 0) 
 		return  false;
-	
 
 	//otherwise, start binary search
 	//define lower and upper bound
@@ -106,56 +105,11 @@ bool searchKey(string key, int target_coor) {
 		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
 
-	//assert(mid > entry_coor && mid <= entry_coor + entry_size);
-
 	if (coordinate[mid] <= target_coor + max_indel_num && coordinate[mid] >= target_coor - max_indel_num) {
 		return true;
 	} else {
 		return false;
 	}
-}
-
-
-list<match_result> searchMultiFragment(string fragment) {
-	list<match_result> result;
-	list<match_result> tmp;
-	list<match_result>::iterator it_match = result.begin();
-	int  key_number = fragment.size() / KEY_LENGTH;
-	int  start_key_entry[max_diff_num + 1];
-	int  *key_entry = (int*)malloc(sizeof(int)*key_number);
-	int  status = 0;
-	int  upper_bound = 0;
-	int  lower_bound = key_number;
-	bool upper_detect = false;
-	bool lower_detect = false;
-	list<sort_result> sorted_result;
-	sorted_result = sortPrefilter(fragment);
-	for(list<sort_result>::iterator it_sort=sorted_result.begin(); it_sort !=sorted_result.end(); ++it_sort) {
-		if (select_cheapest == true) {
-			start_key_entry[status] = (*it_sort).key_number;	
-//cout << " " << (*it_sort).key_number << "(" << (*it_sort).key_entry_size << ")" ;
-		} else {
-			start_key_entry[status] = status;
-//cout << " " << start_key_entry[status] ;
-		}
-		status = status + 1;
-	}
-
-//cout << endl << "sub size ";
-	for (int i = 0; i < max_diff_num +1; i++) {     
-		tmp = searchFragment(fragment, start_key_entry[i], result);
-//cout << "(" << tmp.size() <<") ";
-		result.insert(it_match, tmp.begin(), tmp.end());
-	}
-
-//	for(list<match_result>::iterator it_coor=result.begin(); it_coor !=result.end(); ++it_coor) {
-//		cout << " X " << (*it_coor).coordinate ;
-//	}
-	cout << endl;
-
-//cout << endl << "total: " << result.size() << endl;
-	free(key_entry);
-	return result;
 }
 
 bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result) {
@@ -174,38 +128,46 @@ bool searchPrevious(int coor_value, int start_key_entry, list<match_result> prev
 	return false;
 }
 
-list<match_result> searchFragment(string fragment, int start_key_entry, list<match_result> previous_result) {
+list<match_result> searchFragment(string fragment) {
 	list<match_result> result;
-	int key_number = fragment.size() / KEY_LENGTH;
-	string key;
-	int key_hash; 
-	int key_entry;
-	int key_entry_size;
+	int  key_number = fragment.size() / KEY_LENGTH;
+	int  start_key_entry[max_diff_num + 1];
+	int  status = 0;
+	list<sort_result> sorted_result = sortPrefilter(fragment);
+	for(list<sort_result>::iterator it_sort=sorted_result.begin(); it_sort !=sorted_result.end(); ++it_sort) {
+		if (select_cheapest == true) {
+			start_key_entry[status] = (*it_sort).key_number;	
+		} else {
+			start_key_entry[status] = status;
+		}
+		status = status + 1;
+	}
+	for (int k = 0; k < max_diff_num + 1; k++) {
+		string key = fragment.substr(KEY_LENGTH*start_key_entry[k], KEY_LENGTH);
+		int key_hash  = hashVal(key);
+		int key_entry = hash_table[key_hash];
+		int key_entry_size = coordinate[key_entry];
 	
-	key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
-	key_hash  = hashVal(key);
-	key_entry = hash_table[key_hash];
-	key_entry_size = coordinate[key_entry];
-
-	for (int i = key_entry + 1; i <= key_entry + key_entry_size; i++) {
-		int coor_value = coordinate[i];
-		int diff_num = 0;
-		if (!searchPrevious(coor_value, start_key_entry, previous_result)){
-			for (int j = 0; j < key_number; j++) {
-				string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
-				if(!searchKey(segment_str, coor_value + (j-start_key_entry) * KEY_LENGTH)) {
-					diff_num++;
-				} 
-				else 
-				if (diff_num > max_diff_num)
-					break;
+		for (int i = key_entry + 1; i <= key_entry + key_entry_size; i++) {
+			int coor_value = coordinate[i];
+			int diff_num = 0;
+			if (!searchPrevious(coor_value, start_key_entry[k], result)){
+				for (int j = 0; j < key_number; j++) {
+					string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
+					if(!searchKey(segment_str, coor_value + (j-start_key_entry[k]) * KEY_LENGTH)) {
+						diff_num++;
+					} 
+					else 
+					if (diff_num > max_diff_num)
+						break;
+				}
+				if (diff_num <= max_diff_num) {
+					match_result temp;
+					temp.coordinate = coor_value-start_key_entry[k]*KEY_LENGTH;
+					temp.relevance = diff_num;
+					result.push_back(temp);
+				}	
 			}
-			if (diff_num <= max_diff_num) {
-				match_result temp;
-				temp.coordinate = coor_value-start_key_entry*KEY_LENGTH;
-				temp.relevance = diff_num;
-				result.push_back(temp);
-			}	
 		}
 	}
 	return result;
