@@ -87,8 +87,9 @@ bool searchKey(string key, int target_coor) {
 	int entry_size = coordinate[entry_coor];
 
 	//in the case the entry is empty, we can't find it.
-	if (entry_size == 0)
-		return false;
+	if (entry_size == 0) 
+		return  false;
+	
 
 	//otherwise, start binary search
 	//define lower and upper bound
@@ -107,11 +108,11 @@ bool searchKey(string key, int target_coor) {
 
 	//assert(mid > entry_coor && mid <= entry_coor + entry_size);
 
-	if (coordinate[mid] <= target_coor + max_indel_num
-			&& coordinate[mid] >= target_coor - max_indel_num)
+	if (coordinate[mid] <= target_coor + max_indel_num && coordinate[mid] >= target_coor - max_indel_num) {
 		return true;
-	else
+	} else {
 		return false;
+	}
 }
 
 
@@ -141,17 +142,39 @@ list<match_result> searchMultiFragment(string fragment) {
 	}
 
 //cout << endl << "sub size ";
-	for (int i = 0; i < max_diff_num +1; i++) {	
-		tmp = searchFragment(fragment, start_key_entry[i]);
+	for (int i = 0; i < max_diff_num +1; i++) {     
+		tmp = searchFragment(fragment, start_key_entry[i], result);
 //cout << "(" << tmp.size() <<") ";
 		result.insert(it_match, tmp.begin(), tmp.end());
 	}
+
+//	for(list<match_result>::iterator it_coor=result.begin(); it_coor !=result.end(); ++it_coor) {
+//		cout << " X " << (*it_coor).coordinate ;
+//	}
+	cout << endl;
+
 //cout << endl << "total: " << result.size() << endl;
 	free(key_entry);
 	return result;
 }
 
-list<match_result> searchFragment(string fragment, int start_key_entry) {
+bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result) {
+	if (previous_result.size() == 0) {
+		return false;
+	} 
+	for(list<match_result>::iterator it_coor=previous_result.begin(); it_coor != previous_result.end(); ++it_coor) {
+		int upper_bound = coor_value - start_key_entry*KEY_LENGTH + max_indel_num;
+		int lower_bound = coor_value - start_key_entry*KEY_LENGTH - max_indel_num;
+		if(((*it_coor).coordinate <=  upper_bound)&&((*it_coor).coordinate >= lower_bound)  ){
+			cout << "matched!!" << endl;
+			return true;
+		}
+	}
+	cout << "unmatched!!" << endl;
+	return false;
+}
+
+list<match_result> searchFragment(string fragment, int start_key_entry, list<match_result> previous_result) {
 	list<match_result> result;
 	int key_number = fragment.size() / KEY_LENGTH;
 	string key;
@@ -167,83 +190,23 @@ list<match_result> searchFragment(string fragment, int start_key_entry) {
 	for (int i = key_entry + 1; i <= key_entry + key_entry_size; i++) {
 		int coor_value = coordinate[i];
 		int diff_num = 0;
-		for (int j = 0; j < key_number; j++) {
-			string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
-			if (!searchKey(segment_str, coor_value + (j-start_key_entry) * KEY_LENGTH) ){
-				diff_num++;
+		if (!searchPrevious(coor_value, start_key_entry, previous_result)){
+			for (int j = 0; j < key_number; j++) {
+				string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
+				if(!searchKey(segment_str, coor_value + (j-start_key_entry) * KEY_LENGTH)) {
+					diff_num++;
+				} 
+				else 
+				if (diff_num > max_diff_num)
+					break;
 			}
-			else
-			if (diff_num > max_diff_num)
-				break;
-		}
-		if (diff_num <= max_diff_num) {
-			match_result temp;
-			temp.coordinate = coor_value;
-			temp.relevance = diff_num;
-			result.push_back(temp);
+			if (diff_num <= max_diff_num) {
+				match_result temp;
+				temp.coordinate = coor_value-start_key_entry*KEY_LENGTH;
+				temp.relevance = diff_num;
+				result.push_back(temp);
+			}	
 		}
 	}
 	return result;
 }
-
-//This function is a naive version,
-//list<match_result> searchFragment(string fragment) {
-//	list<match_result> result;
-//	int key_number = fragment.size() / KEY_LENGTH;
-//	int start_key_entry = 0;
-//	string key;
-//
-//	for (int i = 0; i < key_number; i++){
-//		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
-//		if(!searchPrefilter(key)) {
-//			start_key_entry = i;
-//			break;
-//		}
-//	}
-//	cout << "key number:" << key_number << "  start key entry :" << start_key_entry << endl;
-//	key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
-//
-//	int key_hash = hashVal(key);
-//	int key_entry = hash_table[key_hash];
-//	int key_entry_size = coordinate[key_entry];
-//	for (int i = key_entry + 1; i <= key_entry + key_entry_size; i++) {
-//		int coor_value = coordinate[i];
-//		int diff_num = 0;
-//		for (int j = 0; j < key_number; j++) {
-//			string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
-//			if (!searchKey(segment_str, coor_value + (j-start_key_entry) * KEY_LENGTH) ){
-//				diff_num++;
-//			}
-//			else
-//			if (diff_num > max_diff_num)
-//				break;
-//		}
-//		if (diff_num <= max_diff_num) {
-//			match_result temp;
-//			temp.coordinate = coor_value;
-//			temp.relevance = diff_num;
-//			result.push_back(temp);
-//		}
-//	}
-//	return result;
-//}
-
-//	for (int i = 0; i < key_number; i++){
-//		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
-//		if(!searchPrefilter(key)) {
-//			start_key_entry = i;
-//			break;
-//		}
-//	}
-
-//	for (int i = 0; i < key_number; i++) {
-//		key = fragment.substr(KEY_LENGTH*start_key_entry, KEY_LENGTH);
-//		key_hash  = hashVal(key);
-//		key_entry = hash_table[key_hash];
-//		key_entry_size = coordinate[key_entry];
-//		if (key_entry_size <= max_entry_size){
-//			break;
-//		} else {
-//			start_key_entry++;
-//		}
-//	}

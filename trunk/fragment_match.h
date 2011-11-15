@@ -31,12 +31,6 @@ struct sort_result {
 	int key_number;
 };
 
-//template<struct sort_result>
-//struct sort_result {
-//	int key_entry_size;
-//	int key_number;
-//};
-
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
  *					the name of a chromosome, it will load all the hash_table this
@@ -63,7 +57,7 @@ list<match_result> searchFragment (string fragment);
  * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
  * 					be the mapping location.
  */
-list<match_result> searchFragment (string fragment, int max_entry_size);
+list<match_result> searchFragment (string fragment, int max_entry_size, list<match_result> previous_result);
 
 /*
  * Function:		Binary search if there exits an exact match on a target coordinate.
@@ -71,7 +65,6 @@ list<match_result> searchFragment (string fragment, int max_entry_size);
  * Modification:	result_idx will be changed to the index of the first possible match.
  * 					result_scope will be changed to the number of possible matches.
  */
-bool searchKey (string key, int target_coor);
 
 /*
  * Function:		
@@ -79,7 +72,8 @@ bool searchKey (string key, int target_coor);
  * Modification:	
  * 			
  */
-bool searchPrefilter (string key);
+//bool searchPrefilter (string key);
+bool searchPrefilter (int coor, list<int> searched_coor);
 
 /*
  * Function:		Free the allocated memory.
@@ -90,4 +84,10 @@ void freeMem();
  * Function:		
  */
 list<match_result> searchMultiFragment(string fragment); 
+
+/*
+ * Function:		
+ */
+bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result);
+
 #endif /* FRAGMENT_MATCH_H_ */
