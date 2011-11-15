@@ -19,8 +19,8 @@
 using namespace std;
 
 void match_distribution(string hash_file_name, string ref_file_name, string output_file_name) {
-	set_max_indel_num(5);
-	set_max_diff_num(5);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
 	ifstream ref_file;
 	ofstream store_file;
 	ref_file.open(ref_file_name.c_str()); 
@@ -79,10 +79,15 @@ void match_distribution(string hash_file_name, string ref_file_name, string outp
 		}
 
 	} while (ref_file.good());
-		
+	long long total_fragment_num = 0;	
+	long long total_perform_num = 0;	
 	for (map<int,int>::iterator p = distribution.begin(); p != distribution.end() ; p++) {
 		store_file <<"index :"<< p->first << "	# :" << p->second << endl; 
+		total_fragment_num = total_fragment_num + p->second;
+		total_perform_num  = total_perform_num + p->first*p->second;
 	}
+	store_file <<"total_fragment_num :"<< total_fragment_num << endl;
+	store_file <<"total_perform_num  :"<< total_perform_num  << endl;
 
 	ref_file.close();
 	store_file.close();

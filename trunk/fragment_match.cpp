@@ -120,11 +120,11 @@ bool searchPrevious(int coor_value, int start_key_entry, list<match_result> prev
 		int upper_bound = coor_value - start_key_entry*KEY_LENGTH + max_indel_num;
 		int lower_bound = coor_value - start_key_entry*KEY_LENGTH - max_indel_num;
 		if(((*it_coor).coordinate <=  upper_bound)&&((*it_coor).coordinate >= lower_bound)  ){
-			cout << "matched!!" << endl;
+//			cout << "matched!!" << endl;
 			return true;
 		}
 	}
-	cout << "unmatched!!" << endl;
+//	cout << "unmatched!!" << endl;
 	return false;
 }
 
