@@ -42,8 +42,7 @@ list<sort_result> sortPrefilter(string fragment) {
 	int key_hash; 
 	int key_entry;
 	int key_entry_size;
-	int key_number = fragment.size() / KEY_LENGTH;
-	for (int i = 0; i < key_number; i++) {
+	for (int i = 0; i < KEY_NUMBER; i++) {
 		key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
 		key_hash  = hashVal(key);
 		key_entry = hash_table[key_hash];
@@ -130,7 +129,6 @@ bool searchPrevious(int coor_value, int start_key_entry, list<match_result> prev
 
 list<match_result> searchFragment(string fragment) {
 	list<match_result> result;
-	int  key_number = fragment.size() / KEY_LENGTH;
 	int  start_key_entry[max_diff_num + 1];
 	int  status = 0;
 	list<sort_result> sorted_result = sortPrefilter(fragment);
@@ -152,7 +150,7 @@ list<match_result> searchFragment(string fragment) {
 			int coor_value = coordinate[i];
 			int diff_num = 0;
 			if (!searchPrevious(coor_value, start_key_entry[k], result)){
-				for (int j = 0; j < key_number; j++) {
+				for (int j = 0; j < KEY_NUMBER; j++) {
 					string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
 					if(!searchKey(segment_str, coor_value + (j-start_key_entry[k]) * KEY_LENGTH)) {
 						diff_num++;
