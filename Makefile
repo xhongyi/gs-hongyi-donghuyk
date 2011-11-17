@@ -5,7 +5,7 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator
 
-all: db_generator distribution_test hash_generator fragment_test distribution_test
+all: test_full ED_test
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -24,3 +24,6 @@ ED_test: common.h common.cpp edit_distance.h edit_distance.cpp ED_test.cpp
 
 distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.cpp
 	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp test_distribution.c -o test_dist
+
+test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  edit_distribution.cpp edit_distance.h edit_distance.cpp ED_test.cpp
+	$(CC) $(CFLAGS) edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full

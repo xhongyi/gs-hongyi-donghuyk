@@ -24,6 +24,7 @@ struct match_result {
 	int insersion_num;
 	int deletion_num;
 	int relevance;
+	int key_number;
 };
 
 struct key_struct {
