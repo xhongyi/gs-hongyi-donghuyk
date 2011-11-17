@@ -26,9 +26,11 @@ struct match_result {
 	int relevance;
 };
 
-struct sort_result {
+struct key_struct {
+	int key_entry;
 	int key_entry_size;
 	int key_number;
+	int order;
 };
 
 /*
@@ -57,14 +59,6 @@ list<match_result> searchFragment (string fragment);
  * 					result_scope will be changed to the number of possible matches.
  */
 
-/*
- * Function:		
- * Input:		
- * Modification:	
- * 			
- */
-//bool searchPrefilter (string key);
-bool searchPrefilter (int coor, list<int> searched_coor);
 
 /*
  * Function:		Free the allocated memory.
