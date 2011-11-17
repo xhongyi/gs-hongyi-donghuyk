@@ -91,8 +91,6 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 
 list<match_result> searchFragment(string fragment) {
 	list<match_result> result;
-	int  start_key_entry[max_diff_num + 1];
-	int  status = 0;
 	key_struct sort_input[KEY_NUMBER]; 
 	for(int i = 0; i < KEY_NUMBER; i++) {
 		string key = fragment.substr(KEY_LENGTH*i, KEY_LENGTH);
@@ -106,30 +104,31 @@ list<match_result> searchFragment(string fragment) {
 	}
 
 	key_struct keys_input[max_diff_num+1]; 
-	sortPrefilter(keys_input, sort_input);
-
-	for(int i = 0 ; i < max_diff_num+1; i++){
-		if (select_cheapest == true) 	
-			start_key_entry[i] = keys_input[i].key_number;
-		else 				
-			start_key_entry[i] = i;
+	if (select_cheapest == true) {
+		sortPrefilter(keys_input, sort_input);
+	} else {
+		for (int i = 0; i < max_diff_num +1; i++){
+			keys_input[i].key_number     = sort_input[i].key_number;
+			keys_input[i].key_entry      = sort_input[i].key_entry;
+			keys_input[i].key_entry_size = sort_input[i].key_entry_size;
+		}
 	}
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
 		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry + keys_input[k].key_entry_size; i++) {
 			int coor_value = coordinate[i];
 			int diff_num = 0;
-			if (!searchPrevious(coor_value, start_key_entry[k], result)){
+			if (!searchPrevious(coor_value, keys_input[k].key_number, result)){
 				for (int j = 0; j < KEY_NUMBER; j++) {
 					string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
-					if(!searchKey(segment_str, coor_value + (j-start_key_entry[k]) * KEY_LENGTH)) 
+					if(!searchKey(segment_str, coor_value + (j-keys_input[k].key_number) * KEY_LENGTH)) 
 						diff_num++;
 					else if (diff_num > max_diff_num)
 						break;
 				}
 				if (diff_num <= max_diff_num) {
 					match_result temp;
-					temp.coordinate = coor_value-start_key_entry[k]*KEY_LENGTH;
+					temp.coordinate = coor_value-keys_input[k].key_number*KEY_LENGTH;
 					temp.relevance = diff_num;
 					result.push_back(temp);
 				}	
