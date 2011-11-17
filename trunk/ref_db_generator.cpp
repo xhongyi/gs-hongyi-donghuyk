@@ -1,4 +1,5 @@
 #include "common.h"
+#include <iostream>
 #include "ref_db_generator.h"
 
 //void refGenerator(char * gen_file_name, char * ref_file, int REF_TABLE_SIZE) {
@@ -14,7 +15,7 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 	int file_num = 0;
 	int contig_num = 0;
 	int contig_file_num = 0;
-	char * gen_file[100];
+	char * gen_file[200];
 	char   contig_name[MAX_CONTIG_NAME];
  	FILE * pFileR;
  	FILE * pFileW;
@@ -107,7 +108,7 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 
 //string getRefSeq(int coordinate, int size, int REF_TABLE_SIZE,  string ref_filename) {
 string getRefSeq(int coordinate, int size,  string ref_filename) {
-	string result_string;
+	string result_string(READ_LENGTH, 'A');
  	FILE * pFileS;
 	char * search_string;
 	int  size_opt;
@@ -117,12 +118,12 @@ string getRefSeq(int coordinate, int size,  string ref_filename) {
 	int  read_number;
 
 	//Initialize string size
-	result_string.resize(REF_TABLE_SIZE);
+	//result_string.resize(REF_TABLE_SIZE);
 
 	boundary   	= coordinate-(coordinate/REF_TABLE_SIZE)*REF_TABLE_SIZE + size;	// boundary checking
-	size_opt   	= size + boundary / REF_TABLE_SIZE + 1;				// size optimization
+	size_opt   	= size + boundary / REF_TABLE_SIZE + 2;				// size optimization
 	coordinate_opt 	= coordinate+coordinate/REF_TABLE_SIZE;				// add # of new line characters
- 	search_string   = (char*) malloc(size_opt);	
+ 	search_string   = (char*) malloc(sizeof(char)*size_opt);	
  	pFileS = fopen (ref_filename.c_str(), "r");
 	fseek (pFileS, 0, SEEK_SET );
 	read_number = fread (search_string, 1, size_opt, pFileS);
@@ -133,15 +134,13 @@ string getRefSeq(int coordinate, int size,  string ref_filename) {
 		fseek (pFileS, coordinate_opt, SEEK_SET );
 		read_number = fread (search_string, 1, size_opt, pFileS);
 	}
-	for (int i = 0; i<size ; i++) {
-		if ((search_string[i] == '\n')) {
-			boundary_detect = 1;
-		}
-		if (boundary_detect == 1){
-			result_string[i] = search_string[i+1];
-		}
-		else {
-			result_string[i] = search_string[i];
+	for (int i = 0; i < size ; i++) {
+		if ((search_string[i+boundary_detect] == '\n')) {
+			boundary_detect = boundary_detect + 1;
+		} 
+		result_string[i] = search_string[i+boundary_detect];
+		if (boundary_detect == 2){
+//cout << " DETECTED 2 BOUNDARY " << boundary_detect << endl;
 		}
 	}
 	fclose (pFileS);

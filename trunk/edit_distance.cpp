@@ -122,11 +122,11 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 
 	//Pick a lane to go through
 	while (!ED_finished) {
-		cout << "Here 0" << endl;
+		//cout << "Here 0" << endl;
 		//First Pick a path.
 		while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
 			if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
-				if (cur_dist > max_diff_num) { //Check if we exceeds the max diff tolarence
+				if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
 					//TODO: BREAK AND END.
 					ED_finished = true;
 					result.correct = false;
@@ -144,12 +144,12 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 		//Indicate if the lane should be stopped
 		int slide_stop = 0;
 
-		cout << "cur_dist: " << cur_dist << endl;
-		cout << "cur_lane: " << cur_lane << endl;
+		//cout << "cur_dist: " << cur_dist << endl;
+		//cout << "cur_lane: " << cur_lane << endl;
 
 		//Slide down the lane.
 		while (!ED_finished) {
-			cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
+			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx >= READ_LENGTH - max_indel_num) {
 				//Test if it's the last element
@@ -198,7 +198,7 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 		}
 	}
 
-	cout << "Path generated" << endl;
+	//cout << "Path generated" << endl;
 
 	//Tracing back period
 	if (result.correct == false)
@@ -209,22 +209,22 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 				+ main_lane - cur_lane;
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 		int same_count = 0;
-		cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != 0) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
 			//If we should have an insertion
 			if (cur_idx == 0 || path[cur_lane - 1].path_cost[cur_idx]
 					< path[cur_lane].path_cost[cur_idx - 1]) {
 				if (same_count != 0) {
-					cout << "Here m" << endl;
+					//cout << "Here m" << endl;
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "^%c%d%s",
 							test_read[cur_idx + cur_lane - main_lane - 1],
 							same_count, temp_result);
 				}
 				else {
-					cout << "Here n" << endl;
+					//cout << "Here n" << endl;
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "^%c%s",
 							test_read[cur_idx + cur_lane - main_lane - 1],
@@ -239,13 +239,13 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 			if (path[cur_lane + 1].path_cost[cur_idx - 1]
 					< path[cur_lane].path_cost[cur_idx - 1]) {
 				if (same_count != 0) {
-					cout << "Here x" << endl;
+					//cout << "Here x" << endl;
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "`%c%d%s",
 							ref_read[cur_idx - 1], same_count,
 							temp_result);
 				} else {
-					cout << "Here y" << endl;
+					//cout << "Here y" << endl;
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
 							temp_result);
@@ -259,20 +259,20 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 			//Check if we have a mismatch
 			if (path[cur_lane].path_cost[cur_idx - 1]
 					< path[cur_lane].path_cost[cur_idx]) {
-				cout << "Here1" << endl;
+				//cout << "Here1" << endl;
 				if (same_count != 0) {
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "%c%d%s",
 							test_read[cur_idx + cur_lane - main_lane - 1],
 							same_count, temp_result);
 
-					cout << "Here2" << endl;
+					//cout << "Here2" << endl;
 				} else {
 					strcpy(temp_result, result.compare_result);
 					sprintf(result.compare_result, "%c%s",
 							test_read[cur_idx + cur_lane - main_lane - 1],
 							temp_result);
-					cout << "Here3" << endl;
+					//cout << "Here3" << endl;
 				}
 				cur_idx--;
 				same_count = 0;
@@ -282,10 +282,10 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 			//Move to the next element
 			cur_idx--;
 			same_count++;
-			cout << "same_count: " << same_count << endl;
+			//cout << "same_count: " << same_count << endl;
 		}
 		if (same_count != 0) { //If we have some same count at the begining
-			cout << "Here t" << endl;
+			//cout << "Here t" << endl;
 			strcpy(temp_result, result.compare_result);
 			sprintf(result.compare_result, "%d%s", same_count,
 					temp_result);
