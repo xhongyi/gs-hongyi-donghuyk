@@ -29,4 +29,4 @@ test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generat
 	$(CC) $(CFLAGS) edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full
 
 test_correct:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  correctness_checker.cpp edit_distance.h edit_distance.cpp test_correctness.cpp
-	$(CC) $(CFLAGS) correctness_checker.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_correctness.cpp -o test_full
+	$(CC) $(CFLAGS) correctness_checker.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_correctness.cpp -o test_correct
