@@ -72,4 +72,8 @@ void freeMem();
  */
 bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result);
 
+/*
+ *
+ */
+int binary_filtering_cost(string fragment);
 #endif /* FRAGMENT_MATCH_H_ */
