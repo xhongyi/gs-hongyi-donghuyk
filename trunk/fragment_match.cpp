@@ -11,8 +11,6 @@
 #include "common.h"
 #include "fragment_match.h"
 
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input);
-
 int* hash_table;
 int* coordinate;
 int* prefilter;
@@ -73,7 +71,8 @@ bool searchPrevious(int coor_value, int start_key_entry,
 	return false;
 }
 
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
+bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
+	int loop_index = 0;
 	for (int i = 0; i < KEY_NUMBER; i++) {
 		for (int j = 0; j < KEY_NUMBER; j++) {
 			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
@@ -81,16 +80,21 @@ void sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 			}
 		}
 	}
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	for (int i = 0; i < max_diff_num + 1; i++) {
 		for (int j = 0; j < KEY_NUMBER; j++) {
 			if (sort_input[j].order == i) {
-				sort_result[i].key_entry = sort_input[j].key_entry;
-				sort_result[i].key_number = sort_input[j].key_number;
-				sort_result[i].key_entry_size
+				sort_result[loop_index].key_entry = sort_input[j].key_entry;
+				sort_result[loop_index].key_number = sort_input[j].key_number;
+				sort_result[loop_index].key_entry_size
 						= sort_input[j].key_entry_size;
+				loop_index = loop_index + 1;
+			}
+			if (loop_index == max_diff_num + 1) {
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 list<match_result> searchFragment(string fragment) {
@@ -122,12 +126,8 @@ list<match_result> searchFragment(string fragment) {
 	}
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
-		cout << "k: " << k << endl;
 		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
 				+ keys_input[k].key_entry_size; i++) {
-			cout << "i: " << i << endl;
-			cout << "key_entry: " << keys_input[k].key_entry << endl;
-			cout << "key_entry_size: " << keys_input[k].key_entry_size << endl;
 			int coor_value = coordinate[i];
 			int diff_num = 0;
 			int tmp_start_coor = 0;
