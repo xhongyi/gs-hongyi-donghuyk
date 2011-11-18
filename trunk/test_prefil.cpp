@@ -9,6 +9,7 @@
 #include "hash_test.h"
 #include "hash_generator.h"
 #include "common.h"
+#include "prefil_distribution.h"
 
 int main(int argc, char* argv[]) {
 

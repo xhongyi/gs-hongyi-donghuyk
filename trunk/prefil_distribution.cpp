@@ -4,12 +4,7 @@
  *  Created on: Oct 19, 2011
  *      Author: mac
  */
-#include <iostream>
-#include <deque>
-#include <list>
-#include <map>
-#include <cstdio>
-#include <fstream>
+#include "prefil_distribution.h"
 
 #include "ref_db_generator.h"
 #include "fragment_match.h"
