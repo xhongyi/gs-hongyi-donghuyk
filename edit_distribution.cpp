@@ -15,6 +15,7 @@
 #include "ref_db_generator.h"
 #include "fragment_match.h"
 #include "edit_distance.h"
+#include "edit_distribution.h"
 
 #define FRAGMENT_LENGTH 108
 

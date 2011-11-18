@@ -5,7 +5,7 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator
 
-all: test_full ED_test
+all: db_generator hash_generator fragment_test ED_test distribution_test test_full test_correct test_prefil
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -22,10 +22,10 @@ fragment_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_gen
 ED_test: common.h common.cpp edit_distance.h edit_distance.cpp ED_test.cpp
 	$(CC) $(CFLAGS) edit_distance.cpp common.cpp ED_test.cpp -o ed_test
 
-distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.cpp
+distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.h match_distribution.cpp
 	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp test_distribution.c -o test_dist
 
-test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c
+test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_distribution.h edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c
 	$(CC) $(CFLAGS) edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full
 
 test_correct:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  correctness_checker.cpp edit_distance.h edit_distance.cpp test_correctness.cpp

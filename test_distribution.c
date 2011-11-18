@@ -8,6 +8,7 @@
 #include "hash_loader.h"
 #include "hash_test.h"
 #include "hash_generator.h"
+#include "match_distribution.h"
 #include "common.h"
 
 int main(int argc, char* argv[]) {
