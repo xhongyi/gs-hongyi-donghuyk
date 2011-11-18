@@ -18,7 +18,7 @@
 
 using namespace std;
 
-void match_distribution(string hash_file_name, string ref_file_name,
+void prefil_distribution(string hash_file_name, string ref_file_name,
 		string output_file_name) {
 	set_max_indel_num(5);
 	set_max_diff_num(5);
