@@ -13,6 +13,7 @@
 
 #include "ref_db_generator.h"
 #include "fragment_match.h"
+#include "match_distribution.h"
 
 #define FRAGMENT_LENGTH 108
 

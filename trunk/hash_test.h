@@ -38,18 +38,5 @@ char intToChar(int number);
  */
 void reconstructSeq (char * decoded_char,int number);
 
-/*
- * Function: 
- * Input: 
- * output: 
- */
-void match_distribution(string hash_file_name, string ref_file_name, string output_file_name); 
-
-/*
- * Function: 
- * Input: 
- * output: 
- */
-void edit_distribution(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name); 
 #endif /* HASH_TEST_ */
 

@@ -4,10 +4,9 @@
  *  Created on: Oct 19, 2011
  *      Author: mac
  */
-#include "prefil_distribution.h"
-
 #include "ref_db_generator.h"
 #include "fragment_match.h"
+#include "prefil_distribution.h"
 
 #define FRAGMENT_LENGTH 108
 
@@ -64,6 +63,7 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 		}
 
 		result = binary_filtering_cost(testee);
+
 		distribution[result]++;
 		//		cout <<" result: " << result.size() << endl;
 		monitor_counter = monitor_counter + 1;
