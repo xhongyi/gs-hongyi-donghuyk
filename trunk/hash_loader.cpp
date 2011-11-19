@@ -1,28 +1,30 @@
 //#define DEBUG
 #include "common.h"
 #include "hash_loader.h"
+#include <fstream>
 
-void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_table_name){
-	int *  total_number = (int*) malloc(sizeof(int));
-	int *  index = (int*) malloc(sizeof(int));
-	int *  data = (int*) malloc(sizeof(int));
-	int    read_number = 0;
-	int    coordinate_index = 0;
+void hashReconstructor(int ** index_db, int ** coordinate_db,
+		const char * hash_table_name) {
+	int * total_number = (int*) malloc(sizeof(int));
+	int * index = (int*) malloc(sizeof(int));
+	int * data = (int*) malloc(sizeof(int));
+	int read_number = 0;
+	int coordinate_index = 0;
 	FILE * pFileR;
 	// Read total number of hash table
-	pFileR	= fopen (hash_table_name, "r");
-	read_number   = read_number + fread(total_number, sizeof(int), 1, pFileR);
-	*index_db      = (int*) malloc(sizeof(int)*INDEX_NUM);
-	*coordinate_db = (int*) malloc(sizeof(int)*(*total_number));
+	pFileR = fopen(hash_table_name, "r");
+	read_number = read_number + fread(total_number, sizeof(int), 1, pFileR);
+	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
+	*coordinate_db = (int*) malloc(sizeof(int) * (*total_number));
 	// Read index number & coordinate based on index number
-	for (int i = 0; i< INDEX_NUM ;i++) { 
+	for (int i = 0; i < INDEX_NUM; i++) {
 		read_number = read_number + fread(index, sizeof(int), 1, pFileR);
 		(*index_db)[i] = *index;
 		(*coordinate_db)[coordinate_index] = *index;
 		coordinate_index = coordinate_index + 1;
-	// Read coordinate	
-		for (int j = 0; j < *index; j++){
-			read_number = read_number + fread(data,sizeof(int),1,pFileR);
+		// Read coordinate
+		for (int j = 0; j < *index; j++) {
+			read_number = read_number + fread(data, sizeof(int), 1, pFileR);
 			(*coordinate_db)[coordinate_index] = *data;
 			coordinate_index = coordinate_index + 1;
 		}
@@ -33,24 +35,25 @@ void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_
 	fclose(pFileR);
 }
 
-void hashReconstructorChar(int ** index_db, int ** coordinate_db, int ** prefilter_db, const char * hash_table_name){	// NEW
-	int    total_number;
-	int    index;
-	int    data;	
-	int    coordinate_index   = 0;
-	int    prefilter_index    = 0;
-	int    max_coordinate_num = 2;
-	int  * prefilter_tmp = (int*) malloc(sizeof(int)*INDEX_NUM);
+void hashReconstructorChar(int ** index_db, int ** coordinate_db,
+		int ** prefilter_db, const char * hash_table_name) { // NEW
+	int total_number;
+	int index;
+	int data;
+	int coordinate_index = 0;
+	int prefilter_index = 0;
+	int max_coordinate_num = 2;
+	int * prefilter_tmp = (int*) malloc(sizeof(int) * INDEX_NUM);
 	FILE * pFileR;
 
 	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
+	pFileR = fopen(hash_table_name, "r");
 	fscanf(pFileR, "%i", &total_number);
-	*index_db      = (int*) malloc(sizeof(int)*INDEX_NUM);
-	*coordinate_db = (int*) malloc(sizeof(int)*total_number);
+	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
+	*coordinate_db = (int*) malloc(sizeof(int) * total_number);
 
 	// Read index number & coordinate based on index number
-	for (int i = 0; i< INDEX_NUM ;i++) { 
+	for (int i = 0; i < INDEX_NUM; i++) {
 		fscanf(pFileR, "%i", &index);
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
@@ -58,46 +61,47 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, int ** prefilt
 		if (index > max_coordinate_num) {
 			prefilter_tmp[prefilter_index] = i;
 			prefilter_index = prefilter_index + 1;
-//			fprintf(stdout, "prefilter %i : %i \n", i, index);
+			//			fprintf(stdout, "prefilter %i : %i \n", i, index);
 		}
-	// Read coordinate	
-		for (int j = 0; j < index; j++){
+		// Read coordinate
+		for (int j = 0; j < index; j++) {
 			fscanf(pFileR, "%i", &data);
 			(*coordinate_db)[coordinate_index] = data;
 			coordinate_index = coordinate_index + 1;
 		}
 	}
-	*prefilter_db = (int*) malloc(sizeof(int)*(prefilter_index+1));
+	*prefilter_db = (int*) malloc(sizeof(int) * (prefilter_index + 1));
 	(*prefilter_db)[0] = prefilter_index;
-	for (int i = 1; i < (prefilter_index+1); i++) {
-		(*prefilter_db)[i+1] = prefilter_tmp[i];
+	for (int i = 1; i < (prefilter_index + 1); i++) {
+		(*prefilter_db)[i + 1] = prefilter_tmp[i];
 	}
 	free(prefilter_tmp);
 	fclose(pFileR);
 }
 
-void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_table_name){
-	int    total_number;
-	int    index;
-	int    data;	
-	int    coordinate_index = 0;
+void hashReconstructorChar(int ** index_db, int ** coordinate_db,
+		char * hash_table_name) {
+	int total_number;
+	int index;
+	int data;
+	int coordinate_index = 0;
 	FILE * pFileR;
 
 	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
+	pFileR = fopen(hash_table_name, "r");
 	fscanf(pFileR, "%i", &total_number);
-	*index_db      = (int*) malloc(sizeof(int)*INDEX_NUM);
-	*coordinate_db = (int*) malloc(sizeof(int)*total_number);
+	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
+	*coordinate_db = (int*) malloc(sizeof(int) * total_number);
 
 	// Read index number & coordinate based on index number
-	for (int i = 0; i< INDEX_NUM ;i++) { 
+	for (int i = 0; i < INDEX_NUM; i++) {
 		fscanf(pFileR, "%i", &index);
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
 		coordinate_index = coordinate_index + 1;
-		
-	// Read coordinate	
-		for (int j = 0; j < index; j++){
+
+		// Read coordinate
+		for (int j = 0; j < index; j++) {
 			fscanf(pFileR, "%i", &data);
 			(*coordinate_db)[coordinate_index] = data;
 			coordinate_index = coordinate_index + 1;
@@ -107,39 +111,39 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_ta
 }
 
 void hashDistribution(char * hash_table_name) {
-	int    total_number;
-	int    sum_number;
-	int    index;
-	int    data;	
-	int    coordinate_index = 0;
-	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+20);
-	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM);
+	int total_number;
+	int sum_number;
+	int index;
+	int data;
+	int coordinate_index = 0;
+	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name) + 20);
+	long int * index_num = (long int*) malloc(sizeof(long int) * INDEX_NUM);
 	FILE * pFileR;
 	FILE * pFileOut;
 
 	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
+	pFileR = fopen(hash_table_name, "r");
 	sprintf(gen_distribution_file, "%s%s\0", hash_table_name, "_distribution");
-	pFileOut = fopen (gen_distribution_file, "w");
+	pFileOut = fopen(gen_distribution_file, "w");
 	fscanf(pFileR, "%i", &total_number);
 	fprintf(pFileOut, "total_number : %i \n", total_number);
 
 	// Initialize index_num preser area
-	for (int l = 0 ; l < INDEX_NUM ; l++) {
+	for (int l = 0; l < INDEX_NUM; l++) {
 		index_num[l] = 0;
 	}
 	// Read index number & coordinate based on index number
-	for (int i = 0 ; i < INDEX_NUM ; i++) { 
+	for (int i = 0; i < INDEX_NUM; i++) {
 		fscanf(pFileR, "%i", &index);
 		index_num[index] = index_num[index] + 1;
 		sum_number = sum_number + 1;
-	// Read coordinate	
-		for (int j = 0; j < index; j++){
+		// Read coordinate
+		for (int j = 0; j < index; j++) {
 			fscanf(pFileR, "%i", &data);
 			sum_number = sum_number + 1;
 		}
 	}
-	for (int k = 0 ; k < INDEX_NUM ; k++) {
+	for (int k = 0; k < INDEX_NUM; k++) {
 		if (index_num[k] != 0) {
 			fprintf(pFileOut, "%i : %li \n", k, index_num[k]);
 		}
@@ -149,4 +153,18 @@ void hashDistribution(char * hash_table_name) {
 	fclose(pFileR);
 	free(gen_distribution_file);
 	free(index_num);
+}
+
+void refLoader(string & ref_db, char * ref_name) {
+	ref_db.clear();
+	ifstream ref_file;
+	ref_file.open(ref_name, fstream::in);
+	string temp_read;
+	while (true) {
+		ref_file >> temp_read;
+		if (!ref_file.eof() )
+		ref_db += temp_read;
+		else
+			break;
+	}
 }

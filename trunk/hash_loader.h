@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <string>
+
+using namespace std;
 
 void hashDistribution(char * hash_table_name);
 
@@ -35,6 +38,13 @@ void hashReconstructorChar(int ** index_db, int ** coordinate_db, int ** prefilt
  * Input:		index_db pointer / coordinate_db pointer / hash_table_name
  */
 void hashReconstructor(int ** index_db, int ** coordinate_db, char * hash_table_name);
+
+/*
+ * Function:	Read the reference file out and store it in a huge char.
+ * Input:		ref_name is the reference file_name.
+ * Modification:	ref_db will store the ref_string.
+ */
+void refLoader (string & ref_db, char * ref_name);
 
 
 #endif /* HASH_LOADER_H_ */
