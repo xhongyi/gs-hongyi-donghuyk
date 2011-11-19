@@ -5,7 +5,7 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator
 
-all: db_generator hash_generator fragment_test ED_test distribution_test test_full test_correct test_prefil
+all: test_full
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
