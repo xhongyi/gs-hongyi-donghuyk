@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
 	if (!strcmp(argv[1], "first")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : First Select\n");
-		sprintf(file_dist, "%s%i", "prefil_dist_first_", 0);
+		sprintf(file_dist, "%s%i%c%i", "prefil_dist_first_", 0, '_', 3);
 	} else if (!strcmp(argv[1], "cheap")){
 		set_select_cheapest(true);
 		fprintf(stdout,"Mode : Cheapest Select\n");
-		sprintf(file_dist, "%s%i", "prefil_dist_cheap_", 0);
+		sprintf(file_dist, "%s%i%c%i", "prefil_dist_cheap_", 0, '_', 3);
 	} else {
 		fprintf(stdout,"Error select mode [frist/cheap]\n");
 		return 0;
