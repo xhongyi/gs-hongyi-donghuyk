@@ -19,9 +19,9 @@ void hashTestFull(char * hash_file_name, char * ref_file_name,
 	char * reconstructed_seq = (char *) malloc(sizeof(char) * KEY_LENGTH);
 	char * decoded_char = (char *) malloc(sizeof(char) * (KEY_LENGTH + 1));
 	FILE * pFileOut;
-
+	int* prefilter;
 	fprintf(stdout, "Read Hash Table: %s \n", hash_file_name);
-	hashReconstructorChar(&index_db, &coordinate_db, hash_file_name);
+	hashReconstructor(&index_db, &coordinate_db, &prefilter, hash_file_name);
 	pFileOut = fopen(output_file_name, "w");
 	for (int i = 0; i < INDEX_NUM; i++) {
 		reconstructSeq(decoded_char, i);

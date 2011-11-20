@@ -16,10 +16,7 @@ int* coordinate;
 int* prefilter;
 
 void loadHash(string hash_name) {
-	char * temp = new char[hash_name.size() + 1];
-	hash_name.copy(temp, hash_name.size(), 0);
-	hashReconstructorChar(&hash_table, &coordinate, &prefilter, temp);
-	delete[] temp;
+	hashReconstructor(&hash_table, &coordinate, &prefilter, hash_name.c_str());
 }
 
 bool searchKey(int* start_coor, int target_coor, int entry_coor, int entry_size) {

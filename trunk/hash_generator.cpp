@@ -24,7 +24,7 @@ void hashTableGenerator(string ref_name) {
         //Open and read the reference file
         ifstream ref_file;
         deque<int>::iterator iter;
-        int coor_counter = -12;
+        int coor_counter = KEY_LENGTH*(-1);
         int flag_ignore = 0;
         int monitor_counter  = 0;       // For operation monitoring
         int monitor_counter2 = 0;       // For operation monitoring
@@ -61,7 +61,7 @@ void hashTableGenerator(string ref_name) {
         //cout << "temp_char: " << temp_char << endl;
 
         //Read the first 12 characters
-        for (int i = 1; i < 12; i++) {
+        for (int i = 1; i < KEY_LENGTH; i++) {
                 //cout << "i: " << i << endl;
                 ref_file >> temp_char;
                 coor_counter++;
@@ -80,7 +80,7 @@ void hashTableGenerator(string ref_name) {
                 }
         }
 
-        temp_key[12] = '\0';
+        temp_key[KEY_LENGTH] = '\0';
         keystr = temp_key;
         //cout << "temp_key: " << temp_key << endl;
         //cout << "keystr: " << keystr << endl;
@@ -98,7 +98,7 @@ void hashTableGenerator(string ref_name) {
                         hash_table_counter++;
                 } else {
                         flag_ignore = 0;
-                        for (int i = 0; i < 12; i++ ) {
+                        for (int i = 0; i < KEY_LENGTH; i++ ) {
                                 if (keystr[i] == 'N') {
                                         flag_ignore = 1;
                                 }       
@@ -145,7 +145,7 @@ void hashTableGenerator(string ref_name) {
                 if (fresh_start) {
                         //cout << "In a fresh start!" << endl;
                         keystr[0] = temp_char;
-                        for (int i = 1; i < 12; i++) {
+                        for (int i = 1; i < KEY_LENGTH; i++) {
                                 //cout << 'i' << i << endl;
                                 ref_file >> temp_char;
                                 coor_counter++;

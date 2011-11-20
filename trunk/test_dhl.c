@@ -17,8 +17,8 @@ int main() {
 	char * gen_file 	= (char*) malloc(sizeof(char)*7);
 
 //	strcpy(ref_file,"human_g1k_v37.fasta");
-	strcpy(ref_file,"ref");
-	strcpy(gen_file,"toy_ref_");
+//	strcpy(ref_file,"ref");
+//	strcpy(gen_file,"result_18_ref_");
 //	refGenerator(gen_file, ref_file);
 
 	char * file_ref		= (char*) malloc(sizeof(char)*20);	
@@ -26,9 +26,9 @@ int main() {
 	char * file_test	= (char*) malloc(sizeof(char)*20);
 
 	
-	sprintf(file_ref,  "%s%i", "toy_ref_", 0);
-	sprintf(file_hash, "%s%i", "toy_hash_", 0);
-	sprintf(file_test, "%s%i", "toy_verify_", 0);
+	sprintf(file_ref,  "%s%i", "result_9_ref_", 0);
+	sprintf(file_hash, "%s%i", "result_9_hash_", 0);
+	sprintf(file_test, "%s%i", "result_9_verify_", 0);
 	hashTableGenerator(file_ref);
 	hashFileWriter(file_hash);
 	hashDistribution(file_hash);
