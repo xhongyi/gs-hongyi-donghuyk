@@ -22,6 +22,6 @@ using namespace std;
 	     files
  * output  : The distribution of matched one which is matched within tolerant factor.
  */
-void edit_distribution(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name); 
+void edit_distribution(string hash_file_name, string ref_file_name, string output_file_name); 
 
 #endif /* EDIT_DISTRIBUTION_ */

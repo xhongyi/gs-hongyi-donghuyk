@@ -34,9 +34,8 @@ int main(int argc, char* argv[]) {
 		return 0;
 	}
 	sprintf(file_ref,  "%s%i", "toy_ref_", 0);
-	sprintf(file_ref2, "%s%i", "toy_ref2_", 0);
 	sprintf(file_hash, "%s%i", "toy_hash_", 0);
-	edit_distribution(file_hash, file_ref, file_ref2, file_dist);
+	edit_distribution(file_hash, file_ref, file_dist);
 
 // Fee Memory Allocation 
 	free(file_ref);

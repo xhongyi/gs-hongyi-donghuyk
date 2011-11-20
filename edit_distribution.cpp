@@ -10,6 +10,7 @@
 #include <map>
 #include <cstdio>
 #include <fstream>
+#include <string>
 #include "common.h"
 
 #include "ref_db_generator.h"
@@ -21,12 +22,18 @@
 
 using namespace std;
 
-void edit_distribution(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name) {
+void edit_distribution(string hash_file_name, string ref_file_name, string output_file_name) {
 	set_max_indel_num(5);
 	set_max_diff_num(5);
         allocatePath();
 	ifstream ref_file;
 	ofstream store_file;
+	// reference file load at string
+	string ref;
+	ref_file.open(ref_file_name.c_str()); 
+	refLoader(ref, (char*)ref_file_name.c_str());
+	ref_file.close();
+	// get fragment from reference file
 	ref_file.open(ref_file_name.c_str()); 
 	store_file.open(output_file_name.c_str()); 
 	list<match_result> filter_result;
@@ -85,8 +92,10 @@ void edit_distribution(string hash_file_name, string ref_file_name, string ref2_
 		cout << "testee_read      : " << testee << endl;
 
 		for(list<match_result>::iterator it_result=filter_result.begin(); it_result != filter_result.end(); ++it_result) {
+			
 			string ref_str(FRAGMENT_LENGTH, 'A'); 
-			ref_str =  getRefSeq((*it_result).coordinate, FRAGMENT_LENGTH, ref2_file_name);
+			ref_str =  ref.substr((*it_result).coordinate, FRAGMENT_LENGTH);
+			//ref_str =  getRefSeq((*it_result).coordinate, FRAGMENT_LENGTH, ref2_file_name);
 			ED_result edit_result = editDistanceCal(ref_str, testee);
 			if (edit_result.correct) {
 				correct_counter = correct_counter+1;

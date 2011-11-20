@@ -14,13 +14,16 @@
 
 #include "ref_db_generator.h"
 #include "fragment_match.h"
+#include "correctness_checker.h"
 #include "edit_distance.h"
 
 #define FRAGMENT_LENGTH 108
 
 using namespace std;
 
-void edit_distribution(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name) {
+void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name);
+
+void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name) {
 	set_max_indel_num(5);
 	set_max_diff_num(5);
         allocatePath();
