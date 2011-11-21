@@ -26,9 +26,9 @@ int main() {
 	char * file_test	= (char*) malloc(sizeof(char)*20);
 
 	
-	sprintf(file_ref,  "%s%i", "result_9_ref_", 0);
-	sprintf(file_hash, "%s%i", "result_9_hash_", 0);
-	sprintf(file_test, "%s%i", "result_9_verify_", 0);
+	sprintf(file_ref,  "%s%i", "result_15_ref_", 0);
+	sprintf(file_hash, "%s%i", "result_15_hash_", 0);
+	sprintf(file_test, "%s%i", "result_15_verify_", 0);
 	hashTableGenerator(file_ref);
 	hashFileWriter(file_hash);
 	hashDistribution(file_hash);
