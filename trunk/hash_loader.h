@@ -28,7 +28,7 @@ void hashDistribution(char * hash_table_name);
  * format. --> Now We use this one
  * ...
  */
-void hashReconstructor(int ** index_db, int ** coordinate_db, int ** prefilter_db, const char * hash_table_name);
+void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_table_name);
 
 /*
  * Function:	Read the reference file out and store it in a huge char.

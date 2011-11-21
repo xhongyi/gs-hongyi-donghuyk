@@ -8,7 +8,7 @@
 #ifndef COMMOM_H_
 #define COMMOM_H_
 
-#define KEY_LENGTH 9
+#define KEY_LENGTH 12
 //How many files hash table should break up to. Must be pow of 4
 #define INDEX_NUM     (1 << (2 * KEY_LENGTH ) )
 #define RELEVENCE_NUM 5

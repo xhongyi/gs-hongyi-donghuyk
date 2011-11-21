@@ -4,14 +4,12 @@
 #include <fstream>
 
 void hashReconstructor(int ** index_db, int ** coordinate_db,
-		int ** prefilter_db, const char * hash_table_name) { 
+			const char * hash_table_name) { 
 	int total_number;
 	int index;
 	int data;
 	int coordinate_index = 0;
-	int prefilter_index = 0;
 	int max_coordinate_num = 2;
-	int * prefilter_tmp = (int*) malloc(sizeof(int) * INDEX_NUM);
 	FILE * pFileR;
 	// Read total number of hash table
 	pFileR = fopen(hash_table_name, "r");
@@ -25,11 +23,6 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
 		coordinate_index = coordinate_index + 1;
-		if (index > max_coordinate_num) {
-			prefilter_tmp[prefilter_index] = i;
-			prefilter_index = prefilter_index + 1;
-			//			fprintf(stdout, "prefilter %i : %i \n", i, index);
-		}
 		// Read coordinate
 		for (int j = 0; j < index; j++) {
 			fscanf(pFileR, "%i", &data);
@@ -37,12 +30,6 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 			coordinate_index = coordinate_index + 1;
 		}
 	}
-	*prefilter_db = (int*) malloc(sizeof(int) * (prefilter_index + 1));
-	(*prefilter_db)[0] = prefilter_index;
-	for (int i = 1; i < (prefilter_index + 1); i++) {
-		(*prefilter_db)[i + 1] = prefilter_tmp[i];
-	}
-	free(prefilter_tmp);
 	fclose(pFileR);
 }
 

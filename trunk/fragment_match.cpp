@@ -13,10 +13,9 @@
 
 int* hash_table;
 int* coordinate;
-int* prefilter;
 
 void loadHash(string hash_name) {
-	hashReconstructor(&hash_table, &coordinate, &prefilter, hash_name.c_str());
+	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
 }
 
 bool searchKey(int* start_coor, int target_coor, int entry_coor, int entry_size) {
