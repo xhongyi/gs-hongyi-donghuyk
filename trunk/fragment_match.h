@@ -76,4 +76,9 @@ bool searchPrevious(int coor_value, int start_key_entry, list<match_result> prev
  *
  */
 int binary_filtering_cost(string fragment);
+
+/*
+ * Function: Get the result list without any filtering. Used in modeling original mrFAST
+ */
+list<match_result> noFilterSearch(string fragment);
 #endif /* FRAGMENT_MATCH_H_ */
