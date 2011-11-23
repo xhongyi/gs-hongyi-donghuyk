@@ -23,8 +23,8 @@
 using namespace std;
 
 void edit_distribution(string hash_file_name, string ref_file_name, string output_file_name) {
-	set_max_indel_num(5);
-	set_max_diff_num(5);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
         allocatePath();
 	ifstream ref_file;
 	ofstream store_file;
@@ -88,8 +88,8 @@ void edit_distribution(string hash_file_name, string ref_file_name, string outpu
 
 		filter_result = searchFragment(testee);
 
-		cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
-		cout << "testee_read      : " << testee << endl;
+		//cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
+		//cout << "testee_read      : " << testee << endl;
 
 		for(list<match_result>::iterator it_result=filter_result.begin(); it_result != filter_result.end(); ++it_result) {
 			
@@ -99,11 +99,11 @@ void edit_distribution(string hash_file_name, string ref_file_name, string outpu
 			ED_result edit_result = editDistanceCal(ref_str, testee);
 			if (edit_result.correct) {
 				correct_counter = correct_counter+1;
-				cout << "ref_read         : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-				cout << "  result: correct " << endl;
+				//cout << "ref_read         : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+				//cout << "  result: correct " << endl;
 			} else {
-				cout << "ref_read         : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-				cout << "  result: not correct" <<endl;
+				//cout << "ref_read         : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+				//cout << "  result: not correct" <<endl;
 			}
 		}
 		distribution[filter_result.size()]++;
@@ -116,7 +116,9 @@ void edit_distribution(string hash_file_name, string ref_file_name, string outpu
 			fprintf(stdout, "hash distribution count: %lld \n", monitor_counter2);
 			monitor_counter = 0;
 		}
-//	break;
+		if (monitor_counter2 >= 1000000){
+			break;
+		}
 	} while (ref_file.good());
 	long long total_fragment_num = 0;	
 	long long total_perform_num = 0;	

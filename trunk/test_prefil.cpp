@@ -13,9 +13,9 @@
 
 int main(int argc, char* argv[]) {
 
-	char * file_ref		= (char*) malloc(sizeof(char)*20);	
-	char * file_hash	= (char*) malloc(sizeof(char)*20);
-	char * file_dist	= (char*) malloc(sizeof(char)*20);
+	char * file_ref		= (char*) malloc(sizeof(char)*50);	
+	char * file_hash	= (char*) malloc(sizeof(char)*50);
+	char * file_dist	= (char*) malloc(sizeof(char)*50);
 	if (argc < 2) {
 		fprintf(stdout,"Need parameter [frist/cheap]\n");
 		return 0;
@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
 	if (!strcmp(argv[1], "first")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : First Select\n");
-		sprintf(file_dist, "%s%i%c%i", "prefil_dist_first_", 0, '_', 3);
+		sprintf(file_dist, "%s%i%c%i", "prefil_first_", 0, '_', 3);
 	} else if (!strcmp(argv[1], "cheap")){
 		set_select_cheapest(true);
 		fprintf(stdout,"Mode : Cheapest Select\n");
-		sprintf(file_dist, "%s%i%c%i", "prefil_dist_cheap_", 0, '_', 3);
+		sprintf(file_dist, "%s%i%c%i", "prefil_cheap_", 0, '_', 3);
 	} else {
 		fprintf(stdout,"Error select mode [frist/cheap]\n");
 		return 0;

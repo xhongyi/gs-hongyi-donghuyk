@@ -5,7 +5,7 @@
 using namespace std;
 
 int main() {
-	char ref_file[20];
+	char ref_file[50];
 	strcpy(ref_file, "toy_ref_0");
 	string ref;
 	refLoader (ref, ref_file);
