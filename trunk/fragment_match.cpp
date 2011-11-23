@@ -14,6 +14,14 @@
 int* hash_table;
 int* coordinate;
 
+int * getHashTablePtr() {
+	return hash_table;
+}
+
+int * getCoordinatePtr() {
+	return coordinate;
+}
+
 void loadHash(string hash_name) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
 }

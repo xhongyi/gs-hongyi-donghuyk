@@ -24,6 +24,7 @@ using namespace std;
 
 void edit_distribution(string hash_file_name, string ref_file_name,
 		string output_file_name) {
+
 	set_max_indel_num(3);
 	set_max_diff_num(3);
 	allocatePath();
@@ -37,18 +38,23 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 	// get fragment from reference file
 	ref_file.open(ref_file_name.c_str());
 	store_file.open(output_file_name.c_str());
-	list<match_result> filter_result;
+	//list<match_result> filter_result;
 	map<int, int> distribution;
 	map<int, int> correct_count;
 	string testee(FRAGMENT_LENGTH, 'A');
 	int monitor_counter = 0; // for operation monitoring
 	int correct_counter = 0; // for operation monitoring
+	int coor_list_counter = 0;
 	long long monitor_counter2 = 0; // for operation monitoring
 	int gen_coord = 0;
 	char test_char;
 	cout << "Status : Start load hash table" << endl;
 	loadHash(hash_file_name.c_str());
 	cout << "Status : End load hash table" << endl;
+
+	int* hash_table = getHashTablePtr();
+	int* coordinate = getCoordinatePtr();
+
 
 	do {
 		ref_file >> test_char;
@@ -88,6 +94,42 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
 		}
 
+		////////////////////////
+		key_struct keys_input[max_diff_num + 1];
+		for (int i = 0; i < KEY_NUMBER; i++) {
+			string key = testee.substr(KEY_LENGTH * i, KEY_LENGTH);
+			int key_hash = hashVal(key);
+			int key_entry = hash_table[key_hash];
+			int key_entry_size = coordinate[key_entry];
+			keys_input[i].order = 0;
+			keys_input[i].key_number = i;
+			keys_input[i].key_entry = key_entry;
+			keys_input[i].key_entry_size = key_entry_size;
+			coor_list_counter += key_entry_size;
+		}
+
+		for (int k = 0; k < max_diff_num + 1; k++) {
+			for (int i = keys_input[k].key_entry + 1; i
+					<= keys_input[k].key_entry + keys_input[k].key_entry_size; i++) {
+				match_result temp;
+				temp.coordinate = coordinate[i];
+				string ref_str(FRAGMENT_LENGTH, 'A');
+				ref_str = ref.substr(coordinate[i], FRAGMENT_LENGTH);
+				//ref_str =  getRefSeq((*it_result).coordinate, FRAGMENT_LENGTH, ref2_file_name);
+				ED_result edit_result = editDistanceCal(ref_str, testee);
+				if (edit_result.correct) {
+					correct_counter = correct_counter + 1;
+					//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+					//cout << "  result: correct " << endl;
+				} else {
+					//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+					//cout << "  result: not correct" <<endl;
+				}
+			}
+		}
+		////////////////////////
+
+		/*
 		filter_result = noFilterSearch(testee);
 
 		//cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
@@ -109,9 +151,12 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 				//cout << "  result: not correct" <<endl;
 			}
 		}
-		distribution[filter_result.size()]++;
+		 */
+
+		distribution[coor_list_counter]++;
 		correct_count[correct_counter]++;
 		correct_counter = 0;
+		coor_list_counter = 0;
 
 		monitor_counter = monitor_counter + 1;
 		monitor_counter2 = monitor_counter2 + 1;

@@ -35,6 +35,10 @@ struct key_struct {
 	int order;
 };
 
+int * getHashTablePtr();
+
+int * getCoordinatePtr();
+
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
  *					the name of a chromosome, it will load all the hash_table this
