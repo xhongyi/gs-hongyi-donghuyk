@@ -152,9 +152,14 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			}
 		}
 		 */
-
-		distribution[coor_list_counter]++;
-		correct_count[correct_counter]++;
+		if (distribution.find(coor_list_counter) != distribution.end() )
+			distribution[coor_list_counter]++;
+		else
+			distribution[coor_list_counter] = 0;
+		if (correct_count.find(correct_counter) != correct_count.end() )
+			correct_count[correct_counter]++;
+		else
+			correct_count[correct_counter] = 0;
 		correct_counter = 0;
 		coor_list_counter = 0;
 
