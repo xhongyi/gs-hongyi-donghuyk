@@ -29,7 +29,6 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 	cout << "Status : Start load hash table" << endl;
 	loadHash(hash_file_name.c_str());
 	cout << "Status : End load hash table" << endl;
-
 	do {
 		ref_file >> test_char;
 	}while (test_char == 'N');
@@ -70,10 +69,11 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 		monitor_counter2 = monitor_counter2 + 1;
 		//cout <<" monitor: " << monitor_counter << endl;
 
-		if (monitor_counter >= 1000) {
+		if (monitor_counter >= 1000000) {
 			fprintf(stdout, "hash distribution count: %lld \n",
 					monitor_counter2);
 			monitor_counter = 0;
+			break;
 		}
 
 	}while (ref_file.good());

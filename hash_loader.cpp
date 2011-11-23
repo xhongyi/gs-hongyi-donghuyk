@@ -40,7 +40,7 @@ void hashDistribution(char * hash_table_name) {
 	int    data;
 	int    coordinate_index = 0;
 	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+20);
-	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM);
+	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM*INDEX_NUM);
 	FILE * pFileR;
 	FILE * pFileOut;
 
