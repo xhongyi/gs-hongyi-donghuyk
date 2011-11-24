@@ -101,7 +101,6 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 }
 
 final_result searchFragment(string fragment, string* ref) {
-	list<match_result> result;
 	key_struct sort_input[KEY_NUMBER];
 	for (int i = 0; i < KEY_NUMBER; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);

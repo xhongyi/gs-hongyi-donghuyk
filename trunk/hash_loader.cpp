@@ -13,6 +13,9 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	FILE * pFileR;
 	// Read total number of hash table
 	pFileR = fopen(hash_table_name, "r");
+	if (pFileR == NULL) {
+		printf("Error Open File : %s\n", hash_table_name);
+	}
 	fscanf(pFileR, "%i", &total_number);
 	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
 	*coordinate_db = (int*) malloc(sizeof(int) * total_number);

@@ -5,7 +5,7 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator
 
-all: test_full test_full_nofilter
+all: test_full 
 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -25,11 +25,8 @@ ED_test: common.h common.cpp edit_distance.h edit_distance.cpp ED_test.cpp
 distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.h match_distribution.cpp
 	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp test_distribution.c -o test_dist
 
-test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c fragment_match.cpp
-	$(CC) $(CFLAGS) edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full
-
-test_full_nofilter:common.h common.cpp fragment_match.h ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution_nofilter.cpp edit_distance.h edit_distance.cpp test_edit_nofilter.c
-	$(CC) $(CFLAGS) edit_distribution_nofilter.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit_nofilter.c -o test_full_nofilter
+test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c fragment_match.cpp edit_distribution_nofilter.cpp edit_distribution_nofilter.h
+	$(CC) $(CFLAGS) edit_distribution_nofilter.cpp edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full
 
 test_correct:common.h correctness_checker.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp correctness_checker.cpp edit_distance.h edit_distance.cpp test_correctness.cpp
 	$(CC) $(CFLAGS) correctness_checker.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_correctness.cpp -o test_correct

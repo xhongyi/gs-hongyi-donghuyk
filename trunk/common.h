@@ -18,7 +18,7 @@
 #define READ_LENGTH		108		// # of read lenght from machine
 #define FRAGMENT_LENGTH		108		// # of read lenght from machine
 #define KEY_NUMBER		READ_LENGTH/KEY_LENGTH
-#define PREFILTER_SIZE		1000
+#define PREFILTER_SIZE		100
 #define READ_SIZE			1000000
 
 #include <string>
