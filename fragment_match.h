@@ -37,7 +37,7 @@ struct key_struct {
 
 struct previous_coor {
 	int size;
-	int coor[1000];
+	int coor[PREFILTER_SIZE];
 };
 
 struct final_result {

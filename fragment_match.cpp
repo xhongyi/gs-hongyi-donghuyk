@@ -15,6 +15,7 @@
 
 int* hash_table;
 int* coordinate;
+previous_coor previous_result;
 
 void getHashTablePtr(int ** ptr) {
 	*ptr = hash_table;
@@ -115,7 +116,6 @@ final_result searchFragment(string fragment, string* ref) {
 
 	key_struct keys_input[KEY_NUMBER];
 	sortPrefilter(keys_input, sort_input);
-	previous_coor previous_result;
 	previous_result.size = 0;
 	final_result return_result;
 	return_result.total_binary_search = 0;
@@ -154,8 +154,10 @@ final_result searchFragment(string fragment, string* ref) {
 					}
 				}
 				if (diff_num <= max_diff_num) {
-					previous_result.coor[previous_result.size]=start_coor;
-					previous_result.size++;
+					if (previous_result.size <= PREFILTER_SIZE) {
+						previous_result.coor[previous_result.size]=start_coor;
+						previous_result.size++;
+					}
 					return_result.total_edit_perform++;
 		                        string ref_str(FRAGMENT_LENGTH, 'A');
                         		ref_str = (*ref).substr(start_coor, FRAGMENT_LENGTH);
