@@ -35,9 +35,9 @@ struct key_struct {
 	int order;
 };
 
-int * getHashTablePtr();
+void getHashTablePtr(int ** ptr);
 
-int * getCoordinatePtr();
+void getCoordinatePtr(int ** ptr);
 
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
