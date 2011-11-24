@@ -14,12 +14,12 @@
 int* hash_table;
 int* coordinate;
 
-int * getHashTablePtr() {
-	return hash_table;
+void getHashTablePtr(int ** ptr) {
+	*ptr = hash_table;
 }
 
-int * getCoordinatePtr() {
-	return coordinate;
+void getCoordinatePtr(int ** ptr) {
+	*ptr = coordinate;
 }
 
 void loadHash(string hash_name) {
