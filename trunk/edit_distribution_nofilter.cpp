@@ -38,9 +38,11 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 	// get fragment from reference file
 	ref_file.open(ref_file_name.c_str());
 	store_file.open(output_file_name.c_str());
-	list<match_result> filter_result;
+	//list<match_result> filter_result;
 	map<int, int> distribution;
 	map<int, int> correct_count;
+	distribution.clear();
+	correct_count.clear();
 	string testee(FRAGMENT_LENGTH, 'A');
 	int monitor_counter = 0; // for operation monitoring
 	int correct_counter = 0; // for operation monitoring
@@ -48,12 +50,12 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 	long long monitor_counter2 = 0; // for operation monitoring
 	int gen_coord = 0;
 	char test_char;
-	cout << "Status : Start load hash table" << endl;
-	loadHash(hash_file_name.c_str());
+	//cout << "Status : Start load hash table" << endl;
+	//loadHash(hash_file_name.c_str());
 	int* hash_table;
 	int* coordinate;
 	hashReconstructor(&hash_table, &coordinate, hash_file_name.c_str() );
-	cout << "Status : End load hash table" << endl;
+	//cout << "Status : End load hash table" << endl;
 
 	do {
 		ref_file >> test_char;
@@ -71,7 +73,7 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			testee[i] = test_char;
 	}
 	do {
-		//cout << "string: "<< testee << endl;
+		////cout << "string: "<< testee << endl;
 		ref_file >> test_char;
 		gen_coord = gen_coord + 1;
 		if (test_char == 'N') {
@@ -94,27 +96,27 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		}
 
 		////////////////////////
-		cout << testee << endl;
-		key_struct keys_input[max_diff_num + 1];
-		for (int i = 0; i < KEY_NUMBER; i++) {
-			cout << "i: " << i << endl;
+		//cout << testee << endl;
+		key_struct keys_input[KEY_NUMBER];
+		for (int i = 0; i < max_diff_num + 1; i++) {
+			//cout << "i: " << i << endl;
 			string key = testee.substr(KEY_LENGTH * i, KEY_LENGTH);
-			cout << key << endl;
+			//cout << key << endl;
 			int key_hash = hashVal(key);
 			int key_entry = hash_table[key_hash];
 			int key_entry_size = coordinate[key_entry];
-			cout << "a";
+			//cout << "a";
 			keys_input[i].order = 0;
-			cout << "b";
+			//cout << "b";
 			keys_input[i].key_number = i;
-			cout << "c";
+			//cout << "c";
 			keys_input[i].key_entry = key_entry;
-			cout << "d";
+			//cout << "d";
 			keys_input[i].key_entry_size = key_entry_size;
-			cout << "e";
+			//cout << "e";
 			coor_list_counter += key_entry_size;
 		}
-/*
+
 		for (int k = 0; k < max_diff_num + 1; k++) {
 			for (int i = keys_input[k].key_entry + 1; i
 					<= keys_input[k].key_entry + keys_input[k].key_entry_size; i++) {
@@ -126,22 +128,22 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 				ED_result edit_result = editDistanceCal(ref_str, testee);
 				if (edit_result.correct) {
 					correct_counter = correct_counter + 1;
-					//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-					//cout << "  result: correct " << endl;
+					////cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+					////cout << "  result: correct " << endl;
 				} else {
-					//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-					//cout << "  result: not correct" <<endl;
+					////cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+					////cout << "  result: not correct" <<endl;
 				}
 			}
 		}
 		////////////////////////
-*/
 
-		filter_result = noFilterSearch(testee);
 
-		//cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
-		//cout << "testee_read      : " << testee << endl;
+		//filter_result = noFilterSearch(testee);
 
+		////cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
+		////cout << "testee_read      : " << testee << endl;
+/*
 		for (list<match_result>::iterator it_result = filter_result.begin(); it_result
 				!= filter_result.end(); ++it_result) {
 
@@ -151,15 +153,22 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			ED_result edit_result = editDistanceCal(ref_str, testee);
 			if (edit_result.correct) {
 				correct_counter = correct_counter + 1;
-				//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-				//cout << "  result: correct " << endl;
+				////cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+				////cout << "  result: correct " << endl;
 			} else {
-				//cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-				//cout << "  result: not correct" <<endl;
+				////cout << "ref_read	 : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+				////cout << "  result: not correct" <<endl;
 			}
 		}
+*/
+		//cout << "filter_result.size(): " << filter_result.size() << endl;
 
-		distribution[filter_result.size()]++;
+		//cout << "Hehe" << endl;
+
+		//cout << "distribution[141]: " << distribution[141] << endl;
+
+
+		distribution[coor_list_counter]++;
 		correct_count[correct_counter]++;
 
 		correct_counter = 0;
