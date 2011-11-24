@@ -17,6 +17,7 @@
 #include "fragment_match.h"
 #include "edit_distance.h"
 #include "edit_distribution.h"
+#include "fragment_match.h"
 
 #define FRAGMENT_LENGTH 108
 
@@ -37,7 +38,8 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 	// get fragment from reference file
 	ref_file.open(ref_file_name.c_str());
 	store_file.open(output_file_name.c_str());
-	list<match_result> filter_result;
+	//list<match_result> filter_result;
+	final_result filter_result;
 	map<int, int> distribution;
 	map<int, int> correct_count;
 	string testee(FRAGMENT_LENGTH, 'A');
@@ -88,11 +90,11 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
 		}
 
-		filter_result = searchFragment(testee);
+		filter_result = searchFragment(testee, &ref);
 
 		//cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
 		//cout << "testee_read      : " << testee << endl;
-
+/*
 		for (list<match_result>::iterator it_result = filter_result.begin(); it_result
 				!= filter_result.end(); ++it_result) {
 
@@ -109,9 +111,10 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 				//cout << "  result: not correct" <<endl;
 			}
 		}
-		distribution[filter_result.size()]++;
-		correct_count[correct_counter]++;
-		correct_counter = 0;
+*/
+		distribution[filter_result.total_edit_perform]++;
+		correct_count[filter_result.total_correct_num]++;
+//		correct_counter = 0;
 
 		monitor_counter = monitor_counter + 1;
 		monitor_counter2 = monitor_counter2 + 1;

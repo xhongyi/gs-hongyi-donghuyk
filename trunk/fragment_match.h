@@ -35,6 +35,17 @@ struct key_struct {
 	int order;
 };
 
+struct previous_coor {
+	int size;
+	int coor[1000];
+};
+
+struct final_result {
+	int total_binary_search;
+	int total_edit_perform;
+	int total_correct_num;
+};
+
 void getHashTablePtr(int ** ptr);
 
 void getCoordinatePtr(int ** ptr);
@@ -56,7 +67,7 @@ void loadHash(string hash_name);
  * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
  * 					be the mapping location.
  */
-list<match_result> searchFragment (string fragment);
+final_result searchFragment (string fragment, string* ref);
 
 /*
  * Function:		Binary search if there exits an exact match on a target coordinate.
@@ -74,7 +85,7 @@ void freeMem();
 /*
  * Function:		
  */
-bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result);
+bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_result);
 
 /*
  *
