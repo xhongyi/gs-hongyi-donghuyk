@@ -36,3 +36,6 @@ test_prefil:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_gener
 
 test_ref_loader: hash_loader.h hash_loader.cpp test_ref_loader.cpp
 	$(CC) $(CFLAGS) hash_loader.cpp test_ref_loader.cpp -o test_ref_loader
+
+test_shuffle: load_shuffled_read.h load_shuffled_read.cpp test_shuffle.cpp
+	$(CC) $(CFLAGS) load_shuffled_read.cpp test_shuffle.cpp -o test_shuffle
