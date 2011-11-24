@@ -25,7 +25,7 @@ ED_test: common.h common.cpp edit_distance.h edit_distance.cpp ED_test.cpp
 distribution_test:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  match_distribution.h match_distribution.cpp
 	$(CC) $(CFLAGS) match_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp test_distribution.c -o test_dist
 
-test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c
+test_full:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution.cpp edit_distance.h edit_distance.cpp test_edit.c fragment_match.cpp
 	$(CC) $(CFLAGS) edit_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_edit.c -o test_full
 
 test_full_nofilter:common.h common.cpp fragment_match.h ref_db_generator.h ref_db_generator.cpp edit_distribution.h hash_loader.cpp edit_distribution_nofilter.cpp edit_distance.h edit_distance.cpp test_edit_nofilter.c

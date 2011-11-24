@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 	if (!strcmp(argv[1], "first")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : First Select\n");
-		sprintf(file_dist, "%s%i", "result_dist_first_", 0);
+		sprintf(file_dist, "%s%i", "toy_dist_first_", 0);
 	} else if (!strcmp(argv[1], "cheap")){
 		set_select_cheapest(true);
 		fprintf(stdout,"Mode : Cheapest Select\n");
@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
 		fprintf(stdout,"Error select mode [frist/cheap]\n");
 		return 0;
 	}
-	sprintf(file_ref,  "%s%i", "result_ref_", 0);
-	sprintf(file_hash, "%s%i", "result_hash_", 0);
+	sprintf(file_ref,  "%s%i", "toy_ref_", 0);
+	sprintf(file_hash, "%s%i", "toy_hash_", 0);
 	edit_distribution(file_hash, file_ref, file_dist);
 
 // Fee Memory Allocation 

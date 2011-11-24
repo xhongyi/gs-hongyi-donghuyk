@@ -9,6 +9,8 @@
 #include <iostream>
 #include <assert.h>
 #include "common.h"
+#include "edit_distance.h"
+#include "edit_distribution.h"
 #include "fragment_match.h"
 
 int* hash_table;
@@ -52,13 +54,12 @@ bool searchKey(int* start_coor, int target_coor, int entry_coor,
 }
 
 bool searchPrevious(int coor_value, int start_key_entry,
-		list<match_result> previous_result) {
-	if (previous_result.size() == 0) {
+		previous_coor previous_result) {
+	if (previous_result.size == 0) {
 		return false;
 	}
-	for (list<match_result>::iterator it_coor = previous_result.begin();
-			it_coor != previous_result.end(); ++it_coor) {
-		if (((*it_coor).coordinate == coor_value - start_key_entry * KEY_LENGTH)) {
+	for (int i = 0; i < previous_result.size ; i++) {
+		if (previous_result.coor[i] == coor_value - start_key_entry * KEY_LENGTH) {
 			return true;
 		}
 	}
@@ -98,7 +99,7 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 	return false;
 }
 
-list<match_result> searchFragment(string fragment) {
+final_result searchFragment(string fragment, string* ref) {
 	list<match_result> result;
 	key_struct sort_input[KEY_NUMBER];
 	for (int i = 0; i < KEY_NUMBER; i++) {
@@ -114,6 +115,12 @@ list<match_result> searchFragment(string fragment) {
 
 	key_struct keys_input[KEY_NUMBER];
 	sortPrefilter(keys_input, sort_input);
+	previous_coor previous_result;
+	previous_result.size = 0;
+	final_result return_result;
+	return_result.total_binary_search = 0;
+	return_result.total_edit_perform = 0;
+	return_result.total_correct_num = 0;
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
 		for (int i = keys_input[k].key_entry + 1;
@@ -124,7 +131,8 @@ list<match_result> searchFragment(string fragment) {
 			int tmp_start_coor = 0;
 			int start_coor = 0;
 			bool first_matched = false;
-			if (!searchPrevious(coor_value, keys_input[k].key_number, result)) {
+			if (!searchPrevious(coor_value, keys_input[k].key_number, previous_result)) {
+				return_result.total_binary_search++;
 				for (int j = 0; j < KEY_NUMBER; j++) {
 					if (j - diff_num > KEY_NUMBER - max_diff_num)
 						break;
@@ -146,47 +154,32 @@ list<match_result> searchFragment(string fragment) {
 					}
 				}
 				if (diff_num <= max_diff_num) {
-					match_result temp;
-					temp.coordinate = start_coor;
-					temp.relevance = diff_num;
-					temp.key_number = keys_input[k].key_number;
-					result.push_back(temp);
+					previous_result.coor[previous_result.size]=start_coor;
+					previous_result.size++;
+					return_result.total_edit_perform++;
+		                        string ref_str(FRAGMENT_LENGTH, 'A');
+                        		ref_str = (*ref).substr(start_coor, FRAGMENT_LENGTH);
+                        		ED_result edit_result = editDistanceCal(ref_str, fragment);
+					if (edit_result.correct) {
+						return_result.total_correct_num++;
+						//correct_counter = correct_counter + 1;
+						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "  result: correct " << endl;
+					} else {
+						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "  result: not correct" <<endl;
+					}
+
+//					match_result temp;
+//					temp.coordinate = start_coor;
+//					temp.relevance = diff_num;
+//					temp.key_number = keys_input[k].key_number;
+//					result.push_back(temp);
 				}
 			}
 		}
 	}
-	return result;
-}
-
-list<match_result> noFilterSearch(string fragment) {
-	list<match_result> result;
-	key_struct sort_input[KEY_NUMBER];
-	for (int i = 0; i < KEY_NUMBER; i++) {
-		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
-		int key_hash = hashVal(key);
-		int key_entry = hash_table[key_hash];
-		int key_entry_size = coordinate[key_entry];
-		sort_input[i].order = 0;
-		sort_input[i].key_number = i;
-		sort_input[i].key_entry = key_entry;
-		sort_input[i].key_entry_size = key_entry_size;
-	}
-
-	key_struct keys_input[max_diff_num + 1];
-	sortPrefilter(keys_input, sort_input);
-
-	for (int k = 0; k < max_diff_num + 1; k++) {
-		for (int i = keys_input[k].key_entry + 1;
-				i <= keys_input[k].key_entry + keys_input[k].key_entry_size;
-				i++) {
-			match_result temp;
-			temp.coordinate = coordinate[i];
-			temp.relevance = 0;
-			temp.key_number = keys_input[k].key_number;
-			result.push_back(temp);
-		}
-	}
-	return result;
+	return return_result;
 }
 
 int binary_filtering_cost(string fragment) {
@@ -222,3 +215,35 @@ int binary_filtering_cost(string fragment) {
 	}
 	return result;
 }
+
+list<match_result> noFilterSearch(string fragment) {
+	list<match_result> result;
+	key_struct sort_input[KEY_NUMBER];
+	for (int i = 0; i < KEY_NUMBER; i++) {
+		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
+		int key_hash = hashVal(key);
+		int key_entry = hash_table[key_hash];
+		int key_entry_size = coordinate[key_entry];
+		sort_input[i].order = 0;
+		sort_input[i].key_number = i;
+		sort_input[i].key_entry = key_entry;
+		sort_input[i].key_entry_size = key_entry_size;
+	}
+
+	key_struct keys_input[max_diff_num + 1];
+	sortPrefilter(keys_input, sort_input);
+
+	for (int k = 0; k < max_diff_num + 1; k++) {
+		for (int i = keys_input[k].key_entry + 1;
+				i <= keys_input[k].key_entry + keys_input[k].key_entry_size;
+				i++) {
+			match_result temp;
+			temp.coordinate = coordinate[i];
+			temp.relevance = 0;
+			temp.key_number = keys_input[k].key_number;
+			result.push_back(temp);
+		}
+	}
+	return result;
+}
+

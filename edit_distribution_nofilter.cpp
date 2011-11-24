@@ -138,7 +138,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		}
 		////////////////////////
 
-
 		//filter_result = noFilterSearch(testee);
 
 		////cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;

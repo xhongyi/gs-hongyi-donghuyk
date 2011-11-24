@@ -16,6 +16,7 @@
 #define MAX_CONTIG_NAME 400	// # of character to make contig name string.
 #define MAX_CONTIG_FILE	22	// # of contig.
 #define READ_LENGTH		108		// # of read lenght from machine
+#define FRAGMENT_LENGTH		108		// # of read lenght from machine
 #define KEY_NUMBER		READ_LENGTH/KEY_LENGTH
 
 #include <string>
