@@ -29,17 +29,17 @@ int main(int argc, char* argv[]) {
 	if (!strcmp(argv[1], "first")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : First Select\n");
-		sprintf(file_dist, "%s", "result_dist_first");
+		sprintf(file_dist, "%s", "result_dist_first_");
 		edit_distribution(file_hash, file_ref, file_dist, file_input);
 	} else if (!strcmp(argv[1], "cheap")){
 		set_select_cheapest(true);
 		fprintf(stdout,"Mode : Cheapest Select\n");
-		sprintf(file_dist, "%s", "result_dist_cheap");
+		sprintf(file_dist, "%s", "result_dist_cheap_");
 		edit_distribution(file_hash, file_ref, file_dist, file_input);
 	} else if (!strcmp(argv[1], "nofilter")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : Nofilter Select\n");
-		sprintf(file_dist, "%s", "result_dist_nofilter");
+		sprintf(file_dist, "%s", "result_dist_nofilter_");
 		edit_distribution_nofilter(file_hash, file_ref, file_dist, file_input);
 	} else {
 		fprintf(stdout,"Error select mode [frist/cheap/nofilter]\n");
