@@ -23,12 +23,13 @@
 using namespace std;
 
 void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
-		string output_file_name) {
+		string output_file_name, string result_input_name) {
 
 	set_max_indel_num(3);
 	set_max_diff_num(3);
 	allocatePath();
 	ifstream ref_file;
+	ifstream input_file;
 	ofstream store_file;
 
 	map<int, int> distribution;
@@ -48,6 +49,7 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 
 	// get fragment from reference file
 	store_file.open(output_file_name.c_str());
+	input_file.open(result_input_name.c_str());
 
 	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		char * file_ref = (char*) malloc(sizeof(char)*50);
@@ -80,44 +82,9 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 
 		time_t start_time;
 		time(&start_time);
-
+		input_file.open(result_input_name.c_str());
+		input_file >> testee;
 		do {
-			ref_file >> test_char;
-			gen_coord = gen_coord + 1;
-		} while (test_char == 'N');
-		testee[0] = test_char;
-		for (int i = 1; i < FRAGMENT_LENGTH; i++) {
-			ref_file >> test_char;
-			gen_coord = gen_coord + 1;
-			if (test_char == 'N') {
-				i = 0;
-				ref_file >> test_char;
-				gen_coord = gen_coord + 1;
-			} else
-				testee[i] = test_char;
-		}
-		do {
-			ref_file >> test_char;
-			gen_coord = gen_coord + 1;
-			if (test_char == 'N') {
-				for (int i = 0; i < FRAGMENT_LENGTH; i++) {
-					ref_file >> test_char;
-					gen_coord = gen_coord + 1;
-					if (test_char == 'N') {
-						i = 0;
-						ref_file >> test_char;
-						gen_coord = gen_coord + 1;
-					}
-					if (test_char != 'N') {
-						testee[i] = test_char;
-					}
-					if (!ref_file.good())
-						break;
-				}
-			} else {
-				testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
-			}
-	
 			key_struct keys_input[KEY_NUMBER];
 			for (int i = 0; i < max_diff_num + 1; i++) {
 				string key = testee.substr(KEY_LENGTH * i, KEY_LENGTH);
@@ -153,16 +120,17 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 	
 			monitor_counter = monitor_counter + 1;
 			monitor_counter2 = monitor_counter2 + 1;
-			if (monitor_counter >= 1000) {
+			if (monitor_counter >= 10000) {
 				fprintf(stdout, "hash distribution count: %lld \n",
 						monitor_counter2);
 				monitor_counter = 0;
 			}
-			if (monitor_counter2 >= 100000) {
-				monitor_counter2 = 0;
-				break;
+			if (monitor_counter2 >= 10000000) {
+		//		monitor_counter2 = 0;
+		//		break;
 			}
-		} while (ref_file.good());
+			input_file >> testee;
+		} while (input_file.good());
 
 		ref_file.close();
 		store_file.close();

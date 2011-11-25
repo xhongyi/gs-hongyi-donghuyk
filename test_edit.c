@@ -15,10 +15,12 @@
 int main(int argc, char* argv[]) {
 
 	char * file_ref		= (char*) malloc(sizeof(char)*50);	
+	char * file_input	= (char*) malloc(sizeof(char)*50);	
 	char * file_hash	= (char*) malloc(sizeof(char)*50);
 	char * file_dist	= (char*) malloc(sizeof(char)*50);
-	sprintf(file_ref,  "%s", "toy_ref_");
-	sprintf(file_hash, "%s", "toy_hash_");
+	sprintf(file_ref,  "%s", "result_ref_");
+	sprintf(file_hash, "%s", "result_hash_");
+	sprintf(file_input, "%s", "result_input");
 
 	if (argc < 2) {
 		fprintf(stdout,"Need parameter [frist/cheap/nofilter]\n");
@@ -27,18 +29,18 @@ int main(int argc, char* argv[]) {
 	if (!strcmp(argv[1], "first")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : First Select\n");
-		sprintf(file_dist, "%s", "toy_dist_first");
-		edit_distribution(file_hash, file_ref, file_dist);
+		sprintf(file_dist, "%s", "result_dist_first");
+		edit_distribution(file_hash, file_ref, file_dist, file_input);
 	} else if (!strcmp(argv[1], "cheap")){
 		set_select_cheapest(true);
 		fprintf(stdout,"Mode : Cheapest Select\n");
-		sprintf(file_dist, "%s", "toy_dist_cheap");
-		edit_distribution(file_hash, file_ref, file_dist);
+		sprintf(file_dist, "%s", "result_dist_cheap");
+		edit_distribution(file_hash, file_ref, file_dist, file_input);
 	} else if (!strcmp(argv[1], "nofilter")){
 		set_select_cheapest(false);
 		fprintf(stdout,"Mode : Nofilter Select\n");
-		sprintf(file_dist, "%s", "toy_dist_nofilter");
-		edit_distribution_nofilter(file_hash, file_ref, file_dist);
+		sprintf(file_dist, "%s", "result_dist_nofilter");
+		edit_distribution_nofilter(file_hash, file_ref, file_dist, file_input);
 	} else {
 		fprintf(stdout,"Error select mode [frist/cheap/nofilter]\n");
 		return 0;
@@ -46,6 +48,7 @@ int main(int argc, char* argv[]) {
 
 // Fee Memory Allocation 
 	free(file_ref);
+	free(file_input);
 	free(file_hash);
 	free(file_dist);
 	return 0;
