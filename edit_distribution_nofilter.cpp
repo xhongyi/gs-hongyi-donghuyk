@@ -49,7 +49,6 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 
 	// get fragment from reference file
 	store_file.open(output_file_name.c_str());
-	input_file.open(result_input_name.c_str());
 
 	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		char * file_ref = (char*) malloc(sizeof(char)*50);
@@ -125,15 +124,12 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 						monitor_counter2);
 				monitor_counter = 0;
 			}
-			if (monitor_counter2 >= 10000000) {
-		//		monitor_counter2 = 0;
+			if (monitor_counter2 >= 1000000) {
+				monitor_counter2 = 0;
 		//		break;
 			}
 			input_file >> testee;
 		} while (input_file.good());
-
-		ref_file.close();
-		store_file.close();
 
 		time_t end_time;
 		time(&end_time);
@@ -142,7 +138,7 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		cout << "TIme Diff : " << difftime(end_time,start_time) << endl;
 		accumulate_time = accumulate_time + difftime(end_time, start_time);
 		ref_file.close();
-		store_file.close();
+		input_file.close();
 	}
 	long long total_fragment_num = 0;
 	long long total_perform_num = 0;
@@ -161,4 +157,5 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		store_file << "index :" << p->first << "	# :" << p->second << endl;
 	}
 	cout << "Total Time : " << accumulate_time << endl;
+	store_file.close();
 }
