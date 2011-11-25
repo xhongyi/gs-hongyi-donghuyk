@@ -14,7 +14,7 @@ int main() {
 	string test_file_name = "toy_ref_0";
 	string test_input[READ_SIZE];
 	int size;
-	loadTestRead(test_file_name, test_input, size);
+	loadTestRead(test_file_name);
 	//cout << "size: " << size << endl;
 	for (int i = 0; i < size; i++) {
 		//cout << "i: " << i << endl;

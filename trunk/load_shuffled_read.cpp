@@ -11,12 +11,12 @@
 #include <iostream>
 #include <deque>
 
-void loadTestRead(string test_file_name, string test_fragment[], int& size) {
+void loadTestRead(string test_file_name) {
 	srand(time(NULL) );
 
 	ifstream input_file;
 	input_file.open(test_file_name.c_str());
-	size = 0;
+	int size = 0;
 	char test_char;
 	string temp(FRAGMENT_LENGTH, 'A');
 	//fragment set before shuffle.
@@ -70,11 +70,15 @@ void loadTestRead(string test_file_name, string test_fragment[], int& size) {
 		unshuffled_iter = unshuffled_set.begin();
 		int increment = (int)(unshuffled_set.size() * ( (rand() % size) / (double) size) );
 		unshuffled_iter = unshuffled_iter + increment;
-		test_fragment[i] = *unshuffled_iter;
+		cout << *unshuffled_iter << endl;
 		unshuffled_set.erase(unshuffled_iter);
 	}
-	if (unshuffled_set.empty() )
+
+	/*
+	1if (unshuffled_set.empty() )
 		cout << "empty correct!" << endl;
 	else
 		cout << "Not empty!! Incorrect!" << endl;
+	*/
+
 }

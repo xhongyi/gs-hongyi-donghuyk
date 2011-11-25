@@ -5,8 +5,8 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator
 
-all: test_full 
-
+all: test_full test_shuffle 
+ 
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
