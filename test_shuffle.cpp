@@ -11,7 +11,7 @@
 using namespace std;
 
 int main() {
-	string test_file_name = "toy_ref_0";
+	string test_file_name = "result_ref_0";
 	string test_input[READ_SIZE];
 	int size;
 	loadTestRead(test_file_name);
