@@ -14,6 +14,6 @@
 
 using namespace std;
 
-void loadTestRead(string test_file_name, string test_fragment[], int& size);
+void loadTestRead(string test_file_name);
 
 #endif /* LOAD_SHUFFLED_READ_H_ */
