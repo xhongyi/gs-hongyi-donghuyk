@@ -49,7 +49,7 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 
 	//for (int j = 17 ; j < 18 ; j++) {
 	//for (int j = 16 ; j < 17 ; j++) {
-	for (int j = 0 ; j < 2; j++) {
+	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		char * file_ref	= (char*) malloc(sizeof(char)*50);
 		char * file_hash= (char*) malloc(sizeof(char)*50);
        		sprintf(file_ref , "%s%i", (char*) ref_file_name.c_str(), j);
