@@ -20,6 +20,8 @@
 #define KEY_NUMBER		READ_LENGTH/KEY_LENGTH
 #define PREFILTER_SIZE		100
 #define READ_SIZE		1000000
+#define SKIP_BINARY_SEARCH	500
+#define EN_SKIP_BINARY_SEARCH	true
 
 #include <string>
 

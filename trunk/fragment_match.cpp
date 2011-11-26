@@ -31,6 +31,8 @@ void loadHash(string hash_name) {
 
 bool searchKey(int* start_coor, int target_coor, int entry_coor,
 		int entry_size) {
+//	if ((entry_size >= SKIP_BINARY_SEARCH) && (EN_SKIP_BINARY_SEARCH == true))
+//		return true;
 	if (entry_size == 0)
 		return false;
 	int lower_bound = entry_coor + 1;
@@ -120,36 +122,36 @@ final_result searchFragment(string fragment, string* ref) {
 	return_result.total_binary_search = 0;
 	return_result.total_edit_perform = 0;
 	return_result.total_correct_num = 0;
+	return_result.total_skip_binary_search_num = 0;
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
-		for (int i = keys_input[k].key_entry + 1;
-				i <= keys_input[k].key_entry + keys_input[k].key_entry_size;
-				i++) {
+		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry + keys_input[k].key_entry_size; i++) {
 			int coor_value = coordinate[i];
 			int diff_num = 0;
 			int tmp_start_coor = 0;
 			int start_coor = 0;
 			bool first_matched = false;
 			if (!searchPrevious(coor_value, keys_input[k].key_number, previous_result)) {
-				return_result.total_binary_search++;
-				for (int j = 0; j < KEY_NUMBER; j++) {
-					if (j - diff_num > KEY_NUMBER - max_diff_num)
-						break;
-					string segment_str = fragment.substr(j * KEY_LENGTH,
-							KEY_LENGTH);
-					if (!searchKey(
-							&tmp_start_coor,
-							coor_value
-									+ (j - keys_input[k].key_number)
-											* KEY_LENGTH,
-							sort_input[j].key_entry,
-							sort_input[j].key_entry_size)) {
-						diff_num++;
-						if (diff_num > max_diff_num)
+				bool en_binary_search = true;
+				if ((EN_SKIP_BINARY_SEARCH == true)&&(keys_input[k].key_entry_size >= SKIP_BINARY_SEARCH)){
+					en_binary_search = false;
+					diff_num = 0;
+					return_result.total_skip_binary_search_num++;
+				}
+				if (en_binary_search) {
+					return_result.total_binary_search++;
+					for (int j = 0; j < KEY_NUMBER; j++) {
+						if (j - diff_num > KEY_NUMBER - max_diff_num)
 							break;
-					} else if (first_matched == false) {
-						start_coor = tmp_start_coor - j * KEY_LENGTH;
-						first_matched = true;
+						string segment_str = fragment.substr(j * KEY_LENGTH, KEY_LENGTH);
+						if (!searchKey( &tmp_start_coor, coor_value + (j - keys_input[k].key_number) * KEY_LENGTH, sort_input[j].key_entry, sort_input[j].key_entry_size)) {
+							diff_num++;
+							if (diff_num > max_diff_num)
+								break;
+						} else if (first_matched == false) {
+							start_coor = tmp_start_coor - j * KEY_LENGTH;
+							first_matched = true;
+						}
 					}
 				}
 				if (diff_num <= max_diff_num) {
@@ -163,19 +165,12 @@ final_result searchFragment(string fragment, string* ref) {
                         		ED_result edit_result = editDistanceCal(ref_str, fragment);
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
-						//correct_counter = correct_counter + 1;
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: correct " << endl;
 					} else {
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
-
-//					match_result temp;
-//					temp.coordinate = start_coor;
-//					temp.relevance = diff_num;
-//					temp.key_number = keys_input[k].key_number;
-//					result.push_back(temp);
 				}
 			}
 		}
