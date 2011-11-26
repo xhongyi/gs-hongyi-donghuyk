@@ -41,9 +41,9 @@ struct previous_coor {
 };
 
 struct final_result {
-	int total_binary_search;
-	int total_edit_perform;
-	int total_correct_num;
+	long long total_binary_search;
+	long long total_edit_perform;
+	long long total_correct_num;
 };
 
 void getHashTablePtr(int ** ptr);
