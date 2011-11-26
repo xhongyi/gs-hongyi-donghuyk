@@ -26,12 +26,12 @@ int main() {
 	char * file_test	= (char*) malloc(sizeof(char)*50);
 
 	
-	sprintf(file_ref,  "%s%i", "result_76_12_ref_", 0);
-	sprintf(file_hash, "%s%i", "result_76_12_hash_", 0);
-	sprintf(file_test, "%s%i", "result_76_12_verify_", 0);
-	hashTableGenerator(file_ref);
-	hashFileWriter(file_hash);
-	hashDistribution(file_hash);
+	sprintf(file_ref,  "%s%i", "result_ref_", 0);
+	sprintf(file_hash, "%s%i", "result_09_hash_", 0);
+	sprintf(file_test, "%s%i", "result_09_verify_", 0);
+//	hashTableGenerator(file_ref);
+//	hashFileWriter(file_hash);
+//	hashDistribution(file_hash);
 	hashTestFull(file_hash, file_ref, file_test);
 
 //	for (int i = 9; i < 22 ; i++) {

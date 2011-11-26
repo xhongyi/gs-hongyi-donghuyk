@@ -26,8 +26,8 @@ using namespace std;
 
 void edit_distribution(string hash_file_name, string ref_file_name,
 		string output_file_name, string result_input_name) {
-	set_max_indel_num(3);
-	set_max_diff_num(3);
+	set_max_indel_num(6);
+	set_max_diff_num(6);
 	allocatePath();
 	ifstream ref_file;
 	ifstream input_file;
@@ -44,8 +44,8 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 
 	// get fragment from reference file
 
-	//for (int j = 0 ; j < 2 ; j++) {
-	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
+	for (int j = 0 ; j < 1 ; j++) {
+	//for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		map<int, int> binary_search;
 		map<int, int> distribution;
 		map<int, int> correct_count;
@@ -58,7 +58,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		cout << "ref_file_name  :" << file_ref  << endl;
 		cout << "hash_file_name :" << file_hash << endl;
 		cout << "store_file_name:" << file_store << endl;
-
 		// store file 
 		store_file.open(file_store);
 
@@ -82,7 +81,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		input_file >> testee;
 		do {
 			filter_result = searchFragment(testee, &ref);
-
 			binary_search[filter_result.total_binary_search]++;
 			distribution[filter_result.total_edit_perform]++;
 			correct_count[filter_result.total_correct_num]++;

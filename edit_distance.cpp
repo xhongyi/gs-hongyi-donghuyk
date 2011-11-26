@@ -204,7 +204,7 @@ ED_result editDistanceCal(string test_read, string ref_read) {
 	if (result.correct == false)
 		return result;
 	else { //If pass the test, trace back
-		char temp_result [20]; //Temp string. Used for appending.
+		char temp_result [30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane <= main_lane) ? READ_LENGTH : READ_LENGTH
 				+ main_lane - cur_lane;
 		cur_dist = path[cur_lane].path_cost[cur_idx];

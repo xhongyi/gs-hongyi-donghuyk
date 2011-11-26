@@ -16,7 +16,7 @@
 using namespace std;
 
 struct ED_result {
-	char	compare_result [20]; //Output informing how difference are the 2 strings.
+	char	compare_result [30]; //Output informing how difference are the 2 strings.
 	bool	correct; //Denotes if the error is within acceptable range.
 };
 
