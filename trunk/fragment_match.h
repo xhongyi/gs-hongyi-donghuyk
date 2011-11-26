@@ -44,7 +44,6 @@ struct final_result {
 	long long total_binary_search;
 	long long total_edit_perform;
 	long long total_correct_num;
-	long long total_skip_binary_search_num;
 };
 
 void getHashTablePtr(int ** ptr);
