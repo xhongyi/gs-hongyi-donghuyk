@@ -49,7 +49,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		map<int, int> binary_search;
 		map<int, int> distribution;
 		map<int, int> correct_count;
-		map<int, int> skip_binary;
 		char * file_ref	= (char*) malloc(sizeof(char)*50);
 		char * file_hash= (char*) malloc(sizeof(char)*50);
 		char * file_store= (char*) malloc(sizeof(char)*50);
@@ -85,7 +84,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			binary_search[filter_result.total_binary_search]++;
 			distribution[filter_result.total_edit_perform]++;
 			correct_count[filter_result.total_correct_num]++;
-			skip_binary[filter_result.total_skip_binary_search_num]++;
 	
 			monitor_counter = monitor_counter + 1;
 			monitor_counter2 = monitor_counter2 + 1;
@@ -132,18 +130,9 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 			total_fragment_num2 = total_fragment_num2 + p->second;
 			total_pass_num = total_pass_num + p->first * p->second;
 		}
-
-		long long total_skip_binary_search_num = 0;
-		store_file << endl << "Number of Skip binary search" << endl;
-		for (map<int, int>::iterator p = skip_binary.begin(); p != skip_binary.end(); p++) {
-			store_file << "index :" << p->first << "	num :" << p->second << endl;
-			total_skip_binary_search_num = total_skip_binary_search_num + p->first * p->second;
-		}
-
 		store_file << endl;
 		store_file << "---------------------------------------------" << endl;
 		store_file << "total_binary_num   : " << total_binary_num << endl;
-		store_file << "total_skip_num     : " << total_skip_binary_search_num << endl;
 		store_file << "total_fragment_num : " << total_fragment_num1 << endl;
 		store_file << "total_edit_num     : " << total_edit_num << endl;
 		store_file << "total_pass_num     : " << total_pass_num << endl;
@@ -155,7 +144,6 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 
 		cout << "---------------------------------------------" << endl;
 		cout << "total_binary_num   : " << total_binary_num << endl;
-		cout << "total_skip_num     : " << total_skip_binary_search_num << endl;
 		cout << "total_fragment_num : " << total_fragment_num1 << endl;
 		cout << "total_edit_num     : " << total_edit_num << endl;
 		cout << "total_pass_num     : " << total_pass_num << endl;
