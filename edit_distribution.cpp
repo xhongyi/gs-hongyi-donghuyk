@@ -44,8 +44,8 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 
 	// get fragment from reference file
 
-	for (int j = 0 ; j < 1 ; j++) {
-	//for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
+	//for (int j = 0 ; j < 1 ; j++) {
+	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		map<int, int> binary_search;
 		map<int, int> distribution;
 		map<int, int> correct_count;
