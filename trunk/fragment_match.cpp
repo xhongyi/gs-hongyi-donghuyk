@@ -69,7 +69,7 @@ bool searchPrevious(int coor_value, int start_key_entry,
 
 bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 	if (select_cheapest == false) {
-		for (int i = 0; i < max_diff_num + 1; i++) {
+		for (int i = 0; i < KEY_NUMBER; i++) {
 			sort_result[i].key_number = sort_input[i].key_number;
 			sort_result[i].key_entry = sort_input[i].key_entry;
 			sort_result[i].key_entry_size = sort_input[i].key_entry_size;
@@ -84,7 +84,7 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 		}
 	}
 	int loop_index = 0;
-	for (int i = 0; i < max_diff_num + 1; i++) {
+	for (int i = 0; i < KEY_NUMBER; i++) {
 		for (int j = 0; j < KEY_NUMBER; j++) {
 			if (sort_input[j].order == i) {
 				sort_result[loop_index].key_entry = sort_input[j].key_entry;
@@ -93,11 +93,11 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 						sort_input[j].key_entry_size;
 				loop_index = loop_index + 1;
 			}
-			if (loop_index == max_diff_num + 1)
-				return true;
+			//if (loop_index == max_diff_num + 1)
+			//	return true;
 		}
 	}
-	return false;
+	return true;//false;
 }
 
 final_result searchFragment(string fragment, string* ref) {
@@ -136,10 +136,10 @@ final_result searchFragment(string fragment, string* ref) {
 							KEY_LENGTH);
 					if (!searchKey(
 							coor_value
-									+ (j - keys_input[k].key_number)
+									+ (keys_input[j].key_number - keys_input[k].key_number)
 											* KEY_LENGTH,
-							sort_input[j].key_entry,
-							sort_input[j].key_entry_size)) {
+							keys_input[j].key_entry,
+							keys_input[j].key_entry_size)) {
 						diff_num++;
 						if (diff_num > max_diff_num)
 							break;
@@ -156,19 +156,12 @@ final_result searchFragment(string fragment, string* ref) {
                         		ED_result edit_result = editDistanceCal(ref_str, fragment);
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
-						//correct_counter = correct_counter + 1;
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: correct " << endl;
 					} else {
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
-
-//					match_result temp;
-//					temp.coordinate = start_coor;
-//					temp.relevance = diff_num;
-//					temp.key_number = keys_input[k].key_number;
-//					result.push_back(temp);
 				}
 			}
 		}
