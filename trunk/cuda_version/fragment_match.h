@@ -35,6 +35,21 @@ struct key_struct {
 	int order;
 };
 
+struct previous_coor {
+	int size;
+	int coor[PREFILTER_SIZE];
+};
+
+struct final_result {
+	long long total_binary_search;
+	long long total_edit_perform;
+	long long total_correct_num;
+};
+
+void getHashTablePtr(int ** ptr);
+
+void getCoordinatePtr(int ** ptr);
+
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
  *					the name of a chromosome, it will load all the hash_table this
@@ -52,7 +67,7 @@ void loadHash(string hash_name);
  * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
  * 					be the mapping location.
  */
-list<match_result> searchFragment (string fragment);
+final_result searchFragment (string fragment, string* ref);
 
 /*
  * Function:		Binary search if there exits an exact match on a target coordinate.
@@ -70,10 +85,15 @@ void freeMem();
 /*
  * Function:		
  */
-bool searchPrevious(int coor_value, int start_key_entry, list<match_result> previous_result);
+bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_result);
 
 /*
  *
  */
 int binary_filtering_cost(string fragment);
+
+/*
+ * Function: Get the result list without any filtering. Used in modeling original mrFAST
+ */
+list<match_result> noFilterSearch(string fragment);
 #endif /* FRAGMENT_MATCH_H_ */
