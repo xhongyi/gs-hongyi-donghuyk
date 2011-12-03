@@ -16,7 +16,7 @@
 #include "edit_distance.h"
 #include <algorithm>
 #include <cstdlib>
-#include <cstring>
+//#include <cstring>
 #include <iostream>
 #include <assert.h>
 /*
@@ -112,7 +112,7 @@ void initializeBWDFront(int key_num) {
 				- i : key_num * KEY_LENGTH;
 }
 
-ED_result editDistanceCal(const string& test_read, const string& ref_read) {
+ED_result editDistanceCal(char* test_read, char* ref_read) {
 	//Initialize path
 	ED_result result;
 	ED_partial_result FWD_result;
@@ -145,8 +145,8 @@ ED_result editDistanceCal(const string& test_read, const string& ref_read) {
 	return result;
 }
 
-ED_partial_result editDistanceCalFWD(const string& test_read,
-		const string& ref_read, int key_num) {
+ED_partial_result editDistanceCalFWD(char* test_read,
+		char* ref_read, int key_num) {
 	//Return result;
 	ED_partial_result result;
 	//strcpy(result.compare_result, "\0");
@@ -379,8 +379,8 @@ ED_partial_result editDistanceCalFWD(const string& test_read,
 	return result;
 }
 
-ED_partial_result editDistanceCalBWD(const string& test_read,
-		const string& ref_read, int key_num) {
+ED_partial_result editDistanceCalBWD(char* test_read,
+		char* ref_read, int key_num) {
 	//Return result;
 	ED_partial_result result;
 	//strcpy(result.compare_result, "\0");
