@@ -382,7 +382,7 @@ ED_partial_result editDistanceCalFWD(const string& test_read,
 ED_partial_result editDistanceCalBWD(const string& test_read,
 		const string& ref_read, int key_num) {
 	//Return result;
-	ED_partial_result bw_result;
+	ED_partial_result result;
 	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
@@ -410,7 +410,7 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 				if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
 					//TODO: BREAK AND END.
 					ED_finished = true;
-					bw_result.correct = false;
+					result.correct = false;
 					break;
 				} else {
 					//Go to next tier
@@ -439,14 +439,14 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 						|| (cur_lane < main_lane && path[cur_lane].front_idx //Deletion Lane
 								== main_lane - cur_lane)) {
 					ED_finished = true;
-					bw_result.correct = true;
+					result.correct = true;
 					break;
 				}
 			}
 
 			//Compute string idx:
-			test_idx = path[cur_lane].front_idx + cur_lane - main_lane - 2;
-			ref_idx = path[cur_lane].front_idx - 2;
+			test_idx = path[cur_lane].front_idx + cur_lane - main_lane - 1;
+			ref_idx = path[cur_lane].front_idx - 1;
 
 			//test if can slide down
 			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
@@ -482,16 +482,17 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 	//cout << "Path generated" << endl;
 
 	//Tracing back period
-	if (bw_result.correct == false)
-		return bw_result;
+	if (result.correct == false)
+		return result;
 	else { //If pass the test, trace back
 
 		//char temp_result[30]; //Temp string. Used for appending.
-		int cur_idx = (cur_lane <= main_lane) ? 0 : main_lane - cur_lane;
+		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
-		bw_result.diff_num = 5;
-		cout << "bw_result.diff_num: " << bw_result.diff_num << endl;
-		bw_result.diff_num = path[cur_lane].path_cost[cur_idx];
+		cout << "cur_lane: " << cur_lane << endl;
+		cout << "cur_idx: " << cur_idx << endl;
+
+		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 
@@ -500,17 +501,17 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH || path[cur_lane + 1].path_cost[cur_idx]
 					< path[cur_lane].path_cost[cur_idx + 1]) {
 
-				bw_result.error[error_ptr].diff = INSERTION;
-				bw_result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane - 1;
-				bw_result.error[error_ptr].diff_char
-						= test_read[bw_result.error[error_ptr].location];
+				result.error[error_ptr].diff = INSERTION;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane;
+				result.error[error_ptr].diff_char
+						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -524,11 +525,11 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 				 //cout << "Here n" << endl;
 				 strcpy(temp_result, result.compare_result);
 				 sprintf(result.compare_result, "^%c%s",
-				 test_read[cur_idx + cur_lane bw_result_lane - 1],
+				 test_read[cur_idx + cur_lane result_lane - 1],
 				 temp_result);
 				 }
 				 */
-				cur_lane--;
+				cur_lane++;
 				//same_count = 0;
 				continue;
 			}
@@ -537,10 +538,10 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 			if (path[cur_lane - 1].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx + 1]) {
 
-				bw_result.error[error_ptr].diff = DELETION;
-				bw_result.error[error_ptr].location = cur_idx + cur_lane
+				result.error[error_ptr].diff = DELETION;
+				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
-				bw_result.error[error_ptr].diff_char = ref_read[cur_idx - 1];
+				result.error[error_ptr].diff_char = ref_read[cur_idx];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -556,7 +557,7 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 				 temp_result);
 				 }
 				 */
-				cur_lane++;
+				cur_lane--;
 				cur_idx++;
 				//same_count = 0;
 				continue;
@@ -566,11 +567,11 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 			if (path[cur_lane].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx]) {
 
-				bw_result.error[error_ptr].diff = MISMATCH;
-				bw_result.error[error_ptr].location = cur_idx + cur_lane
+				result.error[error_ptr].diff = MISMATCH;
+				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
-				bw_result.error[error_ptr].diff_char
-						= test_read[bw_result.error[error_ptr].location];
+				result.error[error_ptr].diff_char
+						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 //cout << "Here1" << endl;
@@ -602,8 +603,8 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 
 		//The 2 number should match. The error iteration should finally meet the total number
 		cout << "error_ptr: " << error_ptr << endl;
-		cout << "bw_result.diff_num: " << bw_result.diff_num << endl;
-		assert (error_ptr == bw_result.diff_num);
+		cout << "result.diff_num: " << result.diff_num << endl;
+		assert (error_ptr == result.diff_num);
 		/*
 		 if (same_count != 0) { //If we have some same count at the begining
 		 //cout << "Here t" << endl;
@@ -613,6 +614,6 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 		 }
 		 */
 	}
-	return bw_result;
+	return result;
 }
 
