@@ -50,6 +50,9 @@ void set_max_indel_num(int num) {
 }
 
 void set_max_diff_num(int num) {
+	if (num > 10) {
+		cerr << "Does not support error more than 10. Please contact author gohongyi@gmail.com for more information" << endl;
+	}
 	max_diff_num = num;
 }
 
