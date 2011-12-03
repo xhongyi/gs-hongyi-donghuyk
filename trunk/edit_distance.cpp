@@ -490,6 +490,7 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 		int cur_idx = (cur_lane <= main_lane) ? 0 : main_lane - cur_lane;
 
 		bw_result.diff_num = 5;
+		cout << "bw_result.diff_num: " << bw_result.diff_num << endl;
 		bw_result.diff_num = path[cur_lane].path_cost[cur_idx];
 
 		cur_dist = path[cur_lane].path_cost[cur_idx];
@@ -562,12 +563,12 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 			}
 
 			//Check if we have a mismatch
-			if (path[cur_lane].path_cost[cur_idx - 1]
+			if (path[cur_lane].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx]) {
 
 				bw_result.error[error_ptr].diff = MISMATCH;
 				bw_result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane - 1;
+						- main_lane;
 				bw_result.error[error_ptr].diff_char
 						= test_read[bw_result.error[error_ptr].location];
 				error_ptr++;
@@ -600,6 +601,8 @@ ED_partial_result editDistanceCalBWD(const string& test_read,
 		}
 
 		//The 2 number should match. The error iteration should finally meet the total number
+		cout << "error_ptr: " << error_ptr << endl;
+		cout << "bw_result.diff_num: " << bw_result.diff_num << endl;
 		assert (error_ptr == bw_result.diff_num);
 		/*
 		 if (same_count != 0) { //If we have some same count at the begining
