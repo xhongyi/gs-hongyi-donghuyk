@@ -2,7 +2,6 @@
 #include "common.h"
 #include "hash_loader.h"
 #include <fstream>
-
 long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_table_name) { 
 	int total_number;
 	int index;
@@ -35,51 +34,6 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 	}
 	fclose(pFileR);
 	return coordinate_index + 1;
-}
-
-__global__ void hashDistributionCUDA(char * hash_table_name) {
-	int    total_number;
-	int    sum_number;
-	int    index;
-	int    data;
-	int    coordinate_index = 0;
-	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+20);
-	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM*INDEX_NUM);
-	FILE * pFileR;
-	FILE * pFileOut;
-
-	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
-	sprintf(gen_distribution_file, "%s%s\0", hash_table_name, "_distribution");
-	pFileOut = fopen (gen_distribution_file, "w");
-	fscanf(pFileR, "%i", &total_number);
-	fprintf(pFileOut, "total_number : %i \n", total_number);
-
-	// Initialize index_num preser area
-	for (int l = 0 ; l < INDEX_NUM ; l++) {
-		index_num[l] = 0;
-	}
-	// Read index number & coordinate based on index number
-	for (int i = 0 ; i < INDEX_NUM ; i++) {
-		fscanf(pFileR, "%i", &index);
-		index_num[index] = index_num[index] + 1;
-		sum_number = sum_number + 1;
-	// Read coordinate      
-		for (int j = 0; j < index; j++){
-			fscanf(pFileR, "%i", &data);
-			sum_number = sum_number + 1;
-		}
-	}
-	for (int k = 0 ; k < INDEX_NUM ; k++) {
-		if (index_num[k] != 0) {
-			fprintf(pFileOut, "%i : %li \n", k, index_num[k]);
-		}
-	}
-	fprintf(pFileOut, "sum_number : %i \n", sum_number);
-	fclose(pFileOut);
-	fclose(pFileR);
-	free(gen_distribution_file);
-	free(index_num);
 }
 
 void refLoader(string & ref_db, char * ref_name) {
