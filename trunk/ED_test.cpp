@@ -17,12 +17,12 @@ int main() {
 	set_max_diff_num(5);
 	allocatePath();
 	cout << "started" << endl;
-	strcpy(test_read, "CACTGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-	strcpy(ref_read, "ACTGGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA");
-	ED_result result = editDistanceCal(test_read, ref_read);
+	strcpy(test_read, "CACTGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA");
+	strcpy(ref_read,  "ACTGGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+	ED_result result = editDistanceCal(test_read, ref_read, 1);
 	if (result.correct) {
 		cout << "Correct, passed the ED test" << endl;
-		cout << result.compare_result << endl;
+		//cout << result.compare_result << endl;
 	} else {
 		cout << "Not correct" << endl;
 	}

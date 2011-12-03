@@ -112,43 +112,80 @@ void initializeBWDFront(int key_num) {
 				- i : key_num * KEY_LENGTH;
 }
 
-ED_result editDistanceCal(char* test_read, char* ref_read) {
+ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
 	//Initialize path
 	ED_result result;
-	ED_partial_result FWD_result;
+	ED_result FWD_result, BWD_result;
 	initializePath();
-	FWD_result = editDistanceCalBWD(test_read, ref_read, 1);
+	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num);
+	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num);
 
-	cout << "***" << endl;
-	cout << "Total difference Number: " << FWD_result.diff_num << endl;
+	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
-	for (int i = 0; i < FWD_result.diff_num; i++) {
-		switch (FWD_result.error[i].diff) {
-		case MISMATCH:
-			cout << "Mismatch at " << FWD_result.error[i].location << endl;
-			cout << "Error: " << FWD_result.error[i].diff_char << endl;
-			break;
-		case INSERTION:
-			cout << "Insertion at " << FWD_result.error[i].location << endl;
-			cout << "Error: " << FWD_result.error[i].diff_char << endl;
-			break;
-		case DELETION:
-			cout << "Deletion at " << FWD_result.error[i].location << endl;
-			cout << "Error: " << FWD_result.error[i].diff_char << endl;
-			break;
+	//This is the result index used to probe the result error queue.
+	int error_idx = 0;
+
+	if (FWD_result.correct && BWD_result.correct && result.diff_num
+			<= max_diff_num) {
+
+		result.correct = true;
+
+		for (int i = 0; i < BWD_result.diff_num; i++) {
+			result.error[error_idx] = BWD_result.error[i];
+			error_idx++;
 		}
+
+		for (int i = FWD_result.diff_num - 1; i >= 0; i--) {
+			result.error[error_idx] = FWD_result.error[i];
+			error_idx++;
+		}
+
+		//The total diff_num should be equal to the error number just filled.
+		assert(error_idx == result.diff_num);
+
+		/*
+		 //Flip the FWD error
+		 for	(int i = FWD_result.diff_num / 2; i < FWD_result.diff_num; i++) {
+		 //swap
+		 ED_error temp;
+		 temp = FWD_result.error[FWD_result.diff_num - 1 - i];
+		 FWD_result.error[FWD_result.diff_num - 1 - i] = FWD_result.error[i];
+		 FWD_result.error[i] = temp;
+		 }
+		 */
+
+		cout << "***" << endl;
+		cout << "Total difference Number: " << result.diff_num << endl;
+
+		for (int i = 0; i < result.diff_num; i++) {
+			switch (result.error[i].diff) {
+			case MISMATCH:
+				cout << "Mismatch at " << result.error[i].location << endl;
+				cout << "Error: " << result.error[i].diff_char << endl;
+				break;
+			case INSERTION:
+				cout << "Insertion at " << result.error[i].location << endl;
+				cout << "Error: " << result.error[i].diff_char << endl;
+				break;
+			case DELETION:
+				cout << "Deletion at " << result.error[i].location << endl;
+				cout << "Error: " << result.error[i].diff_char << endl;
+				break;
+			}
+		}
+
+		cout << "###" << endl;
+
 	}
+	else
+		result.correct = false;
 
-	cout << "###" << endl;
-
-	result.correct = FWD_result.correct;
 	return result;
 }
 
-ED_partial_result editDistanceCalFWD(char* test_read,
-		char* ref_read, int key_num) {
+ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 	//Return result;
-	ED_partial_result result;
+	ED_result result;
 	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
@@ -268,12 +305,13 @@ ED_partial_result editDistanceCalFWD(char* test_read,
 			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
 			//If we should have an insertion
-			if (cur_idx == key_num * KEY_LENGTH || path[cur_lane - 1].path_cost[cur_idx]
-					< path[cur_lane].path_cost[cur_idx - 1]) {
+			if (cur_idx == key_num * KEY_LENGTH
+					|| path[cur_lane - 1].path_cost[cur_idx]
+							< path[cur_lane].path_cost[cur_idx - 1]) {
 
 				result.error[error_ptr].diff = INSERTION;
 				result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane;
+						- main_lane - 1;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
 				error_ptr++;
@@ -304,7 +342,7 @@ ED_partial_result editDistanceCalFWD(char* test_read,
 
 				result.error[error_ptr].diff = DELETION;
 				result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane;
+						- main_lane - 1;
 				result.error[error_ptr].diff_char = ref_read[cur_idx];
 				error_ptr++;
 				/*
@@ -333,7 +371,7 @@ ED_partial_result editDistanceCalFWD(char* test_read,
 
 				result.error[error_ptr].diff = MISMATCH;
 				result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane;
+						- main_lane - 1;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
 				error_ptr++;
@@ -379,10 +417,9 @@ ED_partial_result editDistanceCalFWD(char* test_read,
 	return result;
 }
 
-ED_partial_result editDistanceCalBWD(char* test_read,
-		char* ref_read, int key_num) {
+ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 	//Return result;
-	ED_partial_result result;
+	ED_result result;
 	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
@@ -434,8 +471,7 @@ ED_partial_result editDistanceCalBWD(char* test_read,
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx <= max_indel_num) {
 				//Test if it's the last element
-				if ((cur_lane >= main_lane && path[cur_lane].front_idx
-						== 0) //Insertion lane
+				if ((cur_lane >= main_lane && path[cur_lane].front_idx == 0) //Insertion lane
 						|| (cur_lane < main_lane && path[cur_lane].front_idx //Deletion Lane
 								== main_lane - cur_lane)) {
 					ED_finished = true;
@@ -451,7 +487,7 @@ ED_partial_result editDistanceCalBWD(char* test_read,
 			//test if can slide down
 			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
 					== cur_dist //If can just slide
-					|| test_read[test_idx] == ref_read[ref_idx]) )
+					|| test_read[test_idx] == ref_read[ref_idx]))
 				slide_stop = 1;
 
 			//Check neighbor lanes and update them. Modify -> decrement -> modify
@@ -504,8 +540,9 @@ ED_partial_result editDistanceCalBWD(char* test_read,
 			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
 			//If we should have an insertion
-			if (cur_idx == key_num * KEY_LENGTH || path[cur_lane + 1].path_cost[cur_idx]
-					< path[cur_lane].path_cost[cur_idx + 1]) {
+			if (cur_idx == key_num * KEY_LENGTH
+					|| path[cur_lane + 1].path_cost[cur_idx]
+							< path[cur_lane].path_cost[cur_idx + 1]) {
 
 				result.error[error_ptr].diff = INSERTION;
 				result.error[error_ptr].location = cur_idx + cur_lane
