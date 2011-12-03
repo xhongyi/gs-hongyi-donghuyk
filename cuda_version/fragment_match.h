@@ -11,7 +11,7 @@
 #include <list>
 #include "hash_loader.h"
 #include "common.h"
-#include "ref_db_generator.h"
+//#include "ref_db_generator.h"
 
 #define MAX_UPPER_BOUND 10
 #define MIN_LOWER_BOUND 2
@@ -52,14 +52,16 @@ void getCoordinatePtr(int ** ptr);
 
 /*
  * Function:		Loading the hash_table into the main memory from the file. Giving
- *					the name of a chromosome, it will load all the hash_table this
- *					chromosome has. The chromosome file should be already organized
- *					as "hash_name"_"num", ex. chr1_0, with chr1 is the name of the
-					chromosome, 0 is the first file.
- * Input:			hash_name is the name of the hash table of the chromosome.
+ *			the name of a chromosome, it will load all the hash_table this
+ *			chromosome has. The chromosome file should be already organized
+ *			as "hash_name"_"num", ex. chr1_0, with chr1 is the name of the
+			chromosome, 0 is the first file.
+ * Input:		hash_name is the name of the hash table of the chromosome.
  * Modification:	It will load all the hash_table into hash_table and coordinate.
  */
 void loadHash(string hash_name);
+
+void freeHash(void);
 
 /*
  * Function:		Search the possible locations and calculate their relevance.
@@ -68,14 +70,6 @@ void loadHash(string hash_name);
  * 					be the mapping location.
  */
 final_result searchFragment (string fragment, string* ref);
-
-/*
- * Function:		Binary search if there exits an exact match on a target coordinate.
- * Input:			key is the searching target, and coordinate will be the target coordinate.
- * Modification:	result_idx will be changed to the index of the first possible match.
- * 					result_scope will be changed to the number of possible matches.
- */
-
 
 /*
  * Function:		Free the allocated memory.
