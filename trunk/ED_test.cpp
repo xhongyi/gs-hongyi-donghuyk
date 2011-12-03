@@ -11,43 +11,43 @@
 using namespace std;
 
 int main() {
+	char test_read[READ_LENGTH];
+	char ref_read[READ_LENGTH];
 	set_max_indel_num(5);
 	set_max_diff_num(5);
 	allocatePath();
 	cout << "started" << endl;
-	ED_result
-			result =
-					editDistanceCal(
-							"CACTGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-							"ACTGGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA");
+	strcpy(test_read, "CACTGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+	strcpy(ref_read, "ACTGGCTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA");
+	ED_result result = editDistanceCal(test_read, ref_read);
 	if (result.correct) {
 		cout << "Correct, passed the ED test" << endl;
 		cout << result.compare_result << endl;
 	} else {
 		cout << "Not correct" << endl;
 	}
-/*
-	result
-			= editDistanceCal(
-					"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCDE",
-					"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCDEF");
-	if (result.correct) {
-		cout << "Correct, passed the ED test" << endl;
-		cout << result.compare_result << endl;
-	} else {
-		cout << "Not correct" << endl;
-	}
-	result
-			= editDistanceCal(
-					"CCCTAACCCTAACCCTAAACCCTAAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCAACCCCAACCCCAACCCCAACCCCAACCCCAACCCTAACCCCTAACCC",
+	/*
+	 result
+	 = editDistanceCal(
+	 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCDE",
+	 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCDEF");
+	 if (result.correct) {
+	 cout << "Correct, passed the ED test" << endl;
+	 cout << result.compare_result << endl;
+	 } else {
+	 cout << "Not correct" << endl;
+	 }
+	 result
+	 = editDistanceCal(
+	 "CCCTAACCCTAACCCTAAACCCTAAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCAACCCCAACCCCAACCCCAACCCCAACCCCAACCCTAACCCCTAACCC",
 
-					"CCCTAACCCTAAACCCTAAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCAACCCCAACCCCAACCCCAACCCCAACCCCAACCCTAACCCCTAACCCTAACCC");
-	if (result.correct) {
-		cout << "Correct, passed the ED test" << endl;
-		cout << result.compare_result << endl;
-	} else {
-		cout << "Not correct" << endl;
-	}
-*/
+	 "CCCTAACCCTAAACCCTAAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCAACCCCAACCCCAACCCCAACCCCAACCCCAACCCTAACCCCTAACCCTAACCC");
+	 if (result.correct) {
+	 cout << "Correct, passed the ED test" << endl;
+	 cout << result.compare_result << endl;
+	 } else {
+	 cout << "Not correct" << endl;
+	 }
+	 */
 	return 0;
 }
