@@ -15,10 +15,25 @@
 
 using namespace std;
 
+enum diff_type {MISMATCH, INSERTION, DELETION};
+
 struct ED_result {
 	char	compare_result [30]; //Output informing how difference are the 2 strings.
 	bool	correct; //Denotes if the error is within acceptable range.
 };
+
+struct ED_error {
+	diff_type	diff;
+	int			location;
+	char		diff_char;
+};
+
+struct ED_partial_result {
+	bool	correct;
+	int		diff_num;
+	ED_error error[10];
+};
+
 
 
 /*
@@ -32,6 +47,10 @@ void allocatePath();
  */
 void initializePath();
 
-ED_result editDistanceCal(string test_read, string ref_read);
+ED_result editDistanceCal(const string& test_read, const string& ref_read);
+
+ED_partial_result editDistanceCalFWD(const string& test_read, const string& ref_read, int key_num);
+
+ED_partial_result editDistanceCalBWD(const string& test_read, const string& ref_read, int key_num);
 
 #endif /* EDIT_DISTANCE_H_ */
