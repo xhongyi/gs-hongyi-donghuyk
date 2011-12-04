@@ -8,11 +8,12 @@
 #include <iostream>
 //#include "book.h"
 #include "common.h"
-#include "fragment_match.h"
+#include "hash_transfer.h"
 
 using namespace std;
 
 int main() {
+	ref_test();
 	hash_test();
 	return 0;
 }

@@ -34,7 +34,7 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
  * Function:	Read the reference file out and store it in a huge char.
  * Input:		ref_name is the reference file_name.
  * Modification:	ref_db will store the ref_string.
- */
-void refLoader(string & ref_db, char * ref_name);
+*/
+void refLoader(string & ref_db, const char * ref_name);
 
 #endif /* HASH_LOADER_H_ */
