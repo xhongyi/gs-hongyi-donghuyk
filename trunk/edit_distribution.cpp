@@ -104,14 +104,32 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		ref_file.close();
 		input_file.close();
 
-		long long total_fragment_num0 = 0;
-		long long total_binary_num = 0;
 		store_file << "Number of Binary Search calculation" << endl;
+		long long subsum = 0;
+		int       normal = 1;
 		for (map<int, int>::iterator p = binary_search.begin(); p != binary_search.end(); p++) {
-			store_file << "index :" << p->first << "	num :" << p->second << endl;
-			total_fragment_num0 = total_fragment_num0 + p->second;
-			total_binary_num = total_binary_num + p->first * p->second;
+			//store_file << "index :" << p->first << "	num :" << p->second << endl;
+			long long tmp = p->first / normal;
+			if (tmp < 10) {
+				subsum = subsum + p->second;
+			} else if (tmp >= 10) {
+				store_file << "index :" << p->first << "	num :" << subsum << endl;
+				subsum = 0;
+				normal = normal * 10;
+			} else {
+				store_file << "ERROR" << endl;
+			}
 		}
+		store_file << "index :" << "last"  << "	num :" << subsum << endl;
+
+                long long total_fragment_num0 = 0;
+                long long total_binary_num = 0;
+                store_file << "Number of Binary Search calculation" << endl;
+                for (map<int, int>::iterator p = binary_search.begin(); p != binary_search.end(); p++) {
+                        store_file << "index :" << p->first << "        num :" << p->second << endl;
+                        total_fragment_num0 = total_fragment_num0 + p->second;
+                        total_binary_num = total_binary_num + p->first * p->second;
+                }
 	
 		long long total_fragment_num1 = 0;
 		long long total_edit_num = 0;
