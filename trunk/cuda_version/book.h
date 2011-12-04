@@ -211,7 +211,4 @@ void wait_for_threads( const CUTThread *threads, int num );
 
 #endif
 
-
-
-
 #endif  // __BOOK_H__
