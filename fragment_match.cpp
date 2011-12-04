@@ -160,7 +160,9 @@ final_result searchFragment(string fragment, string* ref) {
 					strcpy(test_char, fragment.c_str() );
 					strcpy(ref_char, ref_str.c_str() );
 					/////////////////////Testing END
-
+					cout << "ref__read: " << ref_char << endl;
+					cout << "test_read: " << test_char << endl;
+					cout << "key_num__: " << keys_input[k].key_number << endl;
                         		ED_result edit_result = editDistanceCal(test_char, ref_char, keys_input[k].key_number);
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
