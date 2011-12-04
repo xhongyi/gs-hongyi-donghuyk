@@ -59,7 +59,7 @@ void getCoordinatePtr(int ** ptr);
  * Input:		hash_name is the name of the hash table of the chromosome.
  * Modification:	It will load all the hash_table into hash_table and coordinate.
  */
-void loadHash(string hash_name);
+long long loadHash(string hash_name);
 
 void freeHash(void);
 
@@ -86,6 +86,8 @@ bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_
  */
 int binary_filtering_cost(string fragment);
 
+__global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num);
+int hash_test(void);
 /*
  * Function: Get the result list without any filtering. Used in modeling original mrFAST
  */

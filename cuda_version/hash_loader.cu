@@ -7,7 +7,6 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 	int index;
 	int data;
 	int coordinate_index = 0;
-	int max_coordinate_num = 2;
 	FILE * pFileR;
 
 	// Read total number of hash table
