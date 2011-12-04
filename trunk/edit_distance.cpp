@@ -262,7 +262,7 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 			if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
 					> cur_dist + slide_stop + 1)
 				path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
-						= cur_dist + slide_stop + 1;
+						= cur_dist + 1;
 			//Increment
 			path[cur_lane].front_idx++;
 			//Check itself
@@ -274,7 +274,7 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 			if (path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
 					> cur_dist + slide_stop + 1)
 				path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
-						= cur_dist + slide_stop + 1;
+						= cur_dist + 1;
 
 			//stop if can't slide anymore
 			if (slide_stop == 1)
@@ -487,7 +487,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 			//test if can slide down
 			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
 					== cur_dist //If can just slide
-					|| test_read[test_idx] == ref_read[ref_idx]))
+					|| test_read[test_idx] == ref_read[ref_idx]) )
 				slide_stop = 1;
 
 			//Check neighbor lanes and update them. Modify -> decrement -> modify
@@ -495,7 +495,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 			if (path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
 					> cur_dist + slide_stop + 1)
 				path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
-						= cur_dist + slide_stop + 1;
+						= cur_dist + 1;
 			//Decrement
 			path[cur_lane].front_idx--;
 			//Check itself
@@ -507,11 +507,12 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 			if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
 					> cur_dist + slide_stop + 1)
 				path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
-						= cur_dist + slide_stop + 1;
+						= cur_dist + 1;
 
 			//stop if can't slide anymore
-			if (slide_stop == 1)
+			if (slide_stop == 1) {
 				break;
+			}
 		}
 	}
 
@@ -537,7 +538,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
