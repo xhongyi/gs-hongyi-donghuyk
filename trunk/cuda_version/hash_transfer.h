@@ -1,5 +1,5 @@
 /*
- * fragment_match.h
+ * hash_loader.h
  *
  *  Created on: Oct 7, 2011
  *      Author: mac
@@ -47,21 +47,11 @@ struct final_result {
 };
 
 void getHashTablePtr(int ** ptr);
-
 void getCoordinatePtr(int ** ptr);
-
-/*
- * Function:		Loading the hash_table into the main memory from the file. Giving
- *			the name of a chromosome, it will load all the hash_table this
- *			chromosome has. The chromosome file should be already organized
- *			as "hash_name"_"num", ex. chr1_0, with chr1 is the name of the
-			chromosome, 0 is the first file.
- * Input:		hash_name is the name of the hash table of the chromosome.
- * Modification:	It will load all the hash_table into hash_table and coordinate.
- */
 long long loadHash(string hash_name);
-
+int loadRef(string ref_name);
 void freeHash(void);
+void freeRef(void);
 
 /*
  * Function:		Search the possible locations and calculate their relevance.
@@ -87,7 +77,9 @@ bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_
 int binary_filtering_cost(string fragment);
 
 __global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num);
+__global__ void loadRefTest(char *tmp_ref_string, long long ref_num);
 int hash_test(void);
+int ref_test(void);
 /*
  * Function: Get the result list without any filtering. Used in modeling original mrFAST
  */

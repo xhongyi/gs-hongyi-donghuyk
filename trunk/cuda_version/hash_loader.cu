@@ -2,6 +2,7 @@
 #include "common.h"
 #include "hash_loader.h"
 #include <fstream>
+#include <iostream>
 long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_table_name) { 
 	int total_number;
 	int index;
@@ -35,15 +36,16 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 	return coordinate_index + 1;
 }
 
-void refLoader(string & ref_db, char * ref_name) {
+void refLoader(string & ref_db, const char * ref_file_name) {
 	ref_db.clear();
 	ifstream ref_file;
-	ref_file.open(ref_name, fstream::in);
+	ref_file.open(ref_file_name, fstream::in);
 	string temp_read;
 	while (true) {
 		ref_file >> temp_read;
-		if (!ref_file.eof() )
-		ref_db += temp_read;
+		if (!ref_file.eof() ) {
+			ref_db += temp_read;
+		}
 		else
 			break;
 	}
