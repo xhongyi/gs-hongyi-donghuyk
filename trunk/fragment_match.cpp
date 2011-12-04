@@ -153,7 +153,15 @@ final_result searchFragment(string fragment, string* ref) {
 					return_result.total_edit_perform++;
 		                        string ref_str(FRAGMENT_LENGTH, 'A');
                         		ref_str = (*ref).substr(coor_value - keys_input[k].key_number * KEY_LENGTH, FRAGMENT_LENGTH); //start_coor;
-                        		ED_result edit_result = editDistanceCal(ref_str, fragment);
+					
+					/////////////////////Just For Testing
+					char test_char[READ_LENGTH];
+					char ref_char[READ_LENGTH];
+					strcpy(test_char, fragment.c_str() );
+					strcpy(ref_char, ref_str.c_str() );
+					/////////////////////Testing END
+
+                        		ED_result edit_result = editDistanceCal(test_char, ref_char, keys_input[k].key_number);
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;

@@ -105,7 +105,15 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 					temp.coordinate = coordinate[i];
 					string ref_str(FRAGMENT_LENGTH, 'A');
 					ref_str = ref.substr(coordinate[i], FRAGMENT_LENGTH);
-					ED_result edit_result = editDistanceCal(ref_str, testee);
+                                        /////////////////////Just For Testing
+                                        char test_char[READ_LENGTH];
+                                        char ref_char[READ_LENGTH];
+                                        strcpy(test_char, testee.c_str() );
+                                        strcpy(ref_char, ref_str.c_str() );
+                                        /////////////////////Testing END
+                                        ED_result edit_result = editDistanceCal(test_char, ref_char, 0);
+
+//					ED_result edit_result = editDistanceCal(ref_str, testee);
 					if (edit_result.correct) {
 						correct_counter = correct_counter + 1;
 					} 
