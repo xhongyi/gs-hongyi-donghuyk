@@ -86,6 +86,10 @@ bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_
  */
 int binary_filtering_cost(string fragment);
 
+__global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num);
+__global__ void loadRefTest(char *tmp_ref_string, long long ref_num);
+int hash_test(void);
+int ref_test(void);
 /*
  * Function: Get the result list without any filtering. Used in modeling original mrFAST
  */
