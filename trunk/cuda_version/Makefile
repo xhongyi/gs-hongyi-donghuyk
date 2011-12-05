@@ -10,5 +10,5 @@ all: hash_test
 .cu.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-hash_test:common.h common.cu hash_transfer.h hash_transfer.cu 
-	$(CC) $(CFLAGS) common.cu hash_loader.cu hash_transfer.cu test_hash.cu -o test_hash
+hash_test:cuda.h common.h common.cu hash_transfer.h hash_transfer.cu 
+	$(CC) $(CFLAGS) cuda.cu common.cu hash_loader.cu hash_transfer.cu test_hash.cu -o test_hash
