@@ -1,5 +1,5 @@
 CC=nvcc
-CFLAGS = -g
+CFLAGS = -g -arch=sm_20
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.cu
 OBJECTS = $(SOURCES:.cu=.o)
@@ -10,5 +10,5 @@ all: hash_test
 .cu.o:
 	$(CC) $(CFLAGS) $< -o $@
 
-hash_test:cuda.h common.h common.cu hash_transfer.h hash_transfer.cu 
-	$(CC) $(CFLAGS) cuda.cu common.cu hash_loader.cu hash_transfer.cu test_hash.cu -o test_hash
+hash_test:common.h common.cu hash_transfer.h hash_transfer.cu 
+	$(CC) $(CFLAGS) common.cu hash_loader.cu hash_transfer.cu test_hash.cu -o test_hash
