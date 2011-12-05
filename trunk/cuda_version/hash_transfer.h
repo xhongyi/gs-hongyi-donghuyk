@@ -11,10 +11,6 @@
 #include <list>
 #include "hash_loader.h"
 #include "common.h"
-//#include "ref_db_generator.h"
-
-#define MAX_UPPER_BOUND 10
-#define MIN_LOWER_BOUND 2
 
 using namespace std;
 
@@ -86,8 +82,8 @@ bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_
  */
 int binary_filtering_cost(string fragment);
 
-__global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num);
-__global__ void loadRefTest(char *tmp_ref_string, long long ref_num);
+__global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num, int* dev_hash_table, int* dev_coordinate);
+__global__ void loadRefTest(char *tmp_ref_string, long long ref_num, char *dev_ref_string);
 int hash_test(void);
 int ref_test(void);
 /*

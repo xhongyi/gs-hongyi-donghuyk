@@ -9,7 +9,6 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 	int data;
 	int coordinate_index = 0;
 	FILE * pFileR;
-
 	// Read total number of hash table
 	pFileR = fopen(hash_table_name, "r");
 	if (pFileR == NULL) {
