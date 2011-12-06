@@ -72,25 +72,18 @@
  *
  *
  */
+__device__ void initializePath(ED_path* path, int main_lane);
 
-struct ED_path {
-	int path_cost[READ_LENGTH + 1];
-	int front_idx;
-};
+__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane);
 
-ED_path * path;
+__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane);
 
-int main_lane;
-int cur_lane;
-int cur_dist;
+__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane);
 
-void allocatePath() {
-	path = new ED_path[max_indel_num * 2 + 3];
-	main_lane = max_indel_num + 1;
-}
+__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane);
 
 // initializePath only fills the path elements now.
-void initializePath() {
+__device__ void initializePath(ED_path* path, int* main_lane) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++) {
 		for (int j = 0; j <= READ_LENGTH; j++) {
 			path[i].path_cost[j] = _UN_FILLED_;
@@ -98,27 +91,30 @@ void initializePath() {
 	}
 }
 
-void initializeFWDFront(int key_num) {
+__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++)
 		//For the insertion lanes, the front point is shift right.
 		path[i].front_idx = (i < main_lane) ? key_num * KEY_LENGTH + main_lane
 				- i : key_num * KEY_LENGTH;
 }
 
-void initializeBWDFront(int key_num) {
+__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++)
 		//For the insertion lanes, the front point is shift right.
 		path[i].front_idx = (i > main_lane) ? key_num * KEY_LENGTH + main_lane
 				- i : key_num * KEY_LENGTH;
 }
 
-ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
+__device__ ED_result editDistanceCal(char* test_read, char* ref_read,
+		int key_num, ED_path* path, int main_lane) {
 	//Initialize path
 	ED_result result;
 	ED_result FWD_result, BWD_result;
-	initializePath();
-	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num);
-	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num);
+	initializePath(path, main_lane);
+	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
+			main_lane);
+	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
+			main_lane);
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
@@ -144,57 +140,47 @@ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
 		assert(error_idx == result.diff_num);
 
 		/*
-		 //Flip the FWD error
-		 for	(int i = FWD_result.diff_num / 2; i < FWD_result.diff_num; i++) {
-		 //swap
-		 ED_error temp;
-		 temp = FWD_result.error[FWD_result.diff_num - 1 - i];
-		 FWD_result.error[FWD_result.diff_num - 1 - i] = FWD_result.error[i];
-		 FWD_result.error[i] = temp;
+		 cout << "***" << endl;
+		 cout << "Total difference Number: " << result.diff_num << endl;
+
+		 for (int i = 0; i < result.diff_num; i++) {
+		 switch (result.error[i].diff) {
+		 case MISMATCH:
+		 cout << "Mismatch at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
+		 case INSERTION:
+		 cout << "Insertion at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
+		 case DELETION:
+		 cout << "Deletion at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
 		 }
+		 }
+
+		 cout << "###" << endl;
 		 */
 
-		cout << "***" << endl;
-		cout << "Total difference Number: " << result.diff_num << endl;
-
-		for (int i = 0; i < result.diff_num; i++) {
-			switch (result.error[i].diff) {
-			case MISMATCH:
-				cout << "Mismatch at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
-				break;
-			case INSERTION:
-				cout << "Insertion at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
-				break;
-			case DELETION:
-				cout << "Deletion at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
-				break;
-			}
-		}
-
-		cout << "###" << endl;
-
-	}
-	else
+	} else
 		result.correct = false;
 
 	return result;
 }
 
-ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
+__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane) {
 	//Return result;
 	ED_result result;
 	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
-	initializeFWDFront(key_num);
+	initializeFWDFront(key_num, path, main_lane);
 
 	//Current distance pointer set to 0
-	cur_dist = 0;
+	int cur_dist = 0;
 	//Start at the main lane
-	cur_lane = main_lane;
+	int cur_lane = main_lane;
 	//Set the first cost of the main lane to 0
 	path[cur_lane].path_cost[path[cur_lane].front_idx] = 0;
 
@@ -417,18 +403,18 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 	return result;
 }
 
-ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
+__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane) {
 	//Return result;
 	ED_result result;
 	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
-	initializeBWDFront(key_num);
+	initializeBWDFront(key_num, path, main_lane);
 
 	//Current distance pointer set to 0
-	cur_dist = 0;
+	int cur_dist = 0;
 	//Start at the main lane
-	cur_lane = main_lane;
+	int cur_lane = main_lane;
 	//Set the first cost of the main lane to 0
 	path[cur_lane].path_cost[path[cur_lane].front_idx] = 0;
 
@@ -487,7 +473,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 			//test if can slide down
 			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
 					== cur_dist //If can just slide
-					|| test_read[test_idx] == ref_read[ref_idx]) )
+					|| test_read[test_idx] == ref_read[ref_idx]))
 				slide_stop = 1;
 
 			//Check neighbor lanes and update them. Modify -> decrement -> modify
@@ -538,7 +524,9 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
+			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
+					<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
+					<< endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH

@@ -17,6 +17,11 @@ using namespace std;
 
 enum diff_type {MISMATCH, INSERTION, DELETION};
 
+struct ED_path {
+	int path_cost[READ_LENGTH + 1];
+	int front_idx;
+};
+
 struct ED_error {
 	diff_type	diff;
 	int			location;
@@ -29,23 +34,10 @@ struct ED_result {
 	ED_error	error[MAX_ERROR_NUM];
 };
 
-
-
-/*
- * Function:	Allocate path variables, including insert_path and delete_path.
- * 				Must be called once before running editDistanceCal()
- */
-void allocatePath();
-
 /*
  * Function: Erase old data and fill the matrix with max_diff_num + 1
  */
-void initializePath();
 
-ED_result editDistanceCal(char* test_read, char* ref_read, int key_num);
-
-ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num);
-
-ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num);
+__device__ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane);
 
 #endif /* EDIT_DISTANCE_H_ */

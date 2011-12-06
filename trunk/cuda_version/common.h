@@ -23,6 +23,7 @@
 #define SKIP_BINARY_SEARCH	16777216
 #define EN_SKIP_BINARY_SEARCH	true
 #define MAX_ERROR_NUM		10
+#define MAX_COOR_RESULT_NUM	100 //This is how many coordinate each fragment will store and return.
 
 #include <string>
 
