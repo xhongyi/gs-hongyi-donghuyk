@@ -158,12 +158,17 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			printf("5\n");
 			//Edit_distance Calculation
 			if (diff_num <= max_diff_num) {
+				printf("Hey in ED test now\n");
 				char ref_str[READ_LENGTH];
-				for (int i = 0; i < READ_LENGTH; i++) //Get reference string
+				for (int i = 0; i < READ_LENGTH; i++) { //Get reference string
+					printf("coordinate: %i\n", coordinate[coor_idx] - fragment[fragment_count].sorted_keys[cur_key].key_number * KEY_LENGTH + i);
 					ref_str[i]
 							= ref[coordinate[coor_idx]
 									- fragment[fragment_count].sorted_keys[cur_key].key_number
 											* KEY_LENGTH + i];
+					printf("ref_str[%i]: %c\n", i, ref_str[i]);
+				}
+				printf("7\n");
 
 				ED_result
 						edit_result =
