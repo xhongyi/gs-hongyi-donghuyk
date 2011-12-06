@@ -178,7 +178,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 					printf("find something!\n");
 					atomicAdd(&size, 1);
 					result[fragment_count].coor_results[size].coordiante
-							= coordiante[coor_idx]
+							= coordinate[coor_idx]
 									- fragment[fragment_count].sorted_keys[cur_key].key_number
 											* KEY_LENGTH;
 					result[fragment_count].coor_results[size].diff_num
