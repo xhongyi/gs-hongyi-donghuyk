@@ -11,13 +11,14 @@
 
 int max_indel_num = 0;
 int max_diff_num = 0;
-bool select_cheapest = true;
+//bool select_cheapest = true;
 
-int hashVal(string key) {
+//int hashVal(string key) {
+int hashVal(char* key) {
 	int bp_val = 0;
 	int hash_val = 0;
 
-	assert(key.length() == KEY_LENGTH);
+	//assert(key.length() == KEY_LENGTH);
 
 	for (int i = 0; i < KEY_LENGTH; i++) {
 		switch (key[i]) {

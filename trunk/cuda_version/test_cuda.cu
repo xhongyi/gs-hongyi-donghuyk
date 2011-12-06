@@ -10,6 +10,7 @@
 using namespace std;
 
 int test_cuda(void) {
+
 	long long coord_num = loadHash("toy_hash_0");
 	GPU_fragment test_fragment;
 	strcpy(
@@ -32,7 +33,7 @@ int test_cuda(void) {
 		sort_input[i].key_entry_size = key_entry_size;
 	}
 
-	sortPrefilter(keys_input, sort_input);
+	sortPrefilter(test_fragment.sorted_keys, sort_input);
 
 	cout << "Search Fragment: " << test_fragment.fragment << endl;
 
@@ -49,8 +50,8 @@ int test_cuda(void) {
 
 	cudaMemcpy(test_result, dev_result, sizeof(final_result),
 			cudaMemcpyDeviceToHost);
-	cout << "Fragment     : " << (*test_result).fragment << endl;
-	cout << "Spilled      : " << (*test_result).spilled << endl;
+	cout << "Fragment	 : " << (*test_result).fragment << endl;
+	cout << "Spilled	  : " << (*test_result).spilled << endl;
 	cout << "Result Size  : " << (*test_result).size << endl;
 	for (int i = 0; i < (*test_result).size; i++) {
 		cout << "Result coor  : " << (*test_result).coor_results[i].coordiante
