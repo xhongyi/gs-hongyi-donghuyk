@@ -5,10 +5,6 @@
  *	  Author: mac
  */
 #include <iostream>
-#include <cstdlib>
-#include <sstream>
-#include <stdio.h>
-
 #include "universal_header.h"
 
 using namespace std;
@@ -16,8 +12,8 @@ using namespace std;
 int test_cuda(void) {
 	long long coord_num = loadHash("toy_hash_0");
 	GPU_fragment test_fragment;
-	//test_fragment.fragment = "GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGGCTCCTGTCTCCC";
 	strcpy(test_fragment.fragment, "GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGGCTCCTGTCTCCC");
+	cout << "Search Fragment: " << test_fragment.fragment << endl;
 
 	GPU_fragment* dev_fragment;
 	final_result* dev_result;
