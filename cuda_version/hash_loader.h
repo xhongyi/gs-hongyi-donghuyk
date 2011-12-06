@@ -37,4 +37,5 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 */
 void refLoader(string & ref_db, const char * ref_name);
 
+#include "hash_loader.cu"
 #endif /* HASH_LOADER_H_ */

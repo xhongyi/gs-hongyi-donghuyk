@@ -5,8 +5,7 @@
  *	  Author: mac
  */
 #include <iostream>
-#include "common.h"
-#include "hash_transfer.h"
+#include "universal_header.h"
 
 using namespace std;
 

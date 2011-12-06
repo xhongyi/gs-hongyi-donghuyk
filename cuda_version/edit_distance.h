@@ -8,7 +8,6 @@
 #ifndef EDIT_DISTANCE_H_
 #define EDIT_DISTANCE_H_
 
-#include "common.h"
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,4 +39,5 @@ struct ED_result {
 
 __device__ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane);
 
+#include "edit_distance.cu"
 #endif /* EDIT_DISTANCE_H_ */

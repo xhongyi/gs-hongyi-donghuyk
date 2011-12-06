@@ -8,12 +8,6 @@
 #ifndef FRAGMENT_MATCH_H_
 #define FRAGMENT_MATCH_H_
 
-#include <list>
-#include "hash_loader.h"
-#include "common.h"
-#include "edit_distance.h"
-//#include "ref_db_generator.h"
-
 #define MAX_UPPER_BOUND 10
 #define MIN_LOWER_BOUND 2
 
@@ -77,4 +71,5 @@ __global__ void searchFragment(GPU_fragment* fragment, int size, char* ref,
 __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 		int* coordinate);
 
+#include "fragment_match.cu"
 #endif /* FRAGMENT_MATCH_H_ */
