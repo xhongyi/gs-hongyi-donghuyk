@@ -12,7 +12,7 @@
 #include "hash_loader.h"
 #include "common.h"
 #include "edit_distance.h"
-#include "ref_db_generator.h"
+//#include "ref_db_generator.h"
 
 #define MAX_UPPER_BOUND 10
 #define MIN_LOWER_BOUND 2
@@ -70,7 +70,7 @@ struct final_result {
  * 					max_indel_num: maximum insertions or deletions
  * Output:			result: the final results.
  */
-__global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
+__global__ void searchFragment(GPU_fragment* fragment, int size, char* ref,
 		int* hash_table, int* coordiante, int max_diff_num,
 		int max_indel_num, final_result* result);
 
