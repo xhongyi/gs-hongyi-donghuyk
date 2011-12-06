@@ -73,9 +73,9 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 	return true;//false;
 }
 
-__global__ searchFragment(GPU_fragment* fragment, int* size, char* ref,
-		int* hash_table, int* coordiante, int* max_diff_num,
-		int* max_indel_num, final_result* result) {
+__global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
+		int* hash_table, int* coordiante, int max_diff_num,
+		int max_indel_num, final_result* result) {
 	//This will be used in edit_distance Calculation.
 	main_lane = max_indel_num + 1;
 	//Each thread will have a path array for edit_distance calculation.
