@@ -5,8 +5,8 @@
  *      Author: mac
  */
 
-#ifndef FRAGMENT_MATCH_H_
-#define FRAGMENT_MATCH_H_
+#ifndef HASH_TRANSFER_H_
+#define HASH_TRANSFER_H_
 
 #include <list>
 #include "hash_loader.h"
@@ -24,34 +24,6 @@ texture<int> tex_hash_table;
 texture<int> tex_coordinate;
 texture<char> tex_ref_string;
 
-struct match_result {
-	int coordinate;
-	int mismatch_num;
-	int insersion_num;
-	int deletion_num;
-	int relevance;
-	bool correct;
-	int key_number;
-};
-
-struct key_struct {
-	int key_entry;
-	int key_entry_size;
-	int key_number;
-	int order;
-};
-
-struct previous_coor {
-	int size;
-	int coor[PREFILTER_SIZE];
-};
-
-struct final_result {
-	long long total_binary_search;
-	long long total_edit_perform;
-	long long total_correct_num;
-};
-
 void getHashTablePtr(int ** ptr);
 void getCoordinatePtr(int ** ptr);
 long long loadHash(string hash_name);
@@ -59,35 +31,12 @@ int loadRef(string ref_name);
 void freeHash(void);
 void freeRef(void);
 
-/*
- * Function:		Search the possible locations and calculate their relevance.
- * Input:			fragment is the target gene sequence need to be mapped.
- * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
- * 					be the mapping location.
- */
-final_result searchFragment (string fragment, string* ref);
-
-/*
- * Function:		Free the allocated memory.
- */
-void freeMem();
-
-/*
- * Function:		
- */
-bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_result);
-
-/*
- *
- */
-int binary_filtering_cost(string fragment);
-
 __global__ void loadHashTest(int *tmp_coordinate, int *tmp_hash_table, long long coord_num, int* dev_hash_table, int* dev_coordinate);
+
 __global__ void loadRefTest(char *tmp_ref_string, long long ref_num, char *dev_ref_string);
+
 int hash_test(void);
+
 int ref_test(void);
-/*
- * Function: Get the result list without any filtering. Used in modeling original mrFAST
- */
-list<match_result> noFilterSearch(string fragment);
-#endif /* FRAGMENT_MATCH_H_ */
+
+#endif /* HASH_TRANSFER_H_ */
