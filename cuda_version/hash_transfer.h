@@ -8,7 +8,6 @@
 #ifndef HASH_TRANSFER_H_
 #define HASH_TRANSFER_H_
 
-#include <list>
 #include "hash_loader.h"
 #include "common.h"
 
