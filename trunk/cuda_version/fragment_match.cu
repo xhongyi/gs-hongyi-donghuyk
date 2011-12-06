@@ -12,6 +12,8 @@
 #include "edit_distance.h"
 #include "fragment_match.h"
 
+bool select_cheapest;
+
 __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 		int* coordinate, int max_indel_num);
 
@@ -137,7 +139,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size, char* 
 										fragment[fragment_count].fragment,
 										ref_str,
 										fragment[fragment_count].sorted_keys[cur_key].key_number,
-										path, main_lane);
+										path, main_lane, max_indel_num, max_diff_num);
 
 				if (edit_result.correct) {
 					atomicAdd(&size, 1);
