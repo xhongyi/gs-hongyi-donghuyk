@@ -10,14 +10,13 @@
 #include <assert.h>
 #include "common.h"
 #include "edit_distance.h"
-#include "edit_distribution.h"
 #include "fragment_match.h"
 
 __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
-		int* coordinate);
+		int* coordinate, int max_indel_num);
 
 __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
-		int* coordinate) {
+		int* coordinate, int max_indel_num) {
 	if (entry_size == 0)
 		return false;
 	int lower_bound = entry_coor + 1;
@@ -73,38 +72,41 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 	return true;//false;
 }
 
-__global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
-		int* hash_table, int* coordiante, int max_diff_num, int max_indel_num,
+__global__ void searchFragment(GPU_fragment* fragment, int fragment_size, char* ref,
+		int* hash_table, int* coordinate, int max_diff_num, int max_indel_num,
 		final_result* result) {
 	//This will be used in edit_distance Calculation.
-	main_lane = max_indel_num + 1;
+	int main_lane = max_indel_num + 1;
 	//Each thread will have a path array for edit_distance calculation.
 	ED_path path[MAX_ERROR_NUM];
 
 	//Fragment_counter: get cooresponding fragment
 	__shared__ int fragment_count;
-	if (threadIDx.x == 0) {
-		fragment_count = blockIDx.x;
+	__shared__ int size;
+	if (threadIdx.x == 0) {
+		fragment_count = blockIdx.x;
 	}
 
-	while (block_id < size) {
+	while (blockIdx.x < fragment_size) {
 		//get the corresponding key_num and it's coordinate.
-		int coor_count = threadIDx.x;
+		int coor_count = threadIdx.x;
 		int cur_key = 0;
 
-		__shared__ int size = -1;
 
 		int target_coor =
 				fragment[fragment_count].sorted_keys[cur_key].key_entry + 1
 						+ coor_count
 						- fragment[fragment_count].sorted_keys[cur_key].base;
+		if (threadIdx.x == 0) {
+			size = -1;
+		}
 
 		do {
 			//Do adjacency filtering
 			int diff_num = 0;
 
 			for (int i = 0; i < KEY_NUMBER; i++) { //for each segment
-				if (j - diff_num > KEY_NUMBER - max_diff_num)
+				if (i - diff_num > KEY_NUMBER - max_diff_num)
 					break;
 
 				if (!searchKey(
@@ -113,7 +115,7 @@ __global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
 										- fragment[fragment_count].sorted_keys[cur_key].key_number)
 										* KEY_LENGTH,
 						fragment[fragment_count].sorted_keys[i].key_entry,
-						fragment[fragment_count].sorted_keys[i].key_entry_size), coordinate) {
+						fragment[fragment_count].sorted_keys[i].key_entry_size, coordinate, max_indel_num)) {
 					diff_num++;
 					if (diff_num > max_diff_num)
 						break;
@@ -132,8 +134,8 @@ __global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
 				ED_result
 						edit_result =
 								editDistanceCal(
-										test_char,
-										ref_char,
+										fragment[fragment_count].fragment,
+										ref_str,
 										fragment[fragment_count].sorted_keys[cur_key].key_number,
 										path, main_lane);
 
@@ -160,18 +162,18 @@ __global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
 									+ fragment[fragment_count].sorted_keys[coor_count].key_entry_size) {
 				cur_key++;
 			}
-		} while (size <= MAX_COOR_RESULT_NUM + 1 && cur_key < max_indel_num);
+		} while (size <= MAX_COOR_RESULT_NUM && cur_key < max_indel_num);
 
 		__syncthreads();
 
-		if (threadIDx.x == 0) {
+		if (threadIdx.x == 0) {
 			for (int i = 0; i < READ_LENGTH; i++)
 				result[fragment_count].fragment[i] = fragment[fragment_count].fragment[i];
-			if (size > MAX_COOR_RESULT_NUM + 1)
+			if (size > MAX_COOR_RESULT_NUM )
 				result[fragment_count].spilled = true;
 			else {
 				result[fragment_count].spilled = false;
-				result[fragment_count].size = size - 1;
+				result[fragment_count].size = size;
 			}
 			fragment_count += gridDim.x;
 		}

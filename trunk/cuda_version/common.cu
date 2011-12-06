@@ -13,7 +13,7 @@ int max_indel_num = 0;
 int max_diff_num = 0;
 bool select_cheapest = true;
 
-__device__ int hashVal(string key) {
+int hashVal(string key) {
 	int bp_val = 0;
 	int hash_val = 0;
 
