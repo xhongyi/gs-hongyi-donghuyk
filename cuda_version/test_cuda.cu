@@ -12,6 +12,8 @@ using namespace std;
 int test_cuda(void) {
 
 	long long coord_num = loadHash("toy_hash_0");
+    long long ref_num = loadRef("toy_ref_0");
+
 	GPU_fragment test_fragment;
 	strcpy(
 			test_fragment.fragment,

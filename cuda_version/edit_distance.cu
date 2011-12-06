@@ -107,6 +107,9 @@ __device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane, in
 
 __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 		int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
+
+printf("Inside ED test 1\n");
+
 	//Initialize path
 	ED_result result;
 	ED_result FWD_result, BWD_result;
