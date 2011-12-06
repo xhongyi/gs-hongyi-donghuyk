@@ -64,6 +64,8 @@ struct final_result {
  * 					max_indel_num: maximum insertions or deletions
  * Output:			result: the final results.
  */
+bool sortPrefilter(key_struct* sort_result, key_struct* sort_input);
+
 __global__ void searchFragment(GPU_fragment* fragment, int size, char* ref,
 		int* hash_table, int* coordiante, int max_diff_num,
 		int max_indel_num, final_result* result);

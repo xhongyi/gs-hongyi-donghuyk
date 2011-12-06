@@ -52,7 +52,7 @@ void set_max_diff_num(int num);
  * Input: 			Key_sequence
  * Return: 			hash_value
  */
-int hashVal(string key);
+int hashVal(char* key);
 
 /*
  * Function: 		Given a key sequence, compute the index value of which
