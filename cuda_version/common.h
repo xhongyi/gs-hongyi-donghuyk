@@ -8,10 +8,6 @@
 #ifndef COMMOM_H_
 #define COMMOM_H_
 
-#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
-#define printf(f, ...) ((void)(f, __VA_ARGS__),0)
-#endif
-
 #define KEY_LENGTH 12
 //How many files hash table should break up to. Must be pow of 4
 #define INDEX_NUM     (1 << (2 * KEY_LENGTH ) )
@@ -26,6 +22,7 @@
 #define READ_SIZE		1000000
 #define SKIP_BINARY_SEARCH	16777216
 #define EN_SKIP_BINARY_SEARCH	true
+#define MAX_ERROR_NUM		10
 
 #include <string>
 
