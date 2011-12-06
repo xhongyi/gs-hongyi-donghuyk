@@ -77,6 +77,8 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 __global__ void searchFragment(GPU_fragment* fragment, int fragment_size, char* ref,
 		int* hash_table, int* coordinate, int max_diff_num, int max_indel_num,
 		final_result* result) {
+	printf("Test");
+	printf("cuda fragment: %c", (*fragment).fragment);
 	//This will be used in edit_distance Calculation.
 	int main_lane = max_indel_num + 1;
 	//Each thread will have a path array for edit_distance calculation.
