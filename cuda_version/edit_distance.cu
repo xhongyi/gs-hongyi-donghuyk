@@ -137,7 +137,7 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 		}
 
 		//The total diff_num should be equal to the error number just filled.
-		assert(error_idx == result.diff_num);
+		//assert(error_idx == result.diff_num);
 
 		/*
 		 cout << "***" << endl;
@@ -390,7 +390,7 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 		}
 
 		//The 2 number should match. The error iteration should finally meet the total number
-		assert (error_ptr == result.diff_num);
+		//assert (error_ptr == result.diff_num);
 		/*
 		 if (same_count != 0) { //If we have some same count at the begining
 		 //cout << "Here t" << endl;
@@ -512,8 +512,8 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		//char temp_result[30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
-		cout << "cur_lane: " << cur_lane << endl;
-		cout << "cur_idx: " << cur_idx << endl;
+		//cout << "cur_lane: " << cur_lane << endl;
+		//cout << "cur_idx: " << cur_idx << endl;
 
 		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
@@ -524,9 +524,9 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
-					<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
-					<< endl;
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
+			//		<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
+			//		<< endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
@@ -628,9 +628,9 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		}
 
 		//The 2 number should match. The error iteration should finally meet the total number
-		cout << "error_ptr: " << error_ptr << endl;
-		cout << "result.diff_num: " << result.diff_num << endl;
-		assert (error_ptr == result.diff_num);
+		//cout << "error_ptr: " << error_ptr << endl;
+		//cout << "result.diff_num: " << result.diff_num << endl;
+		//assert (error_ptr == result.diff_num);
 		/*
 		 if (same_count != 0) { //If we have some same count at the begining
 		 //cout << "Here t" << endl;
