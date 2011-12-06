@@ -60,10 +60,19 @@ struct final_result {
  * Input:			fragment is the target gene sequence need to be mapped.
  * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
  * 					be the mapping location.
+ *
+ * Input:			fragment:	the fragment set
+ * 					size:		fragment set size
+ * 					ref:		reference string
+ * 					hash_table:	hash table
+ * 					coordinate:	coordinate table
+ * 					max_diff_num: maximum different tolerance
+ * 					max_indel_num: maximum insertions or deletions
+ * Output:			result: the final results.
  */
-__global__ searchFragment(GPU_fragment* fragment, int* size, char* ref,
-		int* hash_table, int* coordiante, int* max_diff_num,
-		int* max_indel_num, final_result* result);
+__global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
+		int* hash_table, int* coordiante, int max_diff_num,
+		int max_indel_num, final_result* result);
 
 __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 		int* coordinate);

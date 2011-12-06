@@ -74,15 +74,18 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 }
 
 __global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
-		int* hash_table, int* coordiante, int max_diff_num,
-		int max_indel_num, final_result* result) {
+		int* hash_table, int* coordiante, int max_diff_num, int max_indel_num,
+		final_result* result) {
 	//This will be used in edit_distance Calculation.
 	main_lane = max_indel_num + 1;
 	//Each thread will have a path array for edit_distance calculation.
 	ED_path path[MAX_ERROR_NUM];
 
 	//Fragment_counter: get cooresponding fragment
-	int fragment_count = blockIDx.x;
+	__shared__ int fragment_count;
+	if (threadIDx.x == 0) {
+		fragment_count = blockIDx.x;
+	}
 
 	while (block_id < size) {
 		//get the corresponding key_num and it's coordinate.
@@ -160,9 +163,19 @@ __global__ searchFragment(GPU_fragment* fragment, int size, char* ref,
 		} while (size <= MAX_COOR_RESULT_NUM + 1 && cur_key < max_indel_num);
 
 		__syncthreads();
-		result[fragment_count].size = size;
 
-		fragment_count += gridDim.x;
+		if (threadIDx.x == 0) {
+			for (int i = 0; i < READ_LENGTH; i++)
+				result[fragment_count].fragment[i] = fragment[fragment_count].fragment[i];
+			if (size > MAX_COOR_RESULT_NUM + 1)
+				result[fragment_count].spilled = true;
+			else {
+				result[fragment_count].spilled = false;
+				result[fragment_count].size = size - 1;
+			}
+			fragment_count += gridDim.x;
+		}
+
 	}
 }
 
