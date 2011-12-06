@@ -32,6 +32,7 @@ long long loadHash(string hash_name) {
 	long long coord_num = hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
 	cudaMalloc((void**)&dev_hash_table, INDEX_NUM*sizeof(int));
 	cudaMalloc((void**)&dev_coordinate, coord_num*sizeof(int));
+	printf("total coordinate number: %lli\n", coord_num);
 	cudaMemcpy(dev_coordinate, coordinate, coord_num*sizeof(int), cudaMemcpyHostToDevice );
 	cudaMemcpy(dev_hash_table, hash_table, INDEX_NUM*sizeof(int), cudaMemcpyHostToDevice );
 	return coord_num;

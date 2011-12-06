@@ -25,7 +25,7 @@ int test_cuda(void) {
 
 	searchFragment <<<1, 1>>> (dev_fragment, 1, dev_ref_string, dev_hash_table, dev_coordinate, 5, 5, dev_result);
 
-	cudaMemcpy(test_result, dev_result, INDEX_NUM*sizeof(final_result), cudaMemcpyDeviceToHost );
+	cudaMemcpy(test_result, dev_result, sizeof(final_result), cudaMemcpyDeviceToHost );
 	cout << "Fragment     : " << (*test_result).fragment << endl;
 	cout << "Spilled      : " << (*test_result).spilled << endl;
 	cout << "Result Size  : " << (*test_result).size << endl;
