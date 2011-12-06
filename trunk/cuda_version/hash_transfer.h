@@ -8,9 +8,6 @@
 #ifndef HASH_TRANSFER_H_
 #define HASH_TRANSFER_H_
 
-#include "hash_loader.h"
-#include "common.h"
-
 using namespace std;
 
 extern int* hash_table;
@@ -38,4 +35,5 @@ int hash_test(void);
 
 int ref_test(void);
 
+#include "hash_transfer.cu"
 #endif /* HASH_TRANSFER_H_ */
