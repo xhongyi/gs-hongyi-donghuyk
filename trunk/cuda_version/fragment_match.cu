@@ -107,10 +107,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 		int coor_count = threadIdx.x;
 		int cur_key = 0;
 
-		int target_coor =
-				fragment[fragment_count].sorted_keys[cur_key].key_entry + 1
-						+ coor_count
-						- fragment[fragment_count].sorted_keys[cur_key].base;
+		int target_coor = fragment[fragment_count].sorted_keys[cur_key].key_entry + 1 + coor_count - fragment[fragment_count].sorted_keys[cur_key].base;
 		if (threadIdx.x == 0) {
 			size = -1;
 		}
