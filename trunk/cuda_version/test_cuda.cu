@@ -44,7 +44,7 @@ int test_cuda(void) {
 
 	GPU_fragment* dev_fragment;
 	final_result* dev_result;
-	final_result* test_result = (final_result*) malloc(sizeof(GPU_fragment));
+	final_result* test_result = (final_result*) malloc(sizeof(final_result));
 
 	cudaMalloc((void**) &dev_fragment, sizeof(GPU_fragment));
 	cudaMalloc((void**) &dev_result, sizeof(final_result));
