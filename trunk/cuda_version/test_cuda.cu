@@ -37,7 +37,7 @@ int test_cuda(void) {
 
 	sortPrefilter(test_fragment.sorted_keys, sort_input);
 	for (int i = 0; i < KEY_NUMBER; i++) {
-		cout << "key_number:" << test_fragment.sorted_keys[i].key_number << " key_entry: " << test_fragment.sorted_keys[i].key_entry << " key_entry_size: " << test_fragment.sorted_keys[i].key_entry_size << endl;
+		cout << "key_number:" << test_fragment.sorted_keys[i].key_number << " key_entry: " << test_fragment.sorted_keys[i].key_entry << " key_entry_size: " << test_fragment.sorted_keys[i].key_entry_size << " base: " << test_fragment.sorted_keys[i].base << endl;
 	}
 
 	cout << "Search Fragment: " << test_fragment.fragment << endl;
