@@ -96,6 +96,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 		fragment_count = blockIdx.x;
 	}
 
+	__syncthreads();
+
 	while (fragment_count < fragment_size) {
 		printf("Ever started!! threadId: %i\n", threadIdx.x);
 		//get the corresponding key_num and it's coordinate.
