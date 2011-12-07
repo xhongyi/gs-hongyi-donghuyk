@@ -124,7 +124,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			cur_key++;
 		}
 
-		do {
+		while (size < MAX_COOR_RESULT_NUM && cur_key <= max_diff_num) {
 			printf("Hey doing something!\n");
 			//Do adjacency filtering
 			int diff_num = 0;
@@ -237,7 +237,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				cur_key++;
 			}
 			printf("still here!!!\n");
-		} while (size < MAX_COOR_RESULT_NUM && cur_key <= max_diff_num);
+		}
 
 		printf("before syncthreads\n");
 
