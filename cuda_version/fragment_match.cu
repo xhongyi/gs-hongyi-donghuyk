@@ -116,7 +116,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 									+ 1 + coor_count
 									- fragment[fragment_count].sorted_keys[cur_key].base;
 			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry, threadIdx.x);
-			printf("fragment[fragment_count].sorted_keys[cur_key].base: %i\n  threadId: %i", fragment[fragment_count].sorted_keys[cur_key].base, threadIdx.x);
+			printf("fragment[fragment_count].sorted_keys[cur_key].base: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].base, threadIdx.x);
 			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry_size: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry_size, threadIdx.x);
 			printf("***fragment_count: %i, cur_key: %i, coor_count: %i, coor_idx: %i  threadId: %i\n", fragment_count, cur_key,coor_count, coor_idx, threadIdx.x);
 
