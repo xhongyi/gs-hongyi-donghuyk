@@ -185,7 +185,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 										max_diff_num);
 
 				if (edit_result.correct) {
-					printf("find something!  threadId: %i\n", threadIdx.x);
+					printf("find something!  cur_key: %i  threadId: %i\n", cur_key, threadIdx.x);
 					atomicAdd(&size, 1);
 					result[fragment_count].coor_results[size - 1].coordiante
 							= coordinate[coor_idx]
