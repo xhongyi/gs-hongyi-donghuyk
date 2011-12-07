@@ -103,7 +103,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 
 	while (fragment_count < fragment_size) {
 		printf("###Ever started!! threadId: %i\n", threadIdx.x);
-		printf("###fragment_count: %i  fragment_size: %i  threadId: %i\n", fragment_count, fragment_size, threadIdx.x);
+		printf("###fragment_count: %i  fragment_size: %i  threadId: %i\n",
+				fragment_count, fragment_size, threadIdx.x);
 		//get the corresponding key_num and it's coordinate.
 		int coor_count = threadIdx.x;
 		int cur_key = 0;
@@ -114,6 +115,15 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 
 		__syncthreads();
 
+		//Get the first key
+		while (cur_key <= max_diff_num
+				&& coor_count
+						>= fragment[fragment_count].sorted_keys[cur_key].base
+								+ fragment[fragment_count].sorted_keys[cur_key].key_entry_size) {
+			printf("&&&cur_key incrementing!!\n");
+			cur_key++;
+		}
+
 		do {
 			printf("Hey doing something!\n");
 			//Do adjacency filtering
@@ -123,10 +133,21 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 							fragment[fragment_count].sorted_keys[cur_key].key_entry
 									+ 1 + coor_count
 									- fragment[fragment_count].sorted_keys[cur_key].base;
-			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry, threadIdx.x);
-			printf("fragment[fragment_count].sorted_keys[cur_key].base: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].base, threadIdx.x);
-			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry_size: %i  threadId: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry_size, threadIdx.x);
-			printf("***fragment_count: %i, cur_key: %i, coor_count: %i, coor_idx: %i  threadId: %i\n", fragment_count, cur_key,coor_count, coor_idx, threadIdx.x);
+			printf(
+					"fragment[fragment_count].sorted_keys[cur_key].key_entry: %i  threadId: %i\n",
+					fragment[fragment_count].sorted_keys[cur_key].key_entry,
+					threadIdx.x);
+			printf(
+					"fragment[fragment_count].sorted_keys[cur_key].base: %i  threadId: %i\n",
+					fragment[fragment_count].sorted_keys[cur_key].base,
+					threadIdx.x);
+			printf(
+					"fragment[fragment_count].sorted_keys[cur_key].key_entry_size: %i  threadId: %i\n",
+					fragment[fragment_count].sorted_keys[cur_key].key_entry_size,
+					threadIdx.x);
+			printf(
+					"***fragment_count: %i, cur_key: %i, coor_count: %i, coor_idx: %i  threadId: %i\n",
+					fragment_count, cur_key, coor_count, coor_idx, threadIdx.x);
 
 			for (int i = 0; i < KEY_NUMBER; i++) { //for each segment
 				if (i - diff_num > KEY_NUMBER - max_diff_num)
@@ -189,7 +210,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 										max_diff_num);
 
 				if (edit_result.correct) {
-					printf("find something!  cur_key: %i  threadId: %i\n", cur_key, threadIdx.x);
+					printf("find something!  cur_key: %i  threadId: %i\n",
+							cur_key, threadIdx.x);
 					atomicAdd(&size, 1);
 					result[fragment_count].coor_results[size - 1].coordiante
 							= coordinate[coor_idx]
