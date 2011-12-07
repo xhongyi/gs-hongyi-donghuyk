@@ -125,6 +125,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 									- fragment[fragment_count].sorted_keys[cur_key].base;
 			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry);
 			printf("fragment[fragment_count].sorted_keys[cur_key].base: %i\n", fragment[fragment_count].sorted_keys[cur_key].base);
+			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry_size: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry_size);
 			printf("***fragment_count: %i, cur_key: %i, coor_count: %i, coor_idx: %i\n", fragment_count, cur_key,coor_count, coor_idx);
 
 			for (int i = 0; i < KEY_NUMBER; i++) { //for each segment
@@ -208,12 +209,13 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			//Move to the next key
 			while (cur_key <= max_diff_num
 					&& coor_count
-							>= fragment[fragment_count].sorted_keys[coor_count].base
-									+ fragment[fragment_count].sorted_keys[coor_count].key_entry_size) {
+							>= fragment[fragment_count].sorted_keys[cur_key].base
+									+ fragment[fragment_count].sorted_keys[cur_key].key_entry_size) {
+				printf("&&&cur_key incrementing!!\n");
 				cur_key++;
 			}
 			printf("still here!!!\n");
-		} while (size <= MAX_COOR_RESULT_NUM && cur_key < max_indel_num);
+		} while (size <= MAX_COOR_RESULT_NUM && cur_key < max_diff_num);
 
 		printf("before syncthreads\n");
 
