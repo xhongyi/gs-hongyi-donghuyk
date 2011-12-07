@@ -101,7 +101,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 	printf("fragment_count: %i  threadId: %i\n", fragment_count, threadIdx.x);
 
 	while (fragment_count < fragment_size) {
-		printf("Ever started!! threadId: %i\n", threadIdx.x);
+		printf("###Ever started!! threadId: %i\n", threadIdx.x);
+		printf("###fragment_count: %i  fragment_size: %i  threadId: %i\n", fragment_count, fragment_size, threadIdx.x);
 		//get the corresponding key_num and it's coordinate.
 		int coor_count = threadIdx.x;
 		int cur_key = 0;
