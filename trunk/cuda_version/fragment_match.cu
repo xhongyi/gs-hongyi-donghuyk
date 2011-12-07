@@ -103,7 +103,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 		int cur_key = 0;
 
 		if (threadIdx.x == 0) {
-			size = -1;
+			size = 0;
 		}
 
 		do {
@@ -183,14 +183,14 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				if (edit_result.correct) {
 					printf("find something!\n");
 					atomicAdd(&size, 1);
-					result[fragment_count].coor_results[size].coordiante
+					result[fragment_count].coor_results[size - 1].coordiante
 							= coordinate[coor_idx]
 									- fragment[fragment_count].sorted_keys[cur_key].key_number
 											* KEY_LENGTH;
-					result[fragment_count].coor_results[size].diff_num
+					result[fragment_count].coor_results[size - 1].diff_num
 							= edit_result.diff_num;
 					for (int i = 0; i < edit_result.diff_num; i++)
-						result[fragment_count].coor_results[size].error[i]
+						result[fragment_count].coor_results[size - 1].error[i]
 								= edit_result.error[i];
 				}
 			}
@@ -207,7 +207,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				cur_key++;
 			}
 			printf("still here!!!\n");
-		} while (size <= MAX_COOR_RESULT_NUM && cur_key < max_diff_num);
+		} while (size < MAX_COOR_RESULT_NUM && cur_key <= max_diff_num);
 
 		printf("before syncthreads\n");
 
@@ -224,7 +224,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				printf("result[%i].fragment[%i]: %c\n", fragment_count, i,
 						result[fragment_count].fragment[i]);
 			}
-			if (size > MAX_COOR_RESULT_NUM)
+			if (size >= MAX_COOR_RESULT_NUM)
 				result[fragment_count].spilled = true;
 			else {
 				result[fragment_count].spilled = false;
