@@ -123,6 +123,9 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 							fragment[fragment_count].sorted_keys[cur_key].key_entry
 									+ 1 + coor_count
 									- fragment[fragment_count].sorted_keys[cur_key].base;
+			printf("fragment[fragment_count].sorted_keys[cur_key].key_entry: %i\n", fragment[fragment_count].sorted_keys[cur_key].key_entry);
+			printf("fragment[fragment_count].sorted_keys[cur_key].base: %i\n", fragment[fragment_count].sorted_keys[cur_key].base);
+			printf("***fragment_count: %i, cur_key: %i, coor_count: %i, coor_idx: %i\n", fragment_count, cur_key,coor_count, coor_idx);
 
 			for (int i = 0; i < KEY_NUMBER; i++) { //for each segment
 				if (i - diff_num > KEY_NUMBER - max_diff_num)
@@ -159,6 +162,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			//Edit_distance Calculation
 			if (diff_num <= max_diff_num) {
 				printf("Hey in ED test now\n");
+				printf("cur_key: %i\n", cur_key);
 				char ref_str[READ_LENGTH];
 				for (int i = 0; i < READ_LENGTH; i++) { //Get reference string
 					printf("coordinate: %i\n", coordinate[coor_idx] - fragment[fragment_count].sorted_keys[cur_key].key_number * KEY_LENGTH + i);
@@ -195,6 +199,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			}
 			printf("6\n");
 			//move to the next coordinate by incrementing coor_count
+			printf("blockDim.x: %i\n", blockDim.x);
 			coor_count += blockDim.x;
 			//Move to the next key
 			while (cur_key <= max_diff_num
