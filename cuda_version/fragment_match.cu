@@ -38,6 +38,7 @@ __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 
 	printf("mid: %i\n", mid);
 	printf("coordinate[mid]: %i\n", coordinate[mid]);
+	printf("target_coor: %i\n", target_coor);
 
 	if (coordinate[mid] <= target_coor + max_indel_num && coordinate[mid]
 			>= target_coor - max_indel_num) {
@@ -110,6 +111,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 		if (threadIdx.x == 0) {
 			size = 0;
 		}
+
+		__syncthreads();
 
 		do {
 			printf("Hey doing something!\n");
@@ -237,7 +240,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			}
 			fragment_count += gridDim.x;
 		}
-
+		__syncthreads();
 	}
 }
 
