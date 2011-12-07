@@ -50,14 +50,6 @@ __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 }
 
 bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
-	if (select_cheapest == false) {
-		for (int i = 0; i < KEY_NUMBER; i++) {
-			sort_result[i].key_number = sort_input[i].key_number;
-			sort_result[i].key_entry = sort_input[i].key_entry;
-			sort_result[i].key_entry_size = sort_input[i].key_entry_size;
-		}
-		return true;
-	}
 	for (int i = 0; i < KEY_NUMBER; i++) {
 		for (int j = 0; j < KEY_NUMBER; j++) {
 			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
