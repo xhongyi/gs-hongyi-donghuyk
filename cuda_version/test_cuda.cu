@@ -9,10 +9,17 @@
 
 using namespace std;
 
+
+#include "hash_test.cu"
+
+
 int test_cuda(void) {
 
+    int ref_num = loadRef("toy_ref_0");
 	long long coord_num = loadHash("toy_hash_0");
-    long long ref_num = loadRef("toy_ref_0");
+
+	hash_test(coord_num);
+	ref_test(ref_num);
 
 	GPU_fragment test_fragment;
 	strcpy(
