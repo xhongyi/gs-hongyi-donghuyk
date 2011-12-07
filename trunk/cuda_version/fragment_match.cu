@@ -128,6 +128,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			printf("Hey doing something!\n");
 			//Do adjacency filtering
 			int diff_num = 0;
+			printf("start diff : diff num : %i\n", diff_num);
 			int
 					coor_idx =
 							fragment[fragment_count].sorted_keys[cur_key].key_entry
@@ -174,13 +175,16 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 						fragment[fragment_count].sorted_keys[i].key_entry,
 						fragment[fragment_count].sorted_keys[i].key_entry_size,
 						coordinate, max_indel_num)) {
+printf("changing before : diff num : %i\n", diff_num);
 					diff_num++;
+printf("changing after : diff num : %i\n", diff_num);
 					printf("4\n");
 					if (diff_num > max_diff_num)
 						break;
 				}
 			}
 			printf("5\n");
+			printf("end diff: diff num : %i", diff_num);
 			//Edit_distance Calculation
 			if (diff_num <= max_diff_num) {
 				printf("Hey in ED test now  threadId: %i\n", threadIdx.x);

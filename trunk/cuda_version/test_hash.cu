@@ -27,7 +27,7 @@ __global__ void loadRefTest(char *tmp_ref_string, long long ref_num, char *dev_r
 int ref_test(void) {
 	char* tmp_ref_string;
 	long long ref_num = loadRef("toy_ref_0");
-	fprintf(stdout, "reference number: %lli  \n", ref_num);
+	fprintf(stdout, "reference number: %i  \n", ref_num);
 	char* str_ref_string = (char*)malloc(sizeof(char)*ref_num);
 	cudaMalloc((void**)&tmp_ref_string, ref_num*sizeof(char));
 	loadRefTest <<<1, 1>>> (tmp_ref_string, ref_num, dev_ref_string);
@@ -52,7 +52,7 @@ int hash_test(void) {
 	int* tmp_coordinate;
 	int* tmp_hash_table;
 	long long coord_num = loadHash("toy_hash_0");
-	fprintf(stdout, "coordinate number: %lli  \n", coord_num);
+	fprintf(stdout, "coordinate number: %i  \n", coord_num);
 	int* str_hash_table = (int*)malloc(sizeof(int)*INDEX_NUM);
 	int* str_coordinate = (int*)malloc(sizeof(int)*coord_num);
 	cudaMalloc((void**)&tmp_hash_table, INDEX_NUM*sizeof(int));
