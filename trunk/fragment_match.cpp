@@ -132,8 +132,6 @@ final_result searchFragment(string fragment, string* ref) {
 				for (int j = 0; j < KEY_NUMBER; j++) {
 					if (j - diff_num > KEY_NUMBER - max_diff_num)
 						break;
-					string segment_str = fragment.substr(j * KEY_LENGTH,
-							KEY_LENGTH);
 					if (!searchKey(
 							coor_value
 									+ (keys_input[j].key_number - keys_input[k].key_number)
