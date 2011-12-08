@@ -15,6 +15,14 @@ using namespace std;
 
 __global__ void cuda_editDistanceCal (char * dev_test_read, char * dev_ref_read, ED_result * result) {
 	ED_path path[20];
+	/*
+	 * The trick is in the third agrument. If I pick the forward and backward breaking position at the same position,
+	 * it going all correct.
+	 * However, if I changed it like some starts at key 0, some key 1, some key 2 like what I did here,
+	 * the warp will break down. Actually, it will break down in a way that the key 0 ones will go into 1 warp
+	 * key 1 ones will go into 1 warp and key 2 ones will go into 1 warp.
+	 * Feel free to tweak the %number.
+	 */
 	result[threadIdx.x] = editDistanceCal(dev_test_read, dev_ref_read, threadIdx.x% 3, path, 6, 5, 5);
 }
 
