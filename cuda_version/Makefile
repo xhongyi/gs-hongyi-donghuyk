@@ -1,5 +1,5 @@
 CC=nvcc
-CFLAGS =  -arch=sm_20
+CFLAGS = -g -keep -gencode arch=compute_20,code=sm_20
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.cu
 OBJECTS = $(SOURCES:.cu=.o)
