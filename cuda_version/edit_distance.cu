@@ -121,10 +121,13 @@ printf("Inside ED test 1\n");
 		}
 	}
 	//----------------------------------------------------------------------
+	printf("test parallel a\n");
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
+	printf("test parallel b\n");
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
+	printf("test parallel c\n");
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
