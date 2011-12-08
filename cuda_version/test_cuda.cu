@@ -58,7 +58,7 @@ int test_cuda(void) {
 	cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment),
 			cudaMemcpyHostToDevice);
 
-	searchFragment <<<1, 4>>> (dev_fragment, 1, dev_ref_string, dev_hash_table, dev_coordinate, 5, 5, dev_result);
+	searchFragment <<<1, 2>>> (dev_fragment, 1, dev_ref_string, dev_hash_table, dev_coordinate, 5, 5, dev_result);
 
 	cudaMemcpy(test_result, dev_result, sizeof(final_result),
 			cudaMemcpyDeviceToHost);

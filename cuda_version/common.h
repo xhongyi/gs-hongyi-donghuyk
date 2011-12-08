@@ -8,6 +8,24 @@
 #ifndef COMMOM_H_
 #define COMMOM_H_
 
+//#define DEBUG
+
+#ifdef DEBUG
+	# define DEBUG_PRINT1(x) 				printf(x)
+	# define DEBUG_PRINT2(x, y) 			printf(x, y)
+	# define DEBUG_PRINT3(x, y, z) 			printf(x, y, z)
+	# define DEBUG_PRINT4(x, y, z, a) 		printf(x, y, z, a)
+	# define DEBUG_PRINT5(x, y, z, a, b) 	printf(x, y, z, a, b)
+	# define DEBUG_PRINT6(x, y, z, a, b, c)	printf(x, y, z, a, b, c)
+#else
+	# define DEBUG_PRINT1(x) 				do {} while (0)
+	# define DEBUG_PRINT2(x, y)	 			do {} while (0)
+	# define DEBUG_PRINT3(x, y, z) 			do {} while (0)
+	# define DEBUG_PRINT4(x, y, z, a) 		do {} while (0)
+	# define DEBUG_PRINT5(x, y, z, a, b) 	do {} while (0)
+	# define DEBUG_PRINT6(x, y, z, a, b, c)	do {} while (0)
+#endif
+
 #define KEY_LENGTH 12
 //How many files hash table should break up to. Must be pow of 4
 #define INDEX_NUM     (1 << (2 * KEY_LENGTH ) )
