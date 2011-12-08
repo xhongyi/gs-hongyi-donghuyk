@@ -63,6 +63,14 @@
  *      2 2 2 2 2 3 3 3   | | |
  *      3 3 3 3 3       | | | |
  *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
  */
 __device__ void initializePath(ED_path* path, int main_lane, int max_indel_num);
 
@@ -100,7 +108,7 @@ __device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane, in
 __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 		int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
 
-	printf("Inside ED test 1\n");
+DEBUG_PRINT1("Inside ED test 1\n");
 
 	//Initialize path
 	ED_result result;
@@ -113,13 +121,10 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 		}
 	}
 	//----------------------------------------------------------------------
-	printf("test parallel a\n");
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
-	printf("test parallel b\n");
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
-	printf("test parallel c\n");
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
@@ -141,6 +146,33 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 			error_idx++;
 		}
 
+		//The total diff_num should be equal to the error number just filled.
+		//assert(error_idx == result.diff_num);
+
+		/*
+		 cout << "***" << endl;
+		 cout << "Total difference Number: " << result.diff_num << endl;
+
+		 for (int i = 0; i < result.diff_num; i++) {
+		 switch (result.error[i].diff) {
+		 case MISMATCH:
+		 cout << "Mismatch at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
+		 case INSERTION:
+		 cout << "Insertion at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
+		 case DELETION:
+		 cout << "Deletion at " << result.error[i].location << endl;
+		 cout << "Error: " << result.error[i].diff_char << endl;
+		 break;
+		 }
+		 }
+
+		 cout << "###" << endl;
+		 */
+
 	} else
 		result.correct = false;
 
@@ -150,6 +182,7 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
 	//Return result;
 	ED_result result;
+	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
 	initializeFWDFront(key_num, path, main_lane, max_indel_num);
@@ -167,8 +200,11 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 	int test_idx;
 	int ref_idx;
 
+	DEBUG_PRINT1("test parallelism c\n");
+
 	//Pick a lane to go through
 	while (!ED_finished) {
+		//cout << "Here 0" << endl;
 		//First Pick a path.
 		while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
 			if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
@@ -187,23 +223,35 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 			}
 		}
 
+		DEBUG_PRINT1("test parallelism d\n");
+
 		//Indicate if the lane should be stopped
 		int slide_stop = 0;
 
-		//Slide down the lane.
+		//cout << "cur_dist: " << cur_dist << endl;
+		//cout << "cur_lane: " << cur_lane << endl;
+
+		//Slide down the lane
 		while (!ED_finished) {
+			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx >= READ_LENGTH - max_indel_num) {
 				//Test if it's the last element
-				if ((cur_lane <= main_lane && path[cur_lane].front_idx
+				bool is_ending = ((cur_lane <= main_lane && path[cur_lane].front_idx
 						== READ_LENGTH) //Insertion lane
 						|| (cur_lane > main_lane && path[cur_lane].front_idx //Deletion Lane
-								== READ_LENGTH + main_lane - cur_lane)) {
+								== READ_LENGTH + main_lane - cur_lane));
+				DEBUG_PRINT1("test parallelism l\n");				
+
+				if (is_ending) {
 					ED_finished = true;
 					result.correct = true;
+					DEBUG_PRINT1("test parallelism m\n");
 					break;
 				}
 			}
+
+			DEBUG_PRINT1("test parallelism e\n");
 
 			//Compute string idx:
 			test_idx = path[cur_lane].front_idx + cur_lane - main_lane;
@@ -239,6 +287,10 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 				break;
 		}
 	}
+	
+	DEBUG_PRINT1("test parallelism f\n");
+
+	//cout << "Path generated" << endl;
 
 	//Tracing back period
 	if (result.correct == false)
@@ -255,7 +307,10 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 
 		int error_ptr = 0;
 
+		//		int same_count = 0;
+		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
@@ -267,9 +322,25 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 						- main_lane - 1;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
-
 				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here m" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "^%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+				 }
+				 else {
+				 //cout << "Here n" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "^%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 }
+				 */
 				cur_lane--;
+				//same_count = 0;
 				continue;
 			}
 
@@ -281,10 +352,24 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane - 1;
 				result.error[error_ptr].diff_char = ref_read[cur_idx];
-
 				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here x" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "`%c%d%s",
+				 ref_read[cur_idx - 1], same_count,
+				 temp_result);
+				 } else {
+				 //cout << "Here y" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
+				 temp_result);
+				 }
+				 */
 				cur_lane++;
 				cur_idx--;
+				//same_count = 0;
 				continue;
 			}
 
@@ -297,22 +382,55 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 						- main_lane - 1;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
-
 				error_ptr++;
+				/*
+				 //cout << "Here1" << endl;
+				 if (same_count != 0) {
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+
+				 //cout << "Here2" << endl;
+				 } else {
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 //cout << "Here3" << endl;
+				 }
+				 */
 				cur_idx--;
+				//same_count = 0;
 				continue;
 			}
 
 			//Move to the next element
 			cur_idx--;
+			//same_count++;
+			//cout << "same_count: " << same_count << endl;
 		}
+
+		//The 2 number should match. The error iteration should finally meet the total number
+		//assert (error_ptr == result.diff_num);
+		/*
+		 if (same_count != 0) { //If we have some same count at the begining
+		 //cout << "Here t" << endl;
+		 strcpy(temp_result, result.compare_result);
+		 sDEBUG_PRINT1(result.compare_result, "%d%s", same_count,
+		 temp_result);
+		 }
+		 */
 	}
+	DEBUG_PRINT1("test parallelism g\n");
+	
 	return result;
 }
 
 __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
 	//Return result;
 	ED_result result;
+	//strcpy(result.compare_result, "\0");
 
 	//Initialize the Front of each lane
 	initializeBWDFront(key_num, path, main_lane, max_indel_num);
@@ -330,8 +448,11 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 	int test_idx;
 	int ref_idx;
 
+	DEBUG_PRINT1("test parallelism c1\n");
+	
 	//Pick a lane to go through
 	while (!ED_finished) {
+		//cout << "Here 0" << endl;
 		//First Pick a path.
 		while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
 			if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
@@ -353,8 +474,12 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		//Indicate if the lane should be stopped
 		int slide_stop = 0;
 
+		//cout << "cur_dist: " << cur_dist << endl;
+		//cout << "cur_lane: " << cur_lane << endl;
+
 		//Slide down the lane.
 		while (!ED_finished) {
+			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx <= max_indel_num) {
 				//Test if it's the last element
@@ -403,6 +528,8 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		}
 	}
 
+	//cout << "Path generated" << endl;
+
 	//Tracing back period
 	if (result.correct == false)
 		return result;
@@ -411,13 +538,22 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 		//char temp_result[30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
+		//cout << "cur_lane: " << cur_lane << endl;
+		//cout << "cur_idx: " << cur_idx << endl;
+
 		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 
 		int error_ptr = 0;
 
+		//		int same_count = 0;
+		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
+			//		<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
+			//		<< endl;
+
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
 					|| path[cur_lane + 1].path_cost[cur_idx]
@@ -428,9 +564,25 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 						- main_lane;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
-
 				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here m" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "^%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+				 }
+				 else {
+				 //cout << "Here n" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "^%c%s",
+				 test_read[cur_idx + cur_lane result_lane - 1],
+				 temp_result);
+				 }
+				 */
 				cur_lane++;
+				//same_count = 0;
 				continue;
 			}
 
@@ -442,10 +594,24 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
 				result.error[error_ptr].diff_char = ref_read[cur_idx];
-
 				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here x" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "`%c%d%s",
+				 ref_read[cur_idx - 1], same_count,
+				 temp_result);
+				 } else {
+				 //cout << "Here y" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
+				 temp_result);
+				 }
+				 */
 				cur_lane--;
 				cur_idx++;
+				//same_count = 0;
 				continue;
 			}
 
@@ -458,16 +624,51 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key
 						- main_lane;
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
-
 				error_ptr++;
+				/*
+				 //cout << "Here1" << endl;
+				 if (same_count != 0) {
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+
+				 //cout << "Here2" << endl;
+				 } else {
+				 strcpy(temp_result, result.compare_result);
+				 sDEBUG_PRINT1(result.compare_result, "%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 //cout << "Here3" << endl;
+				 }
+				 */
 				cur_idx++;
+				//same_count = 0;
 				continue;
 			}
 
 			//Move to the next element
 			cur_idx++;
+			//same_count++;
+			//cout << "same_count: " << same_count << endl;
 		}
+
+		//The 2 number should match. The error iteration should finally meet the total number
+		//cout << "error_ptr: " << error_ptr << endl;
+		//cout << "result.diff_num: " << result.diff_num << endl;
+		//assert (error_ptr == result.diff_num);
+		/*
+		 if (same_count != 0) { //If we have some same count at the begining
+		 //cout << "Here t" << endl;
+		 strcpy(temp_result, result.compare_result);
+		 sDEBUG_PRINT1(result.compare_result, "%d%s", same_count,
+		 temp_result);
+		 }
+		 */
 	}
+	DEBUG_PRINT1("test parallelism x\n");
+	DEBUG_PRINT1("test parallelism z\n");
+	
 	return result;
 }
 
