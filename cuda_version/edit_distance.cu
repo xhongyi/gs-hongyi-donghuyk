@@ -74,13 +74,19 @@
  */
 __device__ void initializePath(ED_path* path, int main_lane, int max_indel_num);
 
-__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num);
+__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read,
+		int key_num, ED_path* path, int main_lane, int max_indel_num,
+		int max_diff_num);
 
-__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num);
+__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
+		int key_num, ED_path* path, int main_lane, int max_indel_num,
+		int max_diff_num);
 
-__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane, int max_indel_num);
+__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane,
+		int max_indel_num);
 
-__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane, int max_indel_num);
+__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane,
+		int max_indel_num);
 
 // initializePath only fills the path elements now.
 __device__ void initializePath(ED_path* path, int* main_lane, int max_indel_num) {
@@ -91,14 +97,16 @@ __device__ void initializePath(ED_path* path, int* main_lane, int max_indel_num)
 	}
 }
 
-__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane, int max_indel_num) {
+__device__ void initializeFWDFront(int key_num, ED_path* path, int main_lane,
+		int max_indel_num) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++)
 		//For the insertion lanes, the front point is shift right.
 		path[i].front_idx = (i < main_lane) ? key_num * KEY_LENGTH + main_lane
 				- i : key_num * KEY_LENGTH;
 }
 
-__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane, int max_indel_num) {
+__device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane,
+		int max_indel_num) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++)
 		//For the insertion lanes, the front point is shift right.
 		path[i].front_idx = (i > main_lane) ? key_num * KEY_LENGTH + main_lane
@@ -106,7 +114,8 @@ __device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane, in
 }
 
 __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
-		int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
+		int key_num, ED_path* path, int main_lane, int max_indel_num,
+		int max_diff_num) {
 
 DEBUG_PRINT1("Inside ED test 1\n");
 
@@ -121,8 +130,13 @@ DEBUG_PRINT1("Inside ED test 1\n");
 		}
 	}
 	//----------------------------------------------------------------------
+	printf("test parallel a\n"); //Idealy, We should first see all threads printing a since they are at the same warp
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
+
+	__syncthreads(); //Force all threads synchronize.
+
+	printf("test parallel b\n"); //We should see all threads print b. However, it is not doing that.
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
 
@@ -179,7 +193,12 @@ DEBUG_PRINT1("Inside ED test 1\n");
 	return result;
 }
 
-__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
+/*
+ * Going Forward, starting from the key_num * KEY_LENGTH position and going forward until end.
+ */
+__device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read,
+		int key_num, ED_path* path, int main_lane, int max_indel_num,
+		int max_diff_num) {
 	//Return result;
 	ED_result result;
 	//strcpy(result.compare_result, "\0");
@@ -200,12 +219,15 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 	int test_idx;
 	int ref_idx;
 
-	DEBUG_PRINT1("test parallelism c\n");
-
-	//Pick a lane to go through
+	//Do string Comparison.
 	while (!ED_finished) {
 		//cout << "Here 0" << endl;
 		//First Pick a path.
+		/*
+		 * This Portion is the divergence portion, where each thread will pick a path to go through.
+		 * The path pick may be different. But after a path is picked, there will be no difference.
+		 * The picked path will be recorded in cur_lane.
+		 */
 		while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
 			if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
 				if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
@@ -232,6 +254,11 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 		//cout << "cur_lane: " << cur_lane << endl;
 
 		//Slide down the lane
+		/*
+		 * If the 2 string does not differ much, which we assume will be the common case after passing the filtering,
+		 * then they would loop like 20~100 times. That's why we want to strip out the divergent portion and put it in
+		 * a different path picking loop.
+		 */
 		while (!ED_finished) {
 			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
 			//Conservative test, speed up common case
@@ -293,6 +320,14 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 	//cout << "Path generated" << endl;
 
 	//Tracing back period
+	/*
+	 * After you got the matrix, and all distance number, you have to go back and find out which path is the
+	 * "least divergent path" and also find out where are those insertions and deletions and mismatches.
+	 * The code here should not divergent much since each element has to compare it's left, up and up-left neighbor.
+	 * The only divergent part is when it see an insertion or mismatch, they will have to go inside the "if block"
+	 * and update next iteration position. Otherwise, it's just 3 if tests. Since the "differences" between 2 strings
+	 * should be fairly small (at most 5 out of 108 comparisons). I think it's acceptiable.
+	 */
 	if (result.correct == false)
 		return result;
 	else { //If pass the test, trace back
@@ -427,7 +462,13 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key
 	return result;
 }
 
-__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane, int max_indel_num, int max_diff_num) {
+/*
+ * BWD is backward. It's pretty much the same with forward. The difference is just sliding direction. It's going
+ * backward. The stuctures are all the same. No comments here.
+ */
+__device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
+		int key_num, ED_path* path, int main_lane, int max_indel_num,
+		int max_diff_num) {
 	//Return result;
 	ED_result result;
 	//strcpy(result.compare_result, "\0");
