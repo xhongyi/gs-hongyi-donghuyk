@@ -23,7 +23,7 @@ __global__ void cuda_editDistanceCal (char * dev_test_read, char * dev_ref_read,
 	 * key 1 ones will go into 1 warp and key 2 ones will go into 1 warp.
 	 * Feel free to tweak the %number.
 	 */
-	result[threadIdx.x] = editDistanceCal(dev_test_read, dev_ref_read, threadIdx.x% 3, path, 6, 5, 5);
+	result[threadIdx.x] = editDistanceCal(dev_test_read, dev_ref_read, 0/*threadIdx.x% 3*/, path, 6, 5, 5);
 }
 
 int test_cuda(void) {
