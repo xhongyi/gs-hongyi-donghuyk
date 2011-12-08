@@ -122,16 +122,16 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 		}
 	}
 	//----------------------------------------------------------------------
-	printf("test parallel a\n"); //Idealy, We should first see all threads printing a since they are at the same warp
+	printf("FWDeditDistanceCal started  threadId: %i\n", threadIdx.x); //Idealy, We should first see all threads printing a since they are at the same warp
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
 
-	__syncthreads(); //Force all threads synchronize.
+	//__syncthreads(); //Force all threads synchronize.
 
-	printf("test parallel b\n"); //We should see all threads print b. However, it is not doing that.
+	printf("BWDeditDistanceCal started  threadId: %i\n", threadIdx.x); //We should see all threads print b. However, it is not doing that.
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
-	printf("test parallel c\n");
+	printf("2 Directions have finished  threadId: %i\n", threadIdx.x);
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
@@ -266,6 +266,9 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read,
 				break;
 		}
 	}
+	
+	printf("inside editCalFWD, after path cost generation a  threadId: %i\n", threadIdx.x);
+	printf("inside editCalFWD, after path cost generation b  threadId: %i\n", threadIdx.x);
 
 	//Tracing back period
 	/*
@@ -342,6 +345,8 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read,
 			cur_idx--;
 		}
 	}
+	printf("inside editCalFWD, after tracing back generation a  threadId: %i\n", threadIdx.x);
+	printf("inside editCalFWD, after tracing back generation b  threadId: %i\n", threadIdx.x);
 	return result;
 }
 
@@ -443,6 +448,9 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 			}
 		}
 	}
+	
+	printf("inside editCalBWD, after path cost generation a  threadId: %i\n", threadIdx.x);
+	printf("inside editCalBWD, after path cost generation b  threadId: %i\n", threadIdx.x);
 
 	//Tracing back period
 	if (result.correct == false)
@@ -509,6 +517,8 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 			cur_idx++;
 		}
 	}
+	printf("inside editCalBWD, after tracing back generation a  threadId: %i\n", threadIdx.x);
+	printf("inside editCalBWD, after tracing back generation b  threadId: %i\n", threadIdx.x);
 	return result;
 }
 
