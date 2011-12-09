@@ -222,12 +222,10 @@ DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
 				DEBUG_PRINT2("1 threadId: %i\n", threadIdx.x);
 				DEBUG_PRINT2("2 threadId: %i\n", threadIdx.x);
 				if (edit_result.correct) {
-					DEBUG_PRINT3("find something!  cur_key: %i  threadId: %i\n",
-							cur_key, threadIdx.x);
+					DEBUG_PRINT3("find something!  cur_key: %i  threadId: %i\n", cur_key, threadIdx.x);
 					__syncthreads(); // Delete this afterwards!
 					int temp_size = size;
-					DEBUG_PRINT3("Avoid Duplication temp_size: %i  threadId: %i\n",
-							temp_size, threadIdx.x);
+					DEBUG_PRINT3("Avoid Duplication temp_size: %i  threadId: %i\n", temp_size, threadIdx.x);
 					bool duplicate = false;
 					for(int i = 0; i < temp_size; i++){
 						if(result[fragment_count].coor_results[i].coordiante == (coordinate[coor_idx]
@@ -236,17 +234,26 @@ DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
 						}
 					}
 					if (duplicate == false) {
-						atomicAdd(&size, 1);
-						DEBUG_PRINT2("ATTOMIC ADD happends! threadId: %i\n", threadIdx.x);
-						result[fragment_count].coor_results[size - 1].coordiante
-								= coordinate[coor_idx]
-										- fragment[fragment_count].sorted_keys[cur_key].key_number
-												* KEY_LENGTH;
-						result[fragment_count].coor_results[size - 1].diff_num
-								= edit_result.diff_num;
-						for (int i = 0; i < edit_result.diff_num; i++)
-							result[fragment_count].coor_results[size - 1].error[i]
-									= edit_result.error[i];
+						int atomic_size = atomicAdd(&size, 1);
+							DEBUG_PRINT4("##### Attomic ADD++ blockId:%i, threadId:%i, size:%i\n",
+								blockIdx.x, threadIdx.x, size);
+						if (atomic_size < MAX_COOR_RESULT_NUM) {
+							DEBUG_PRINT2("***** ATTOMIC ADD happends! threadId: %i\n", threadIdx.x);
+							//DEBUG_PRINT6("Attomic ADD blockId:%i, threadId:%i, size:%i, coordinate:%i, diff_num:%i\n",
+							DEBUG_PRINT6("***** Attomic ADD blockId:%i, threadId:%i, size:%i, coordinate:%i, diff_num:%i\n",
+								blockIdx.x, threadIdx.x, size,
+								coordinate[coor_idx]-fragment[fragment_count].sorted_keys[cur_key].key_number*KEY_LENGTH,
+								edit_result.diff_num);
+
+							result[fragment_count].coor_results[atomic_size].coordiante
+									= coordinate[coor_idx]
+											- fragment[fragment_count].sorted_keys[cur_key].key_number
+													* KEY_LENGTH;
+							result[fragment_count].coor_results[atomic_size].diff_num
+									= edit_result.diff_num;
+							for (int i = 0; i < edit_result.diff_num; i++)
+								result[fragment_count].coor_results[atomic_size].error[i] = edit_result.error[i];
+						}
 					}
 				}
 			}
@@ -272,6 +279,7 @@ DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
 		DEBUG_PRINT3("print Ids again!! blockIdx.x: %i, threadIdx.x: %i\n",
 				blockIdx.x, threadIdx.x);
 
+		DEBUG_PRINT4("XXXXX Size update blockId:%i, threadId:%i, size:%i\n", blockIdx.x, threadIdx.x, size);
 		if (threadIdx.x == 0) {
 			DEBUG_PRINT1("I'm Here!!!\n");
 			for (int i = 0; i < READ_LENGTH; i++) {
@@ -280,11 +288,15 @@ DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
 				DEBUG_PRINT4("result[%i].fragment[%i]: %c\n", fragment_count, i,
 						result[fragment_count].fragment[i]);
 			}
-			if (size >= MAX_COOR_RESULT_NUM)
+			if (size >= MAX_COOR_RESULT_NUM) {
 				result[fragment_count].spilled = true;
+				result[fragment_count].size = MAX_COOR_RESULT_NUM;
+			}
 			else {
 				result[fragment_count].spilled = false;
 				result[fragment_count].size = size;
+				DEBUG_PRINT4("##### Size update blockId:%i, threadId:%i, size:%i\n",
+								blockIdx.x, threadIdx.x, size);
 			}
 			fragment_count += gridDim.x;
 		}
