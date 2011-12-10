@@ -32,9 +32,11 @@ long long loadHash(string hash_name) {
 	long long coord_num = hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
 	cudaMalloc((void**)&dev_hash_table, INDEX_NUM*sizeof(int));
 	cudaMalloc((void**)&dev_coordinate, coord_num*sizeof(int));
-	printf("total coordinate number: %lli\n", coord_num);
+//	printf("total coordinate number: %lli\n", coord_num);
 	cudaMemcpy(dev_coordinate, coordinate, coord_num*sizeof(int), cudaMemcpyHostToDevice );
 	cudaMemcpy(dev_hash_table, hash_table, INDEX_NUM*sizeof(int), cudaMemcpyHostToDevice );
+    cout << "cudaMalloc coordinate :" << sizeof(int)*coord_num << endl;
+    cout << "cudaMalloc hash_table :" << sizeof(int)*INDEX_NUM << endl;
 	return coord_num;
 }
 
@@ -48,6 +50,7 @@ int loadRef(string ref_name) {
 	int string_size = (int) ref_string.size();
 	cudaMalloc((void**)&dev_ref_string, string_size * sizeof(char));
 	cudaMemcpy(dev_ref_string, tmp_ref_string, ref_string.size() * sizeof(char), cudaMemcpyHostToDevice );
+    cout << "cudaMalloc ref_string :" << sizeof(char)*ref_string.size() << endl;
 	free(tmp_ref_string);
 	return ref_string.size();
 }

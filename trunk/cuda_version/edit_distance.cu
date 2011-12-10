@@ -453,10 +453,12 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 	DEBUG_PRINT2("inside editCalBWD, after path cost generation b  threadId: %i\n", threadIdx.x);
 
 	//Tracing back period
-	if (result.correct == false)
+	if (result.correct == false){
+DEBUG_PRINT2("1xxx: %i\n", threadIdx.x);
 		return result;
+	}
 	else { //If pass the test, trace back
-
+DEBUG_PRINT2("2xxx: %i\n", threadIdx.x);
 		//char temp_result[30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
@@ -465,8 +467,10 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 
 		int error_ptr = 0;
+DEBUG_PRINT2("3xxx: %i\n", threadIdx.x);
 
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+DEBUG_PRINT2("4xxx: %i\n", threadIdx.x);
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
 					|| path[cur_lane + 1].path_cost[cur_idx]
@@ -482,6 +486,7 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 				cur_lane++;
 				continue;
 			}
+DEBUG_PRINT2("5xxx: %i\n", threadIdx.x);
 
 			//If we should have a deletion
 			if (path[cur_lane - 1].path_cost[cur_idx + 1]
@@ -497,24 +502,33 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 				cur_idx++;
 				continue;
 			}
+DEBUG_PRINT2("6xxx: %i\n", threadIdx.x);
 
 			//Check if we have a mismatch
 			if (path[cur_lane].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx]) {
+DEBUG_PRINT2("61xx: %i\n", threadIdx.x);
 
 				result.error[error_ptr].diff = MISMATCH;
+DEBUG_PRINT2("62xx: %i\n", threadIdx.x);
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
+DEBUG_PRINT2("63xx: %i\n", threadIdx.x);
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
+DEBUG_PRINT2("64xx: %i\n", threadIdx.x);
 
 				error_ptr++;
+DEBUG_PRINT2("65xx: %i\n", threadIdx.x);
 				cur_idx++;
+DEBUG_PRINT2("66xx: %i\n", threadIdx.x);
 				continue;
 			}
+DEBUG_PRINT2("7xxx: %i\n", threadIdx.x);
 
 			//Move to the next element
 			cur_idx++;
+DEBUG_PRINT2("8xxx: %i\n", threadIdx.x);
 		}
 	}
 	DEBUG_PRINT2("inside editCalBWD, after tracing back generation a  threadId: %i\n", threadIdx.x);

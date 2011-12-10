@@ -15,8 +15,8 @@
 using namespace std;
 
 void test_full(string hash_file_name, string ref_file_name, string output_file_name, string result_input_name) {
-	set_max_indel_num(3);
-	set_max_diff_num(3);
+	set_max_indel_num(MAX_INDEL_NUM);
+	set_max_diff_num(MAX_DIFF_NUM);
 	ifstream ref_file;
 	ifstream input_file;
 //	ofstream store_file;
@@ -94,7 +94,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 			cudaEvent_t start_prefilter_time, stop_prefilter_time;
 			cudaEventCreate(&start_prefilter_time);
 			cudaEventRecord(start_prefilter_time, 0);
-			// input fragment fetch from result_input
+			//input fragment fetch from result_input
 			for (int i = 0 ; i < fragment_size ; i ++ ){
 				input_file >> test_fragment[i].fragment;
 				if(!input_file.good()){
@@ -102,6 +102,19 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 					break;
 				}
 			}
+
+
+/*			char tmp_str[READ_SIZE];
+			input_file >> tmp_str;
+			cout << tmp_str << endl;;
+			for (int i = 0; i < 140; i++){
+				for(int k=0; k < READ_LENGTH; k++){
+					test_fragment[i].fragment[k] = tmp_str[k];
+				}
+			}
+			fragment_size = 140;
+			cout << test_fragment[0].fragment << endl;
+*/
 			// Getting the sort key.
 			for (int k = 0; k < fragment_size; k++) {
 				key_struct sort_input[KEY_NUMBER];
@@ -109,6 +122,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 					char key[KEY_LENGTH];
 					for (int j = 0; j < KEY_LENGTH; j++) {
 						key[j] = test_fragment[k].fragment[j + KEY_LENGTH * i];
+						//cout << "key:" << j << " : "<< key[j] << endl;
 					}
 					int key_hash = hashVal(key);
 					int key_entry = hash_table[key_hash];
@@ -154,7 +168,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 			cudaEventCreate(&start_cuda_time);
 			cudaEventRecord(start_cuda_time,0);
 			searchFragment <<<fragment_set, thread_size>>> (dev_fragment, fragment_size, 
-						dev_ref_string, dev_hash_table, dev_coordinate, 3, 3, dev_result);
+						dev_ref_string, dev_hash_table, dev_coordinate, max_diff_num, max_indel_num, dev_result);
 			cudaEventCreate(&stop_cuda_time);
 			cudaEventRecord(stop_cuda_time, 0);
 			cudaEventSynchronize(stop_cuda_time);
@@ -256,6 +270,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		fprintf(pFileW,"\n");
 	
 		fprintf(pFileW,"---------------------------------------------\n");
+		fprintf(pFileW,"indel: %i / diff: %i\n", max_indel_num, max_diff_num);
 		fprintf(pFileW,"total_fragment_num : %lliea\n", total_fragment_num2);
 		fprintf(pFileW,"total_pass_num____ : %lliea\n", total_pass_num);
 		fprintf(pFileW,"total_spilled_num_ : %iea\n", total_spilled_num);
@@ -269,6 +284,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		fprintf(pFileW,"---------------------------------------------\n");
 
 		printf("---------------------------------------------\n");
+		printf("indel: %i / diff: %i\n", max_indel_num, max_diff_num);
 		printf("total_fragment_num : %lliea\n", total_fragment_num2);
 		printf("total_pass_num____ : %lliea\n", total_pass_num);
 		printf("total_spilled_num_ : %iea\n", total_spilled_num);
