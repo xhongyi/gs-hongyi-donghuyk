@@ -81,7 +81,7 @@ __device__ void initializeBWDFront(int key_num, ED_path* path, int main_lane,
 		int max_indel_num);
 
 // initializePath only fills the path elements now.
-__device__ void initializePath(ED_path* path, int* main_lane, int max_indel_num) {
+__device__ void initializePath(ED_path* path, int main_lane, int max_indel_num) {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++) {
 		for (int j = 0; j <= READ_LENGTH; j++) {
 			path[i].path_cost[j] = _UN_FILLED_;
@@ -114,14 +114,14 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 	//Initialize path
 	ED_result result;
 	ED_result FWD_result, BWD_result;
-	//initializePath(path, main_lane, max_indel_num);
-	//----------------------------------------------------------------------
+	initializePath(path, main_lane, max_indel_num);
+	/*----------------------------------------------------------------------
 	for (int i = 0; i < max_indel_num * 2 + 3; i++) {
 		for (int j = 0; j <= READ_LENGTH; j++) {
 			path[i].path_cost[j] = _UN_FILLED_;
 		}
 	}
-	//----------------------------------------------------------------------
+	----------------------------------------------------------------------*/
 	DEBUG_PRINT2("FWDeditDistanceCal started  threadId: %i\n", threadIdx.x); //Idealy, We should first see all threads printing a since they are at the same warp
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);

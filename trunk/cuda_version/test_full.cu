@@ -22,9 +22,22 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 	ofstream store_file;
 
 //	final_result filter_result;
-	int monitor_counter = 0; 		// for operation monitoring
+	long long monitor_counter = 0; 		// for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
-	long long accumulate_time = 0;
+
+	long long prefilter_time = 0;
+	long long memcpy_input_time = 0;
+	long long cuda_time = 0;
+	long long memcpy_output_time = 0;
+	long long analysis_time = 0;
+	long long total_time = 0;
+
+	long long acc_prefilter_time = 0;
+	long long acc_memcpy_input_time = 0;
+	long long acc_cuda_time = 0;
+	long long acc_memcpy_output_time = 0;
+	long long acc_analysis_time = 0;
+	long long acc_total_time = 0;
 
 	int fragment_set  = MAX_FRAGMENT_SET_NUM;
 	int fragment_size = MAX_FRAGMENT_SIZE;
@@ -74,10 +87,10 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 			cout << " Error File Open : " << file_ref << endl;
 			break;
 		}
-		time_t start_time;
-		time(&start_time);
 		input_file.open(result_input_name.c_str());
 		do {
+			time_t start_time;
+			time(&start_time);
 			// input fragment fetch from result_input
 			for (int i = 0 ; i < fragment_size ; i ++ ){
 				input_file >> test_fragment[i].fragment;
@@ -112,10 +125,18 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 //				}
 //				cout << "****************************************************************************" << endl;
 			}
+			time_t start_memcpy_input_time;
+			time(&start_memcpy_input_time);
 			cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment)*fragment_size, cudaMemcpyHostToDevice);
+			time_t start_cuda_time;
+			time(&start_cuda_time);
 			searchFragment <<<fragment_set, thread_size>>> (dev_fragment, fragment_size, 
 						dev_ref_string, dev_hash_table, dev_coordinate, 3, 3, dev_result);
+			time_t start_memcpy_output_time;
+			time(&start_memcpy_output_time);
 			cudaMemcpy(test_result, dev_result, sizeof(final_result)*fragment_size, cudaMemcpyDeviceToHost);
+			time_t start_analysis_time;
+			time(&start_analysis_time);
 			for (int j = 0; j < fragment_size; j++) {
 //				cout << "****************************************************************************" << endl;
 //				cout << "Spilled	  : " << test_result[j].spilled << endl;
@@ -151,6 +172,14 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 			if (monitor_counter2 >= 1000000) {
 					monitor_counter2 = 0;
 			}
+			time_t end_time;
+			time(&end_time);
+ 			prefilter_time 		= prefilter_time + difftime(start_memcpy_input_time, start_time);
+			memcpy_input_time 	= memcpy_input_time + difftime(start_cuda_time, start_memcpy_input_time);
+ 			cuda_time 			= cuda_time + difftime(start_memcpy_output_time, start_cuda_time);
+			memcpy_output_time 	= memcpy_output_time + difftime(start_analysis_time, start_memcpy_output_time);
+ 			analysis_time 		= analysis_time + difftime(end_time, start_analysis_time);
+ 			total_time 			= total_time + difftime(end_time, start_time);
 		}while(input_file.good());
 		fragment_size = MAX_FRAGMENT_SIZE;
 		cudaFree(dev_fragment);
@@ -158,10 +187,12 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		freeHash();
 		freeRef();
 	
-		time_t end_time;
-		time(&end_time);
-		cout << endl;
-		accumulate_time = accumulate_time + difftime(end_time, start_time);
+ 		acc_prefilter_time 		= acc_prefilter_time + prefilter_time;
+		acc_memcpy_input_time 	= acc_memcpy_input_time + memcpy_input_time;
+ 		acc_cuda_time 			= acc_cuda_time + cuda_time;
+		acc_memcpy_output_time 	= acc_memcpy_output_time + memcpy_output_time;
+ 		acc_analysis_time 		= acc_analysis_time + analysis_time;
+		acc_total_time 			= acc_total_time + total_time;
 		ref_file.close();
 		input_file.close();
 	
@@ -178,24 +209,28 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		store_file << "total_fragment_num : " << total_fragment_num2 << endl;
 		store_file << "total_pass_num____ : " << total_pass_num << endl;
 		store_file << "total_spilled_num_ : " << total_spilled_num << endl;
-		store_file << "Start_time________ : " << ctime(&start_time);
-		store_file << "End_time__________ : " << ctime(&end_time);
-		store_file << "TIme Diff_________ : " << difftime(end_time,start_time) << endl;
-		store_file << "Accumulated Time__ : " << accumulate_time << endl;
+		store_file << "Acc_prefilter_time : " << acc_prefilter_time << endl;
+		store_file << "Acc_memcpy_input__ : " << acc_memcpy_input_time << endl;
+		store_file << "Acc_cuda__________ : " << acc_cuda_time << endl;
+		store_file << "Acc_memcpy_output_ : " << acc_memcpy_output_time << endl;
+		store_file << "Acc_analysis_time_ : " << acc_analysis_time << endl;
+		store_file << "Accumulated Time__ : " << acc_total_time << endl;
 		store_file << "---------------------------------------------" << endl;
 	
 		cout << "---------------------------------------------" << endl;
 		cout << "total_fragment_num : " << total_fragment_num2 << endl;
 		cout << "total_pass_num____ : " << total_pass_num << endl;
 		cout << "total_spilled_num_ : " << total_spilled_num << endl;
-		cout << "Start_time________ : " << ctime(&start_time);
-		cout << "End_time__________ : " << ctime(&end_time);
-		cout << "TIme Diff_________ : " << difftime(end_time,start_time) << endl;
-		cout << "Accumulated Time__ : " << accumulate_time << endl;
+		cout << "Acc_prefilter_time : " << acc_prefilter_time << endl;
+		cout << "Acc_memcpy_input__ : " << acc_memcpy_input_time << endl;
+		cout << "Acc_cuda__________ : " << acc_cuda_time << endl;
+		cout << "Acc_memcpy_output_ : " << acc_memcpy_output_time << endl;
+		cout << "Acc_analysis_time_ : " << acc_analysis_time << endl;
+		cout << "Accumulated Time__ : " << acc_total_time << endl;
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
 	}
-	cout << "Accumulated Time : " << accumulate_time << endl;
+	cout << "Accumulated Time : " << acc_total_time << endl;
 }
 
 int main() {
@@ -217,4 +252,11 @@ int main() {
 	free(file_dist);
 	return 0;
 }
+
+			time_t start_time;
+			time_t start_memcpy_input_time;
+			time_t start_cuda_time;
+			time_t start_memcpy_output_time;
+			time_t start_analysis_time;
+			time_t end_time;
 
