@@ -43,10 +43,11 @@
 #define MAX_ERROR_NUM		10
 #define MAX_COOR_RESULT_NUM		100 //This is how many coordinate each fragment will store and return.
 
+#define MAX_INDEL_NUM 			5
+#define MAX_DIFF_NUM 			5
 #define MAX_FRAGMENT_SET_NUM 	140
 #define MAX_FRAGMENT_SIZE    	3360
 #define MAX_THREAD_NUM			64
-
 
 #include <string>
 

@@ -183,16 +183,16 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				DEBUG_PRINT2("cur_key: %i\n", cur_key);
 				char ref_str[READ_LENGTH];
 				for (int i = 0; i < READ_LENGTH; i++) { //Get reference string
-					DEBUG_PRINT2(
-							"coordinate: %i\n",
+					DEBUG_PRINT3(
+							"coordinate: %i, threadIdx:%i\n",
 							coordinate[coor_idx]
 									- fragment[fragment_count].sorted_keys[cur_key].key_number
-											* KEY_LENGTH + i);
+											* KEY_LENGTH + i, threadIdx.x);
 					ref_str[i]
 							= ref[coordinate[coor_idx]
 									- fragment[fragment_count].sorted_keys[cur_key].key_number
 											* KEY_LENGTH + i];
-					DEBUG_PRINT3("ref_str[%i]: %c\n", i, ref_str[i]);
+					DEBUG_PRINT4("ref_str[%i]: %c threadIdx.x %i\n", i, ref_str[i], threadIdx.x);
 				}
 				DEBUG_PRINT1("7\n");
 				DEBUG_PRINT1("7.5\n");

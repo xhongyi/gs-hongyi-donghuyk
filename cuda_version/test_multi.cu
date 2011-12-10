@@ -66,8 +66,8 @@ int test_cuda(void) {
 	cudaMalloc((void**) &dev_fragment, sizeof(GPU_fragment)*fragment_set);
 	cudaMalloc((void**) &dev_result,   sizeof(final_result)*fragment_set);
 	cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment)*fragment_set, cudaMemcpyHostToDevice);
-	searchFragment <<<fragment_set, 1>>> (dev_fragment, fragment_set, dev_ref_string, dev_hash_table, 
-								dev_coordinate, 5, 5, dev_result);
+	searchFragment <<<fragment_set, 9>>> (dev_fragment, fragment_set*10, dev_ref_string, dev_hash_table, 
+								dev_coordinate, 3, 3, dev_result);
 	cudaMemcpy(test_result, dev_result, sizeof(final_result)*fragment_set, cudaMemcpyDeviceToHost);
 	for (int j = 0; j < fragment_set; j++) {
 		cout << "****************************************************************************" << endl;
