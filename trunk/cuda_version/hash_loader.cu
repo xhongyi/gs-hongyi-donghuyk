@@ -14,19 +14,19 @@ long long hashReconstructor(int ** index_db, int ** coordinate_db, const char * 
 	if (pFileR == NULL) {
 		printf("Error Open File : %s\n", hash_table_name);
 	}
-	fscanf(pFileR, "%i", &total_number);
+	int tmp = fscanf(pFileR, "%i", &total_number);
 	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
 	*coordinate_db = (int*) malloc(sizeof(int) * total_number);
 
 	// Read index number & coordinate based on index number
 	for (int i = 0; i < INDEX_NUM; i++) {
-		fscanf(pFileR, "%i", &index);
+		tmp = fscanf(pFileR, "%i", &index);
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
 		coordinate_index = coordinate_index + 1;
 		// Read coordinate
 		for (int j = 0; j < index; j++) {
-			fscanf(pFileR, "%i", &data);
+			tmp = fscanf(pFileR, "%i", &data);
 			(*coordinate_db)[coordinate_index] = data;
 			coordinate_index = coordinate_index + 1;
 		}

@@ -15,8 +15,8 @@
 using namespace std;
 
 void test_full(string hash_file_name, string ref_file_name, string output_file_name, string result_input_name) {
-	set_max_indel_num(5);
-	set_max_diff_num(5);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
 	ifstream ref_file;
 	ifstream input_file;
 	ofstream store_file;
@@ -26,13 +26,15 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 	long long monitor_counter2 = 0; // for operation monitoring
 	long long accumulate_time = 0;
 
-	int fragment_set = MAX_FRAGMENT_SET_NUM;
-	GPU_fragment test_fragment[fragment_set];
+	int fragment_set  = MAX_FRAGMENT_SET_NUM;
+	int fragment_size = MAX_FRAGMENT_SIZE;
+	int thread_size   = MAX_THREAD_NUM;
+	GPU_fragment test_fragment[fragment_size];
 	GPU_fragment* dev_fragment;
 	final_result* dev_result;
-	final_result *test_result = (final_result*) malloc(sizeof(final_result)*fragment_set);
-	cudaMalloc((void**) &dev_fragment, sizeof(GPU_fragment)*fragment_set);
-	cudaMalloc((void**) &dev_result,   sizeof(final_result)*fragment_set);
+	final_result *test_result = (final_result*) malloc(sizeof(final_result)*fragment_size);
+	cudaMalloc((void**) &dev_fragment, sizeof(GPU_fragment)*fragment_size);
+	cudaMalloc((void**) &dev_result,   sizeof(final_result)*fragment_size);
 
 	// get fragment from reference file
 
@@ -46,23 +48,24 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		char * file_store= (char*) malloc(sizeof(char)*50);
 	   		sprintf(file_ref ,  "%s%i", (char*) ref_file_name.c_str(), j);
 	   		sprintf(file_hash,  "%s%i", (char*) hash_file_name.c_str(), j);
-	   		sprintf(file_store, "%s%i", (char*) output_file_name.c_str(), j);
-		cout << "ref_file_name  :" << file_ref  << endl;
-		cout << "hash_file_name :" << file_hash << endl;
-		cout << "store_file_name:" << file_store << endl;
+	   		sprintf(file_store, "%s%i_%i_%i_%i", (char*) output_file_name.c_str(), j, 
+				fragment_set, fragment_size, thread_size);
+		cout << "*** ref_file_name  :" << file_ref  << endl;
+		cout << "*** hash_file_name :" << file_hash << endl;
+		cout << "*** store_file_name:" << file_store << endl;
 		// store file 
 		store_file.open(file_store);
 
 		// reference file load at string
 		string ref;
-		cout << "* Status : Start ref strings" << endl;
+		cout << "*** Status : Start ref strings" << endl;
 		int ref_num = loadRef(file_ref);
-		cout << "* Status : End   ref strings" << endl;
+		cout << "*** Status : End   ref strings" << endl;
 
 		// hash table load 
-		cout << "* Status : Start load hash table" << endl;
+		cout << "*** Status : Start load hash table" << endl;
 		long long coord_num = loadHash(file_hash);
-		cout << "* Status : End   load hash table" << endl;
+		cout << "*** Status : End   load hash table" << endl;
 
 		int total_spilled_num = 0;
 
@@ -76,15 +79,15 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		input_file.open(result_input_name.c_str());
 		do {
 			// input fragment fetch from result_input
-			for (int i = 0 ; i < fragment_set ; i ++ ){
+			for (int i = 0 ; i < fragment_size ; i ++ ){
 				input_file >> test_fragment[i].fragment;
 				if(!input_file.good()){
-					fragment_set = i;
+					fragment_size = i;
 					break;
 				}
 			}
 			// Getting the sort key.
-			for (int k = 0; k < fragment_set; k++) {
+			for (int k = 0; k < fragment_size; k++) {
 				key_struct sort_input[KEY_NUMBER];
 				for (int i = 0; i < KEY_NUMBER; i++) {
 					char key[KEY_LENGTH];
@@ -109,11 +112,11 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 //				}
 //				cout << "****************************************************************************" << endl;
 			}
-			cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment)*fragment_set, cudaMemcpyHostToDevice);
-			searchFragment <<<fragment_set, 9>>> 
-				(dev_fragment, fragment_set, dev_ref_string, dev_hash_table, dev_coordinate, 3, 3, dev_result);
-			cudaMemcpy(test_result, dev_result, sizeof(final_result)*fragment_set, cudaMemcpyDeviceToHost);
-			for (int j = 0; j < fragment_set; j++) {
+			cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment)*fragment_size, cudaMemcpyHostToDevice);
+			searchFragment <<<fragment_set, thread_size>>> (dev_fragment, fragment_size, 
+						dev_ref_string, dev_hash_table, dev_coordinate, 3, 3, dev_result);
+			cudaMemcpy(test_result, dev_result, sizeof(final_result)*fragment_size, cudaMemcpyDeviceToHost);
+			for (int j = 0; j < fragment_size; j++) {
 //				cout << "****************************************************************************" << endl;
 //				cout << "Spilled	  : " << test_result[j].spilled << endl;
 //				cout << "Result Size  : " << test_result[j].size << endl;
@@ -139,8 +142,8 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 //				cout << "****************************************************************************" << endl;
 	            correct_count[tmp_size]++;
 			}
-			monitor_counter = monitor_counter + fragment_set;
-			monitor_counter2 = monitor_counter2 + fragment_set;
+			monitor_counter = monitor_counter + fragment_size;
+			monitor_counter2 = monitor_counter2 + fragment_size;
 			if (monitor_counter >= 10000) {
 				fprintf(stdout, "hash distribution count: %lld \n", monitor_counter2);
 					monitor_counter = 0;
@@ -149,7 +152,7 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 					monitor_counter2 = 0;
 			}
 		}while(input_file.good());
-		fragment_set = MAX_FRAGMENT_SET_NUM;
+		fragment_size = MAX_FRAGMENT_SIZE;
 		cudaFree(dev_fragment);
 		cudaFree(dev_result);
 		freeHash();

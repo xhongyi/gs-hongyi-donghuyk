@@ -35,7 +35,6 @@ __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
 	DEBUG_PRINT1("2\n");
-
 	DEBUG_PRINT2("mid: %i\n", mid);
 	DEBUG_PRINT2("coordinate[mid]: %i\n", coordinate[mid]);
 	DEBUG_PRINT2("target_coor: %i\n", target_coor);
@@ -153,20 +152,13 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			for (int i = 0; i < KEY_NUMBER; i++) { //for each segment
 				if (i - diff_num > KEY_NUMBER - max_diff_num)
 					break;
-
-				DEBUG_PRINT2(
-						"coor_idx + (fragment[fragment_count].sorted_keys[i].key_number - fragment[fragment_count].sorted_keys[cur_key].key_number) * KEY_LENGTH: %i\n",
-						(coordinate[coor_idx]
-								+ (fragment[fragment_count].sorted_keys[i].key_number
-										- fragment[fragment_count].sorted_keys[cur_key].key_number)
-										* KEY_LENGTH));
-				DEBUG_PRINT2(
-						"fragment[fragment_count].sorted_keys[i].key_entry: %i\n",
-						fragment[fragment_count].sorted_keys[i].key_entry);
-				DEBUG_PRINT2(
-						"fragment[fragment_count].sorted_keys[i].key_entry_size: %i\n",
-						fragment[fragment_count].sorted_keys[i].key_entry_size);
-
+				DEBUG_PRINT2("coor_idx + (fragment[fragment_count].sorted_keys[i].key_number - fragment[fragment_count].sorted_keys[cur_key].key_number) * KEY_LENGTH: %i\n",
+							(coordinate[coor_idx] + (fragment[fragment_count].sorted_keys[i].key_number
+							- fragment[fragment_count].sorted_keys[cur_key].key_number) * KEY_LENGTH));
+				DEBUG_PRINT2("fragment[fragment_count].sorted_keys[i].key_entry: %i\n",
+							fragment[fragment_count].sorted_keys[i].key_entry);
+				DEBUG_PRINT2("fragment[fragment_count].sorted_keys[i].key_entry_size: %i\n",
+							fragment[fragment_count].sorted_keys[i].key_entry_size);
 				if (!searchKey(
 						coordinate[coor_idx]
 								+ (fragment[fragment_count].sorted_keys[i].key_number
@@ -175,10 +167,10 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 						fragment[fragment_count].sorted_keys[i].key_entry,
 						fragment[fragment_count].sorted_keys[i].key_entry_size,
 						coordinate, max_indel_num)) {
-DEBUG_PRINT2("changing before : diff num : %i\n", diff_num);
-					diff_num++;
-DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
-					DEBUG_PRINT1("4\n");
+							DEBUG_PRINT2("changing before : diff num : %i\n", diff_num);
+							diff_num++;
+							DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
+							DEBUG_PRINT1("4\n");
 					if (diff_num > max_diff_num)
 						break;
 				}
@@ -279,7 +271,7 @@ DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
 		DEBUG_PRINT3("print Ids again!! blockIdx.x: %i, threadIdx.x: %i\n",
 				blockIdx.x, threadIdx.x);
 
-		DEBUG_PRINT4("XXXXX Size update blockId:%i, threadId:%i, size:%i\n", blockIdx.x, threadIdx.x, size);
+		DEBUG_PRINT4("Size update blockId:%i, threadId:%i, size:%i\n", blockIdx.x, threadIdx.x, size);
 		if (threadIdx.x == 0) {
 			DEBUG_PRINT1("I'm Here!!!\n");
 			for (int i = 0; i < READ_LENGTH; i++) {
