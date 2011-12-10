@@ -15,8 +15,8 @@ using namespace std;
 
 int test_cuda(void) {
 
-    int ref_num = loadRef("result_ref_0");
-	long long coord_num = loadHash("result_hash_0");
+    int ref_num = loadRef("toy_ref_0");
+	long long coord_num = loadHash("toy_hash_0");
 
 //	hash_test(coord_num);
 //	ref_test(ref_num);
