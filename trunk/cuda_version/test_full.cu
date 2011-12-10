@@ -19,25 +19,26 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 	set_max_diff_num(3);
 	ifstream ref_file;
 	ifstream input_file;
-	ofstream store_file;
+//	ofstream store_file;
+    FILE * pFileW;
 
 //	final_result filter_result;
 	long long monitor_counter = 0; 		// for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
 
-	long long prefilter_time = 0;
-	long long memcpy_input_time = 0;
-	long long cuda_time = 0;
-	long long memcpy_output_time = 0;
-	long long analysis_time = 0;
-	long long total_time = 0;
+	float prefilter_time = 0;
+	float memcpy_input_time = 0;
+	float cuda_time = 0;
+	float memcpy_output_time = 0;
+	float analysis_time = 0;
+	float total_time = 0;
 
-	long long acc_prefilter_time = 0;
-	long long acc_memcpy_input_time = 0;
-	long long acc_cuda_time = 0;
-	long long acc_memcpy_output_time = 0;
-	long long acc_analysis_time = 0;
-	long long acc_total_time = 0;
+	float acc_prefilter_time = 0;
+	float acc_memcpy_input_time = 0;
+	float acc_cuda_time = 0;
+	float acc_memcpy_output_time = 0;
+	float acc_analysis_time = 0;
+	float acc_total_time = 0;
 
 	int fragment_set  = MAX_FRAGMENT_SET_NUM;
 	int fragment_size = MAX_FRAGMENT_SIZE;
@@ -67,7 +68,8 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		cout << "*** hash_file_name :" << file_hash << endl;
 		cout << "*** store_file_name:" << file_store << endl;
 		// store file 
-		store_file.open(file_store);
+//		store_file.open(file_store);
+		pFileW = fopen(file_store, "w");
 
 		// reference file load at string
 		string ref;
@@ -89,8 +91,9 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		}
 		input_file.open(result_input_name.c_str());
 		do {
-			time_t start_time;
-			time(&start_time);
+			cudaEvent_t start_prefilter_time, stop_prefilter_time;
+			cudaEventCreate(&start_prefilter_time);
+			cudaEventRecord(start_prefilter_time, 0);
 			// input fragment fetch from result_input
 			for (int i = 0 ; i < fragment_size ; i ++ ){
 				input_file >> test_fragment[i].fragment;
@@ -125,18 +128,58 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 //				}
 //				cout << "****************************************************************************" << endl;
 			}
-			time_t start_memcpy_input_time;
-			time(&start_memcpy_input_time);
+			cudaEventCreate(&stop_prefilter_time);
+			cudaEventRecord(stop_prefilter_time, 0);
+			cudaEventSynchronize(stop_prefilter_time);
+			float tmp_prefilter_time;
+			cudaEventElapsedTime(&tmp_prefilter_time, start_prefilter_time, stop_prefilter_time);
+ 			prefilter_time = prefilter_time + tmp_prefilter_time;
+			cudaEventDestroy(start_prefilter_time);
+			cudaEventDestroy(stop_prefilter_time);
+
+			cudaEvent_t start_memcpy_input_time, stop_memcpy_input_time;
+			cudaEventCreate(&start_memcpy_input_time);
+			cudaEventRecord(start_memcpy_input_time,0);
 			cudaMemcpy(dev_fragment, &test_fragment, sizeof(GPU_fragment)*fragment_size, cudaMemcpyHostToDevice);
-			time_t start_cuda_time;
-			time(&start_cuda_time);
+			cudaEventCreate(&stop_memcpy_input_time);
+			cudaEventRecord(stop_memcpy_input_time, 0);
+			cudaEventSynchronize(stop_memcpy_input_time);
+			float tmp_memcpy_input_time;
+			cudaEventElapsedTime(&tmp_memcpy_input_time, start_memcpy_input_time, stop_memcpy_input_time);
+			memcpy_input_time = memcpy_input_time + tmp_memcpy_input_time;
+			cudaEventDestroy(start_memcpy_input_time);
+			cudaEventDestroy(stop_memcpy_input_time);
+
+			cudaEvent_t start_cuda_time, stop_cuda_time;
+			cudaEventCreate(&start_cuda_time);
+			cudaEventRecord(start_cuda_time,0);
 			searchFragment <<<fragment_set, thread_size>>> (dev_fragment, fragment_size, 
 						dev_ref_string, dev_hash_table, dev_coordinate, 3, 3, dev_result);
-			time_t start_memcpy_output_time;
-			time(&start_memcpy_output_time);
+			cudaEventCreate(&stop_cuda_time);
+			cudaEventRecord(stop_cuda_time, 0);
+			cudaEventSynchronize(stop_cuda_time);
+			float tmp_cuda_time;
+			cudaEventElapsedTime(&tmp_cuda_time, start_cuda_time, stop_cuda_time);
+			cuda_time = cuda_time + tmp_cuda_time;
+			cudaEventDestroy(start_cuda_time);
+			cudaEventDestroy(stop_cuda_time);
+
+			cudaEvent_t start_memcpy_output_time, stop_memcpy_output_time;
+			cudaEventCreate(&start_memcpy_output_time);
+			cudaEventRecord(start_memcpy_output_time,0);
 			cudaMemcpy(test_result, dev_result, sizeof(final_result)*fragment_size, cudaMemcpyDeviceToHost);
-			time_t start_analysis_time;
-			time(&start_analysis_time);
+			cudaEventCreate(&stop_memcpy_output_time);
+			cudaEventRecord(stop_memcpy_output_time, 0);
+			cudaEventSynchronize(stop_memcpy_output_time);
+			float tmp_memcpy_output_time;
+			cudaEventElapsedTime(&tmp_memcpy_output_time, start_memcpy_output_time, stop_memcpy_output_time);
+			memcpy_output_time = memcpy_output_time + tmp_memcpy_output_time;
+			cudaEventDestroy(start_memcpy_output_time);
+			cudaEventDestroy(stop_memcpy_output_time);
+
+			cudaEvent_t start_analysis_time, stop_analysis_time;
+			cudaEventCreate(&start_analysis_time);
+			cudaEventRecord(start_analysis_time,0);
 			for (int j = 0; j < fragment_size; j++) {
 //				cout << "****************************************************************************" << endl;
 //				cout << "Spilled	  : " << test_result[j].spilled << endl;
@@ -172,24 +215,30 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 			if (monitor_counter2 >= 1000000) {
 					monitor_counter2 = 0;
 			}
-			time_t end_time;
-			time(&end_time);
- 			prefilter_time 		= prefilter_time + difftime(start_memcpy_input_time, start_time);
-			memcpy_input_time 	= memcpy_input_time + difftime(start_cuda_time, start_memcpy_input_time);
- 			cuda_time 			= cuda_time + difftime(start_memcpy_output_time, start_cuda_time);
-			memcpy_output_time 	= memcpy_output_time + difftime(start_analysis_time, start_memcpy_output_time);
- 			analysis_time 		= analysis_time + difftime(end_time, start_analysis_time);
- 			total_time 			= total_time + difftime(end_time, start_time);
+			cudaEventCreate(&stop_analysis_time);
+			cudaEventRecord(stop_analysis_time, 0);
+			cudaEventSynchronize(stop_analysis_time);
+			float tmp_analysis_time;
+			cudaEventElapsedTime(&tmp_analysis_time, start_analysis_time, stop_analysis_time);
+			analysis_time = analysis_time + tmp_analysis_time;
+			cudaEventDestroy(start_analysis_time);
+			cudaEventDestroy(stop_analysis_time);
+			
+
+
+
 		}while(input_file.good());
 		fragment_size = MAX_FRAGMENT_SIZE;
 		cudaFree(dev_fragment);
 		cudaFree(dev_result);
 		freeHash();
 		freeRef();
+ 		total_time = total_time + prefilter_time + memcpy_input_time + cuda_time 
+				+ memcpy_output_time + analysis_time;
 	
- 		acc_prefilter_time 		= acc_prefilter_time + prefilter_time;
+ 		acc_prefilter_time 		= acc_prefilter_time 	+ prefilter_time;
 		acc_memcpy_input_time 	= acc_memcpy_input_time + memcpy_input_time;
- 		acc_cuda_time 			= acc_cuda_time + cuda_time;
+ 		acc_cuda_time 			= acc_cuda_time 		+ cuda_time;
 		acc_memcpy_output_time 	= acc_memcpy_output_time + memcpy_output_time;
  		acc_analysis_time 		= acc_analysis_time + analysis_time;
 		acc_total_time 			= acc_total_time + total_time;
@@ -198,37 +247,41 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 	
 		long long total_fragment_num2 = 0;
 		long long total_pass_num = 0;
-		store_file << endl << "Number of Edit-distance Passed" << endl;
+		fprintf(pFileW,"Number of Edit-distance Passed\n");
 		for (map<int, int>::iterator p = correct_count.begin(); p != correct_count.end(); p++) {
-			store_file << "index :" << p->first << "	num :" << p->second << endl;
+			fprintf(pFileW,"index : %i	num : %i\n", p->first, p->second);
 			total_fragment_num2 = total_fragment_num2 + p->second;
 			total_pass_num = total_pass_num + p->first * p->second;
 		}
-		store_file << endl;
-		store_file << "---------------------------------------------" << endl;
-		store_file << "total_fragment_num : " << total_fragment_num2 << endl;
-		store_file << "total_pass_num____ : " << total_pass_num << endl;
-		store_file << "total_spilled_num_ : " << total_spilled_num << endl;
-		store_file << "Acc_prefilter_time : " << acc_prefilter_time << endl;
-		store_file << "Acc_memcpy_input__ : " << acc_memcpy_input_time << endl;
-		store_file << "Acc_cuda__________ : " << acc_cuda_time << endl;
-		store_file << "Acc_memcpy_output_ : " << acc_memcpy_output_time << endl;
-		store_file << "Acc_analysis_time_ : " << acc_analysis_time << endl;
-		store_file << "Accumulated Time__ : " << acc_total_time << endl;
-		store_file << "---------------------------------------------" << endl;
+		fprintf(pFileW,"\n");
 	
-		cout << "---------------------------------------------" << endl;
-		cout << "total_fragment_num : " << total_fragment_num2 << endl;
-		cout << "total_pass_num____ : " << total_pass_num << endl;
-		cout << "total_spilled_num_ : " << total_spilled_num << endl;
-		cout << "Acc_prefilter_time : " << acc_prefilter_time << endl;
-		cout << "Acc_memcpy_input__ : " << acc_memcpy_input_time << endl;
-		cout << "Acc_cuda__________ : " << acc_cuda_time << endl;
-		cout << "Acc_memcpy_output_ : " << acc_memcpy_output_time << endl;
-		cout << "Acc_analysis_time_ : " << acc_analysis_time << endl;
-		cout << "Accumulated Time__ : " << acc_total_time << endl;
-		cout << "---------------------------------------------" << endl;
-		store_file.close();
+		fprintf(pFileW,"---------------------------------------------\n");
+		fprintf(pFileW,"total_fragment_num : %lliea\n", total_fragment_num2);
+		fprintf(pFileW,"total_pass_num____ : %lliea\n", total_pass_num);
+		fprintf(pFileW,"total_spilled_num_ : %iea\n", total_spilled_num);
+		fprintf(pFileW,"---------------------------------------------\n");
+		fprintf(pFileW,"Acc_prefilter_time : %3.1fms\n", acc_prefilter_time);
+		fprintf(pFileW,"Acc_memcpy_input__ : %3.1fms\n", acc_memcpy_input_time);
+		fprintf(pFileW,"Acc_cuda__________ : %3.1fms\n", acc_cuda_time);
+		fprintf(pFileW,"Acc_memcpy_output_ : %3.1fms\n", acc_memcpy_output_time);
+		fprintf(pFileW,"Acc_analysis_time_ : %3.1fms\n", acc_analysis_time);
+		fprintf(pFileW,"Accumulated Time__ : %3.1fms\n", acc_total_time);
+		fprintf(pFileW,"---------------------------------------------\n");
+
+		printf("---------------------------------------------\n");
+		printf("total_fragment_num : %lliea\n", total_fragment_num2);
+		printf("total_pass_num____ : %lliea\n", total_pass_num);
+		printf("total_spilled_num_ : %iea\n", total_spilled_num);
+		printf("---------------------------------------------\n");
+		printf("Acc_prefilter_time : %3.1fms\n", acc_prefilter_time);
+		printf("Acc_memcpy_input__ : %3.1fms\n", acc_memcpy_input_time);
+		printf("Acc_cuda__________ : %3.1fms\n", acc_cuda_time);
+		printf("Acc_memcpy_output_ : %3.1fms\n", acc_memcpy_output_time);
+		printf("Acc_analysis_time_ : %3.1fms\n", acc_analysis_time);
+		printf("Accumulated Time__ : %3.1fms\n", acc_total_time);
+		printf("---------------------------------------------\n");
+
+		fclose(pFileW);
 	}
 	cout << "Accumulated Time : " << acc_total_time << endl;
 }
@@ -252,11 +305,3 @@ int main() {
 	free(file_dist);
 	return 0;
 }
-
-			time_t start_time;
-			time_t start_memcpy_input_time;
-			time_t start_cuda_time;
-			time_t start_memcpy_output_time;
-			time_t start_analysis_time;
-			time_t end_time;
-
