@@ -196,7 +196,19 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				}
 				DEBUG_PRINT1("7\n");
 				DEBUG_PRINT1("7.5\n");
+/*
+				DEBUG_PRINT2("threadIdx:%i\n",threadIdx.x);
+				DEBUG_PRINT1("ref_str:");
+				for(int i =0; i < READ_LENGTH; i++){
+					DEBUG_PRINT2("%c",ref_str[i]);
+				}
 
+				DEBUG_PRINT1("\n");
+				DEBUG_PRINT2("key_number   :%i\n", fragment[fragment_count].sorted_keys[cur_key].key_number);
+				DEBUG_PRINT2("main_lane    :%i\n", main_lane);
+				DEBUG_PRINT2("max_indel_num:%i\n", max_indel_num);
+				DEBUG_PRINT2("max_diff_num :%i\n", max_diff_num);
+*/				
 				ED_result
 						edit_result =
 								editDistanceCal(

@@ -62,8 +62,8 @@ void test_full(string hash_file_name, string ref_file_name, string output_file_n
 		char * file_store= (char*) malloc(sizeof(char)*50);
 	   		sprintf(file_ref ,  "%s%i", (char*) ref_file_name.c_str(), j);
 	   		sprintf(file_hash,  "%s%i", (char*) hash_file_name.c_str(), j);
-	   		sprintf(file_store, "%s%i_%i_%i_%i", (char*) output_file_name.c_str(), j, 
-				fragment_set, fragment_size, thread_size);
+	   		sprintf(file_store, "%s%i_%i_%i_%i_%i", (char*) output_file_name.c_str(), j, 
+				fragment_set, fragment_size, thread_size, max_indel_num);
 		cout << "*** ref_file_name  :" << file_ref  << endl;
 		cout << "*** hash_file_name :" << file_hash << endl;
 		cout << "*** store_file_name:" << file_store << endl;

@@ -467,26 +467,37 @@ DEBUG_PRINT2("2xxx: %i\n", threadIdx.x);
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 
 		int error_ptr = 0;
-DEBUG_PRINT2("3xxx: %i\n", threadIdx.x);
+DEBUG_PRINT2("3xxx: %i\n", threadIdx.x);		
+for (int i =0; i < READ_LENGTH; i++){
+	DEBUG_PRINT2("%c", test_read[i]);
+}
+	DEBUG_PRINT1("\n");
+for (int i =0; i < READ_LENGTH; i++){
+	DEBUG_PRINT2("%c", ref_read[i]);
+}
+	DEBUG_PRINT1("\n");
 
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-DEBUG_PRINT2("4xxx: %i\n", threadIdx.x);
+			DEBUG_PRINT2("4xxx: %i\n", threadIdx.x);
+			DEBUG_PRINT2("cur_idx: %i\n", cur_idx);
+			DEBUG_PRINT2("cur_idx val : %i\n", key_num * KEY_LENGTH);
 			//If we should have an insertion
-			if (cur_idx == key_num * KEY_LENGTH
-					|| path[cur_lane + 1].path_cost[cur_idx]
-							< path[cur_lane].path_cost[cur_idx + 1]) {
-
-				result.error[error_ptr].diff = INSERTION;
-				result.error[error_ptr].location = cur_idx + cur_lane
-						- main_lane;
-				result.error[error_ptr].diff_char
-						= test_read[result.error[error_ptr].location];
-
+			if (cur_idx == key_num * KEY_LENGTH || 
+				path[cur_lane + 1].path_cost[cur_idx] < path[cur_lane].path_cost[cur_idx + 1]){
+				if (error_ptr < MAX_ERROR_NUM) {	// DHL: block error
+					result.error[error_ptr].diff = INSERTION;
+					result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
+					result.error[error_ptr].diff_char = test_read[result.error[error_ptr].location];
+				}
+				if (error_ptr >= MAX_ERROR_NUM) {	// DHL: block error 
+					break;
+				}
 				error_ptr++;
 				cur_lane++;
+				DEBUG_PRINT4("4xx6: threadIdx %i / error_ptr: %i / cur_lane: %i \n", 
+							threadIdx.x, error_ptr, cur_lane);
 				continue;
 			}
-DEBUG_PRINT2("5xxx: %i\n", threadIdx.x);
 
 			//If we should have a deletion
 			if (path[cur_lane - 1].path_cost[cur_idx + 1]
@@ -502,33 +513,22 @@ DEBUG_PRINT2("5xxx: %i\n", threadIdx.x);
 				cur_idx++;
 				continue;
 			}
-DEBUG_PRINT2("6xxx: %i\n", threadIdx.x);
 
 			//Check if we have a mismatch
 			if (path[cur_lane].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx]) {
-DEBUG_PRINT2("61xx: %i\n", threadIdx.x);
-
 				result.error[error_ptr].diff = MISMATCH;
-DEBUG_PRINT2("62xx: %i\n", threadIdx.x);
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
-DEBUG_PRINT2("63xx: %i\n", threadIdx.x);
 				result.error[error_ptr].diff_char
 						= test_read[result.error[error_ptr].location];
-DEBUG_PRINT2("64xx: %i\n", threadIdx.x);
-
 				error_ptr++;
-DEBUG_PRINT2("65xx: %i\n", threadIdx.x);
 				cur_idx++;
-DEBUG_PRINT2("66xx: %i\n", threadIdx.x);
 				continue;
 			}
-DEBUG_PRINT2("7xxx: %i\n", threadIdx.x);
 
 			//Move to the next element
 			cur_idx++;
-DEBUG_PRINT2("8xxx: %i\n", threadIdx.x);
 		}
 	}
 	DEBUG_PRINT2("inside editCalBWD, after tracing back generation a  threadId: %i\n", threadIdx.x);
