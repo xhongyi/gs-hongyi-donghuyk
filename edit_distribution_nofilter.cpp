@@ -115,7 +115,7 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 					 ED_result edit_result = editDistanceCal(test_char,
 					 ref_char, 0);
 					 */
-					ED_result edit_result = editDistanceCal(ref_str, testee);
+					ED_result edit_result = editDistanceCal(ref_str, testee, keys_input[k].key_number);
 					if (edit_result.correct) {
 						correct_counter = correct_counter + 1;
 					}
