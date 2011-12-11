@@ -29,8 +29,7 @@ void loadHash(string hash_name) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
 }
 
-bool searchKey(int target_coor, int entry_coor,
-		int entry_size) {
+bool searchKey(int target_coor, int entry_coor, int entry_size) {
 	if (entry_size == 0)
 		return false;
 	int lower_bound = entry_coor + 1;
@@ -46,8 +45,8 @@ bool searchKey(int target_coor, int entry_coor,
 		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
 
-	if (coordinate[mid] <= target_coor + max_indel_num
-			&& coordinate[mid] >= target_coor - max_indel_num) {
+	if (coordinate[mid] <= target_coor + max_indel_num && coordinate[mid]
+			>= target_coor - max_indel_num) {
 		return true;
 	} else
 		return false;
@@ -58,9 +57,10 @@ bool searchPrevious(int coor_value, int start_key_entry,
 	if (previous_result.size == 0) {
 		return false;
 	}
-	for (int i = 0; i < previous_result.size ; i++) {
-		if (previous_result.coor[i] > coor_value - start_key_entry * KEY_LENGTH - max_diff_num
-			&& previous_result.coor[i] < coor_value - start_key_entry * KEY_LENGTH + max_diff_num) {
+	for (int i = 0; i < previous_result.size; i++) {
+		if (previous_result.coor[i] > coor_value - start_key_entry * KEY_LENGTH
+				- max_diff_num && previous_result.coor[i] < coor_value
+				- start_key_entry * KEY_LENGTH + max_diff_num) {
 			return true;
 		}
 	}
@@ -89,8 +89,8 @@ bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 			if (sort_input[j].order == i) {
 				sort_result[loop_index].key_entry = sort_input[j].key_entry;
 				sort_result[loop_index].key_number = sort_input[j].key_number;
-				sort_result[loop_index].key_entry_size =
-						sort_input[j].key_entry_size;
+				sort_result[loop_index].key_entry_size
+						= sort_input[j].key_entry_size;
 				loop_index = loop_index + 1;
 			}
 			//if (loop_index == max_diff_num + 1)
@@ -122,20 +122,19 @@ final_result searchFragment(string fragment, string* ref) {
 	return_result.total_correct_num = 0;
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
-		for (int i = keys_input[k].key_entry + 1;
-				i <= keys_input[k].key_entry + keys_input[k].key_entry_size;
-				i++) {
+		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
+				+ keys_input[k].key_entry_size; i++) {
 			int coor_value = coordinate[i];
 			int diff_num = 0;
-			if (!searchPrevious(coor_value, keys_input[k].key_number, previous_result)) {
+			if (!searchPrevious(coor_value, keys_input[k].key_number,
+					previous_result)) {
 				return_result.total_binary_search++;
 				for (int j = 0; j < KEY_NUMBER; j++) {
 					if (j - diff_num > KEY_NUMBER - max_diff_num)
 						break;
 					if (!searchKey(
-							coor_value
-									+ (keys_input[j].key_number - keys_input[k].key_number)
-											* KEY_LENGTH,
+							coor_value + (keys_input[j].key_number
+									- keys_input[k].key_number) * KEY_LENGTH,
 							keys_input[j].key_entry,
 							keys_input[j].key_entry_size)) {
 						diff_num++;
@@ -145,23 +144,31 @@ final_result searchFragment(string fragment, string* ref) {
 				}
 				if (diff_num <= max_diff_num) {
 					if (previous_result.size <= PREFILTER_SIZE) {
-						previous_result.coor[previous_result.size] = coor_value - keys_input[k].key_number * KEY_LENGTH; //start_coor;
+						previous_result.coor[previous_result.size] = coor_value
+								- keys_input[k].key_number * KEY_LENGTH; //start_coor;
 						previous_result.size++;
 					}
 					return_result.total_edit_perform++;
-		                        string ref_str(FRAGMENT_LENGTH, 'A');
-                        		ref_str = (*ref).substr(coor_value - keys_input[k].key_number * KEY_LENGTH, FRAGMENT_LENGTH); //start_coor;
-					
-					/////////////////////Just For Testing
-					char test_char[READ_LENGTH];
-					char ref_char[READ_LENGTH];
-					strcpy(test_char, fragment.c_str() );
-					strcpy(ref_char, ref_str.c_str() );
-					/////////////////////Testing END
-					cout << "ref__read: " << ref_char << endl;
-					cout << "test_read: " << test_char << endl;
-					cout << "key_num__: " << keys_input[k].key_number << endl;
-                        		ED_result edit_result = editDistanceCal(test_char, ref_char, keys_input[k].key_number);
+					string ref_str(FRAGMENT_LENGTH, 'A');
+					ref_str = (*ref).substr(
+							coor_value - keys_input[k].key_number * KEY_LENGTH,
+							FRAGMENT_LENGTH); //start_coor;
+
+					/*////////////////////Just For Testing
+					 char test_char[READ_LENGTH];
+					 char ref_char[READ_LENGTH];
+					 strcpy(test_char, fragment.c_str());
+					 strcpy(ref_char, ref_str.c_str());
+					 /////////////////////Testing END
+					 cout << "ref__read: " << ref_char << endl;
+					 cout << "test_read: " << test_char << endl;
+					 cout << "key_num__: " << keys_input[k].key_number << endl;
+					 */
+					//ED_result edit_result = editDistanceCal(test_char,
+					//		ref_char, keys_input[k].key_number);
+					ED_result edit_result = editDistanceCal(fragment,
+							ref_str, keys_input[k].key_number);
+
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
@@ -229,9 +236,8 @@ list<match_result> noFilterSearch(string fragment) {
 	sortPrefilter(keys_input, sort_input);
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
-		for (int i = keys_input[k].key_entry + 1;
-				i <= keys_input[k].key_entry + keys_input[k].key_entry_size;
-				i++) {
+		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
+				+ keys_input[k].key_entry_size; i++) {
 			match_result temp;
 			temp.coordinate = coordinate[i];
 			temp.relevance = 0;

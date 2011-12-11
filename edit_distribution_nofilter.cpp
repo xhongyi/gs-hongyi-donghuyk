@@ -37,8 +37,8 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 	distribution.clear();
 	correct_count.clear();
 	string testee(FRAGMENT_LENGTH, 'A');
-	int monitor_counter = 0; 	// for operation monitoring
-	int correct_counter = 0; 	// for operation monitoring
+	int monitor_counter = 0; // for operation monitoring
+	int correct_counter = 0; // for operation monitoring
 	int coor_list_counter = 0;
 	long long monitor_counter2 = 0; // for operation monitoring
 	int gen_coord = 0;
@@ -49,21 +49,21 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 
 	// get fragment from reference file
 
-	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
+	for (int j = 0; j < MAX_CONTIG_FILE; j++) {
 		map<int, int> distribution;
 		map<int, int> correct_count;
-		char * file_ref = (char*) malloc(sizeof(char)*50);
-		char * file_hash= (char*) malloc(sizeof(char)*50);
-		char * file_store= (char*) malloc(sizeof(char)*50);
-		sprintf(file_ref ,  "%s%i", (char*) ref_file_name.c_str(), j);
-		sprintf(file_hash,  "%s%i", (char*) hash_file_name.c_str(), j);
+		char * file_ref = (char*) malloc(sizeof(char) * 50);
+		char * file_hash = (char*) malloc(sizeof(char) * 50);
+		char * file_store = (char*) malloc(sizeof(char) * 50);
+		sprintf(file_ref, "%s%i", (char*) ref_file_name.c_str(), j);
+		sprintf(file_hash, "%s%i", (char*) hash_file_name.c_str(), j);
 		sprintf(file_store, "%s%i", (char*) output_file_name.c_str(), j);
-		cout << "ref_file_name  :" << file_ref  << endl;
+		cout << "ref_file_name  :" << file_ref << endl;
 		cout << "hash_file_name :" << file_hash << endl;
 		cout << "store_file_name:" << file_store << endl;
 
-                // store file 
-                store_file.open(file_store);
+		// store file
+		store_file.open(file_store);
 
 		// reference file load at string
 		string ref;
@@ -97,35 +97,37 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 				keys_input[i].key_entry_size = key_entry_size;
 				coor_list_counter += key_entry_size;
 			}
-	
+
 			for (int k = 0; k < max_diff_num + 1; k++) {
 				for (int i = keys_input[k].key_entry + 1; i
-						<= keys_input[k].key_entry + keys_input[k].key_entry_size; i++) {
+						<= keys_input[k].key_entry
+								+ keys_input[k].key_entry_size; i++) {
 					match_result temp;
 					temp.coordinate = coordinate[i];
 					string ref_str(FRAGMENT_LENGTH, 'A');
 					ref_str = ref.substr(coordinate[i], FRAGMENT_LENGTH);
-                                        /////////////////////Just For Testing
-                                        char test_char[READ_LENGTH];
-                                        char ref_char[READ_LENGTH];
-                                        strcpy(test_char, testee.c_str() );
-                                        strcpy(ref_char, ref_str.c_str() );
-                                        /////////////////////Testing END
-                                        ED_result edit_result = editDistanceCal(test_char, ref_char, 0);
+					/*////////////////////Just For Testing
+					char test_char[READ_LENGTH];
+					char ref_char[READ_LENGTH];
+					strcpy(test_char, testee.c_str());
+					strcpy(ref_char, ref_str.c_str());
+					//////////////////*///Testing END
+					ED_result edit_result = editDistanceCal(test_char,
+							ref_char, 0);
 
-//					ED_result edit_result = editDistanceCal(ref_str, testee);
+					//					ED_result edit_result = editDistanceCal(ref_str, testee);
 					if (edit_result.correct) {
 						correct_counter = correct_counter + 1;
-					} 
+					}
 				}
 			}
-	
+
 			distribution[coor_list_counter]++;
 			correct_count[correct_counter]++;
-	
+
 			correct_counter = 0;
 			coor_list_counter = 0;
-	
+
 			monitor_counter = monitor_counter + 1;
 			monitor_counter2 = monitor_counter2 + 1;
 			if (monitor_counter >= 10000) {
@@ -149,8 +151,10 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		long long total_fragment_num1 = 0;
 		long long total_edit_num = 0;
 		store_file << endl << "Number of Edit distance calculation" << endl;
-		for (map<int, int>::iterator p = distribution.begin(); p != distribution.end(); p++) {
-			store_file << "index :" << p->first << "	num :" << p->second << endl;
+		for (map<int, int>::iterator p = distribution.begin(); p
+				!= distribution.end(); p++) {
+			store_file << "index :" << p->first << "	num :" << p->second
+					<< endl;
 			total_fragment_num1 = total_fragment_num1 + p->second;
 			total_edit_num = total_edit_num + p->first * p->second;
 		}
@@ -158,8 +162,10 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		long long total_fragment_num2 = 0;
 		long long total_pass_num = 0;
 		store_file << endl << "Number of Edit-distance Passed" << endl;
-		for (map<int, int>::iterator p = correct_count.begin(); p != correct_count.end(); p++) {
-			store_file << "index :" << p->first << "	num :" << p->second << endl;
+		for (map<int, int>::iterator p = correct_count.begin(); p
+				!= correct_count.end(); p++) {
+			store_file << "index :" << p->first << "	num :" << p->second
+					<< endl;
 			total_fragment_num2 = total_fragment_num2 + p->second;
 			total_pass_num = total_pass_num + p->first * p->second;
 		}
@@ -170,7 +176,8 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		store_file << "total_pass_num     : " << total_pass_num << endl;
 		store_file << "Start_time         : " << ctime(&start_time);
 		store_file << "End_time	          : " << ctime(&end_time);
-		store_file << "TIme Diff          : " << difftime(end_time,start_time) << endl;
+		store_file << "TIme Diff          : " << difftime(end_time, start_time)
+				<< endl;
 		store_file << "Accumulated Time   : " << accumulate_time << endl;
 		store_file << "---------------------------------------------" << endl;
 
@@ -180,7 +187,8 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		cout << "total_pass_num     : " << total_pass_num << endl;
 		cout << "Start_time         : " << ctime(&start_time);
 		cout << "End_time           : " << ctime(&end_time);
-		cout << "TIme Diff          : " << difftime(end_time,start_time) << endl;
+		cout << "TIme Diff          : " << difftime(end_time, start_time)
+				<< endl;
 		cout << "Accumulated Time   : " << accumulate_time << endl;
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
