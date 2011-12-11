@@ -154,20 +154,18 @@ final_result searchFragment(string fragment, string* ref) {
 							coor_value - keys_input[k].key_number * KEY_LENGTH,
 							FRAGMENT_LENGTH); //start_coor;
 
-					/*////////////////////Just For Testing
-					 char test_char[READ_LENGTH];
-					 char ref_char[READ_LENGTH];
-					 strcpy(test_char, fragment.c_str());
-					 strcpy(ref_char, ref_str.c_str());
-					 /////////////////////Testing END
-					 cout << "ref__read: " << ref_char << endl;
-					 cout << "test_read: " << test_char << endl;
-					 cout << "key_num__: " << keys_input[k].key_number << endl;
-					 */
-					//ED_result edit_result = editDistanceCal(test_char,
-					//		ref_char, keys_input[k].key_number);
-					ED_result edit_result = editDistanceCal(fragment,
-							ref_str, keys_input[k].key_number);
+					/////////////////////Just For Testing
+					char test_char[READ_LENGTH + 1];
+					char ref_char[READ_LENGTH + 1];
+					strcpy(test_char, fragment.c_str());
+					strcpy(ref_char, ref_str.c_str());
+					/*////////////////////Testing END
+					cout << "ref__read: " << ref_char << endl;
+					cout << "test_read: " << test_char << endl;
+					cout << "key_num__: " << keys_input[k].key_number << endl;
+					*/
+					ED_result edit_result = editDistanceCal(test_char,
+							ref_char, keys_input[k].key_number);
 
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
