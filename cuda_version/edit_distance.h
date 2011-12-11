@@ -28,8 +28,8 @@ struct ED_error {
 };
 
 struct ED_result {
-	bool	correct;
-	int		diff_num;
+	bool		correct;
+	int			diff_num;
 	ED_error	error[MAX_ERROR_NUM];
 };
 

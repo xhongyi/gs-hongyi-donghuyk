@@ -1,0 +1,52 @@
+
+140 : 420  : 16  : 46s
+140 : 840  : 16  : 40s
+140 : 1680 : 16  : 35s
+140 : 3360 : 16  : 32s
+
+140 : 3360 : 16   : 32s
+140 : 3360 : 32   : 29s
+140 : 3360 : 64   : 26s
+140 : 3360 : 128  : 26s
+140 : 3360 : 256  : 27s
+140 : 3360 : 512  : 30s
+
+7   : 3360 : 64   : 46s
+14  : 3360 : 64   : 37s
+28  : 3360 : 64   : 31s
+56  : 3360 : 64   : 28s
+112 : 3360 : 64   : 27s
+224 : 3360 : 64   : 27s
+
+---------------------------------------------
+indel: 3 / diff: 3
+total_fragment_num : 1000000ea
+total_pass_num____ : 5624775ea
+total_spilled_num_ : 3350ea
+---------------------------------------------
+Acc_prefilter_time : 4783.4ms
+Acc_memcpy_input__ : 98.0ms
+Acc_cuda__________ : 63468.2ms
+Acc_memcpy_output_ : 206260.7ms
+Acc_analysis_time_ : 302.1ms
+Accumulated Time__ : 274912.4ms
+---------------------------------------------
+
+---------------------------------------------
+indel: 5 / diff: 5
+total_fragment_num : 1000000ea
+total_pass_num____ : 6997419ea
+total_spilled_num_ : 6832ea
+---------------------------------------------
+Acc_prefilter_time : 4660.7ms
+Acc_memcpy_input__ : 92.7ms
+Acc_cuda__________ : 486274.3ms
+Acc_memcpy_output_ : 193387.6ms
+Acc_analysis_time_ : 300.7ms
+Accumulated Time__ : 684716.1ms
+---------------------------------------------
+
+Input fragment causing segmentation fault in 5/5: 
+CACGTTTTATTTTATTTTTTGAGATGGAGTCTCACTCTGTCACCCAGGCTGGAGTGTGGTGGCGCAATCTTTGCTCACTGCAACCTCCGCCTCCCGGGTTCAAGCGAT
+Reference String causing segmentation fault in 5/5: 
+TTACTATATATATATTTTTTGAGATAGGGTCTCACTCTGTCACCCAGGCTGGAGTGCCCTGACATGATCTTGGCTCACTGCAACCTCCACCTCCCGGGTTCAAGCGAT
