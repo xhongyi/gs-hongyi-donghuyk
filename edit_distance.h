@@ -42,10 +42,10 @@ void allocatePath();
  */
 void initializePath();
 
-ED_result editDistanceCal(string test_read, string ref_read, int key_num);
+ED_result editDistanceCal(char* test_read, char* ref_read, int key_num);
 
-ED_result editDistanceCalFWD(string test_read, string ref_read, int key_num);
+ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num);
 
-ED_result editDistanceCalBWD(string test_read, string ref_read, int key_num);
+ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num);
 
 #endif /* EDIT_DISTANCE_H_ */
