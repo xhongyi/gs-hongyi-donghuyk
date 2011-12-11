@@ -154,27 +154,27 @@ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
 		 }
 		 */
 
-		cout << "***" << endl;
-		cout << "Total difference Number: " << result.diff_num << endl;
+		//cout << "***" << endl;
+		//cout << "Total difference Number: " << result.diff_num << endl;
 
 		for (int i = 0; i < result.diff_num; i++) {
 			switch (result.error[i].diff) {
 			case MISMATCH:
-				cout << "Mismatch at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
+				//cout << "Mismatch at " << result.error[i].location << endl;
+				//cout << "Error: " << result.error[i].diff_char << endl;
 				break;
 			case INSERTION:
-				cout << "Insertion at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
+				//cout << "Insertion at " << result.error[i].location << endl;
+				//cout << "Error: " << result.error[i].diff_char << endl;
 				break;
 			case DELETION:
-				cout << "Deletion at " << result.error[i].location << endl;
-				cout << "Error: " << result.error[i].diff_char << endl;
+				//cout << "Deletion at " << result.error[i].location << endl;
+				//cout << "Error: " << result.error[i].diff_char << endl;
 				break;
 			}
 		}
 
-		cout << "###" << endl;
+		//cout << "###" << endl;
 
 	}
 	else
@@ -526,8 +526,8 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		//char temp_result[30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
-		cout << "cur_lane: " << cur_lane << endl;
-		cout << "cur_idx: " << cur_idx << endl;
+		//cout << "cur_lane: " << cur_lane << endl;
+		//cout << "cur_idx: " << cur_idx << endl;
 
 		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
@@ -538,7 +538,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH
@@ -640,8 +640,8 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		}
 
 		//The 2 number should match. The error iteration should finally meet the total number
-		cout << "error_ptr: " << error_ptr << endl;
-		cout << "result.diff_num: " << result.diff_num << endl;
+		//cout << "error_ptr: " << error_ptr << endl;
+		//cout << "result.diff_num: " << result.diff_num << endl;
 		assert (error_ptr == result.diff_num);
 		/*
 		 if (same_count != 0) { //If we have some same count at the begining
