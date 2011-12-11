@@ -5,8 +5,8 @@ SOURCES = ref_db_generator.cu
 OBJECTS = $(SOURCES:.cu=.o)
 EXECUTABLE = hash_test
 
-all: full_test 
-#cuda_test multi_test
+all: edit_test
+#full_test cuda_test cuda_test multi_test
 
 .cu.o:
 	$(CC) $(CFLAGS) $< -o $@
