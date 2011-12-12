@@ -34,17 +34,17 @@ __device__ bool searchKey(int target_coor, int entry_coor, int entry_size,
 			upper_bound = mid - 1;
 		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
-	DEBUG_PRINT1("2\n");
-	DEBUG_PRINT2("mid: %i\n", mid);
-	DEBUG_PRINT2("coordinate[mid]: %i\n", coordinate[mid]);
 	DEBUG_PRINT2("target_coor: %i\n", target_coor);
+	DEBUG_PRINT2("mid: %i\n", mid);
+	DEBUG_PRINT1("2\n");
+	DEBUG_PRINT2("coordinate[mid]: %i\n", coordinate[mid]);
 
 	if (coordinate[mid] <= target_coor + max_indel_num && coordinate[mid]
 			>= target_coor - max_indel_num) {
-		DEBUG_PRINT1("3 true\n");
+		DEBUG_PRINT2("3 true  threadId: %i\n", threadIdx.x);
 		return true;
 	} else {
-		DEBUG_PRINT1("3 false\n");
+		DEBUG_PRINT2("3 false, threadId: %i\n", threadIdx.x);
 		return false;
 	}
 }
@@ -98,7 +98,7 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 
 	__syncthreads();
 
-	DEBUG_PRINT3("fragment_count: %i  threadId: %i\n", fragment_count, threadIdx.x);
+	DEBUG_PRINT3("fragment_count: %i  threuuuuadId: %i\n", fragment_count, threadIdx.x);
 
 	while (fragment_count < fragment_size) {
 		DEBUG_PRINT2("###Ever started!! threadId: %i\n", threadIdx.x);
@@ -111,8 +111,6 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 		if (threadIdx.x == 0) {
 			size = 0;
 		}
-
-		__syncthreads();
 
 		//Get the first key
 		while (cur_key <= max_diff_num
@@ -133,16 +131,19 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 							fragment[fragment_count].sorted_keys[cur_key].key_entry
 									+ 1 + coor_count
 									- fragment[fragment_count].sorted_keys[cur_key].base;
-			DEBUG_PRINT3(
-					"fragment[fragment_count].sorted_keys[cur_key].key_entry: %i  threadId: %i\n",
+			DEBUG_PRINT5(
+					"fragment[%i].sorted_keys[%i].key_entry: %i  threadId: %i\n",
+					fragment_count, cur_key,
 					fragment[fragment_count].sorted_keys[cur_key].key_entry,
 					threadIdx.x);
-			DEBUG_PRINT3(
-					"fragment[fragment_count].sorted_keys[cur_key].base: %i  threadId: %i\n",
+			DEBUG_PRINT5(
+					"fragment[%i].sorted_keys[%i].base: %i  threadId: %i\n",
+					fragment_count, cur_key,
 					fragment[fragment_count].sorted_keys[cur_key].base,
 					threadIdx.x);
-			DEBUG_PRINT3(
-					"fragment[fragment_count].sorted_keys[cur_key].key_entry_size: %i  threadId: %i\n",
+			DEBUG_PRINT5(
+					"fragment[%i].sorted_keys[%i].key_entry_size: %i  threadId: %i\n",
+					fragment_count, cur_key,
 					fragment[fragment_count].sorted_keys[cur_key].key_entry_size,
 					threadIdx.x);
 			DEBUG_PRINT6(
@@ -155,9 +156,14 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				DEBUG_PRINT2("coor_idx + (fragment[fragment_count].sorted_keys[i].key_number - fragment[fragment_count].sorted_keys[cur_key].key_number) * KEY_LENGTH: %i\n",
 							(coordinate[coor_idx] + (fragment[fragment_count].sorted_keys[i].key_number
 							- fragment[fragment_count].sorted_keys[cur_key].key_number) * KEY_LENGTH));
-				DEBUG_PRINT2("fragment[fragment_count].sorted_keys[i].key_entry: %i\n",
+				DEBUG_PRINT4("fragment[%i].sorted_keys[%i].key_number: %i\n",
+							fragment_count, i,
+							fragment[fragment_count].sorted_keys[i].key_number);
+				DEBUG_PRINT4("fragment[%i].sorted_keys[%i].key_entry: %i\n",
+							fragment_count, i,
 							fragment[fragment_count].sorted_keys[i].key_entry);
-				DEBUG_PRINT2("fragment[fragment_count].sorted_keys[i].key_entry_size: %i\n",
+				DEBUG_PRINT4("fragment[%i].sorted_keys[%i].key_entry_size: %i\n",
+							fragment_count, i,
 							fragment[fragment_count].sorted_keys[i].key_entry_size);
 				if (!searchKey(
 						coordinate[coor_idx]
@@ -167,10 +173,8 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 						fragment[fragment_count].sorted_keys[i].key_entry,
 						fragment[fragment_count].sorted_keys[i].key_entry_size,
 						coordinate, max_indel_num)) {
-							DEBUG_PRINT2("changing before : diff num : %i\n", diff_num);
 							diff_num++;
-							DEBUG_PRINT2("changing after : diff num : %i\n", diff_num);
-							DEBUG_PRINT1("4\n");
+							DEBUG_PRINT2("4, threadIdx.x: %i\n", threadIdx.x);
 					if (diff_num > max_diff_num)
 						break;
 				}
@@ -178,11 +182,12 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 			DEBUG_PRINT1("5\n");
 			DEBUG_PRINT2("end diff: diff num : %i", diff_num);
 			//Edit_distance Calculation
+			
 			if (diff_num <= max_diff_num) {
 				DEBUG_PRINT2("Hey in ED test now  threadId: %i\n", threadIdx.x);
 				DEBUG_PRINT2("cur_key: %i\n", cur_key);
 				char ref_str[READ_LENGTH];
-				for (int i = 0; i < READ_LENGTH; i++) { //Get reference string
+				for (int i = 0; i <= READ_LENGTH; i++) { //Get reference string
 					DEBUG_PRINT3(
 							"coordinate: %i, threadIdx:%i\n",
 							coordinate[coor_idx]
@@ -221,13 +226,10 @@ __global__ void searchFragment(GPU_fragment* fragment, int fragment_size,
 				DEBUG_PRINT1("7.6\n");
 				DEBUG_PRINT1("7.7\n");
 
-				__syncthreads();
-
 				DEBUG_PRINT2("1 threadId: %i\n", threadIdx.x);
 				DEBUG_PRINT2("2 threadId: %i\n", threadIdx.x);
 				if (edit_result.correct) {
 					DEBUG_PRINT3("find something!  cur_key: %i  threadId: %i\n", cur_key, threadIdx.x);
-					__syncthreads(); // Delete this afterwards!
 					int temp_size = size;
 					DEBUG_PRINT3("Avoid Duplication temp_size: %i  threadId: %i\n", temp_size, threadIdx.x);
 					bool duplicate = false;

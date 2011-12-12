@@ -21,3 +21,5 @@ full_test:common.h common.cu hash_loader.h hash_loader.cu hash_transfer.h hash_t
 	$(CC) $(CFLAGS) test_full.cu common.cu -o test_full
 edit_test:common.h common.cu hash_transfer.h hash_transfer.cu 
 	$(CC) $(CFLAGS) test_edit.cu -o test_edit
+stream_test:common.h common.cu hash_loader.h hash_loader.cu hash_transfer.h hash_transfer.cu fragment_match.h fragment_match.cu edit_distance.h edit_distance.cu test_stream.cu
+	$(CC) $(CFLAGS) test_stream.cu common.cu -lglut -o test_stream
