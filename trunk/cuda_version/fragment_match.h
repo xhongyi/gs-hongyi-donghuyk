@@ -32,7 +32,7 @@ struct key_struct {
 };
 
 struct GPU_fragment {
-	char	fragment[READ_LENGTH];
+	char	fragment[READ_LENGTH + 1];
 	key_struct	sorted_keys[KEY_NUMBER];
 };
 
@@ -43,7 +43,7 @@ struct coor_result {
 };
 
 struct final_result {
-	char		fragment[READ_SIZE];
+	char		fragment[READ_SIZE + 1];
 	bool		spilled;
 	int			size;
 	coor_result	coor_results[MAX_COOR_RESULT_NUM];

@@ -484,6 +484,7 @@ for (int i =0; i < READ_LENGTH; i++){
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH || 
 				path[cur_lane + 1].path_cost[cur_idx] < path[cur_lane].path_cost[cur_idx + 1]){
+
 				if (error_ptr < MAX_ERROR_NUM) {	// DHL: block error
 					result.error[error_ptr].diff = INSERTION;
 					result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
@@ -492,6 +493,7 @@ for (int i =0; i < READ_LENGTH; i++){
 				if (error_ptr >= MAX_ERROR_NUM) {	// DHL: block error 
 					break;
 				}
+
 				error_ptr++;
 				cur_lane++;
 				DEBUG_PRINT4("4xx6: threadIdx %i / error_ptr: %i / cur_lane: %i \n", 

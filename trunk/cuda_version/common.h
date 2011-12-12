@@ -46,7 +46,7 @@
 #define MAX_INDEL_NUM 			5
 #define MAX_DIFF_NUM 			5
 #define MAX_FRAGMENT_SET_NUM 	140
-#define MAX_FRAGMENT_SIZE    	3360
+#define MAX_FRAGMENT_SIZE    	1680
 #define MAX_THREAD_NUM			64
 
 #include <string>

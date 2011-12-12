@@ -44,7 +44,7 @@ int loadRef(string ref_name) {
 	char tmp_ref_name[50];
 	strcpy(tmp_ref_name, ref_name.c_str());
 	refLoader(ref_string, tmp_ref_name);
-	char *tmp_ref_string = (char*)malloc( ref_string.size() * sizeof(char));
+	char *tmp_ref_string = (char*)malloc( (ref_string.size() + 1) * sizeof(char));
 	strcpy(tmp_ref_string, ref_string.c_str());
 	//cout << "ref_string.size(): " << ref_string.size()<< endl;
 	int string_size = (int) ref_string.size();
