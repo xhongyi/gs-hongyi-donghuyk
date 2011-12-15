@@ -9,6 +9,7 @@
 #define COMMOM_H_
 
 #define DEBUG
+//#define DEBUGX
 
 #ifdef DEBUG
 	# define DEBUG_PRINT1(x) 				printf(x)
@@ -24,6 +25,22 @@
 	# define DEBUG_PRINT4(x, y, z, a) 		do {} while (0)
 	# define DEBUG_PRINT5(x, y, z, a, b) 	do {} while (0)
 	# define DEBUG_PRINT6(x, y, z, a, b, c)	do {} while (0)
+#endif
+
+#ifdef DEBUGX
+	# define DEBUG_PRINTX1(x) 				printf(x)
+	# define DEBUG_PRINTX2(x, y) 			printf(x, y)
+	# define DEBUG_PRINTX3(x, y, z) 			printf(x, y, z)
+	# define DEBUG_PRINTX4(x, y, z, a) 		printf(x, y, z, a)
+	# define DEBUG_PRINTX5(x, y, z, a, b) 	printf(x, y, z, a, b)
+	# define DEBUG_PRINTX6(x, y, z, a, b, c)	printf(x, y, z, a, b, c)
+#else
+	# define DEBUG_PRINTX1(x) 				do {} while (0)
+	# define DEBUG_PRINTX2(x, y)	 			do {} while (0)
+	# define DEBUG_PRINTX3(x, y, z) 			do {} while (0)
+	# define DEBUG_PRINTX4(x, y, z, a) 		do {} while (0)
+	# define DEBUG_PRINTX5(x, y, z, a, b) 	do {} while (0)
+	# define DEBUG_PRINTX6(x, y, z, a, b, c)	do {} while (0)
 #endif
 
 #define KEY_LENGTH 12
@@ -45,9 +62,9 @@
 
 #define MAX_INDEL_NUM 			5
 #define MAX_DIFF_NUM 			5
-#define MAX_FRAGMENT_SET_NUM 	56
-#define MAX_FRAGMENT_SIZE    	1680
-#define MAX_THREAD_NUM			32
+#define MAX_FRAGMENT_SET_NUM 	1
+#define MAX_FRAGMENT_SIZE    	1
+#define MAX_THREAD_NUM			1
 
 #include <string>
 

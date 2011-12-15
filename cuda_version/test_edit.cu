@@ -23,7 +23,7 @@ __global__ void cuda_editDistanceCal (char * dev_test_read, char * dev_ref_read,
 	 * key 1 ones will go into 1 warp and key 2 ones will go into 1 warp.
 	 * Feel free to tweak the %number.
 	 */
-	result[threadIdx.x] = editDistanceCal(dev_test_read, dev_ref_read, threadIdx.x% 3, path, 6, 5, 5);
+	result[threadIdx.x] = editDistanceCal(dev_test_read, dev_ref_read, 2, path, 6, 5, 5);
 }
 
 int test_cuda(void) {
@@ -31,15 +31,18 @@ int test_cuda(void) {
 	char test_read[READ_LENGTH];
 	strcpy(
 			test_read,
-			"GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGG");
+//			"GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGG");
+			"CACGTTTTATTTTATTTTTTGAGATGGAGTCTCACTCTGTCACCCAGGCTGGAGTGTGGTGGCGCAATCTTTGCTCACTGCAACCTCCGCCTCCCGGGTTCAAGCGAT");
+
 	//Getting the sort key.
 
 	char ref_read[READ_LENGTH];
 	strcpy(
 			ref_read,
-			"GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGG");
-	
-	ED_result result[10];
+			//"GGGTGGTAGGTGCAGAGACGGGAGGGGCAGAGCCGCAGGCACAGCCAAGAGGGCTGAAGAAATGGTAGAACGGAGCAGCTGGTGATGTGTGGGCCCACCGGCCCCAGG");
+			"TTACTATATATATATTTTTTGAGATAGGGTCTCACTCTGTCACCCAGGCTGGAGTGCCCTGACATGATCTTGGCTCACTGCAACCTCCACCTCCCGGGTTCAAGCGAT");
+
+	ED_result result[1];
 
 	char * dev_test_read;
 	char * dev_ref_read;
@@ -52,13 +55,13 @@ int test_cuda(void) {
 	cudaMemcpy(dev_test_read, test_read, READ_LENGTH * sizeof(char), cudaMemcpyHostToDevice);
 	cudaMemcpy(dev_ref_read, ref_read, READ_LENGTH * sizeof(char), cudaMemcpyHostToDevice);
 
-	cudaMalloc( (void**) &dev_result, 10 * sizeof(ED_result) );
+	cudaMalloc( (void**) &dev_result, 1 * sizeof(ED_result) );
 
-	cuda_editDistanceCal <<<1, 10>>> (dev_test_read, dev_ref_read, dev_result);
+	cuda_editDistanceCal <<<1, 1>>> (dev_test_read, dev_ref_read, dev_result);
 
-	cudaMemcpy(result, dev_result, 10 * sizeof(ED_result), cudaMemcpyDeviceToHost);
+	cudaMemcpy(result, dev_result, 1 * sizeof(ED_result), cudaMemcpyDeviceToHost);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 1; i++) {
 		cout << "i: " << i << endl;
 		if (result[i].correct) {
 			cout << "correct! " << endl;
