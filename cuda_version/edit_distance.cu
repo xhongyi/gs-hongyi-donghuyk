@@ -126,7 +126,7 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 	FWD_result = editDistanceCalFWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
 
-	__syncthreads(); //Force all threads synchronize.
+	//__syncthreads(); //Force all threads synchronize.
 
 	DEBUG_PRINT2("BWDeditDistanceCal started  threadId: %i\n", threadIdx.x); //We should see all threads print b. However, it is not doing that.
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
@@ -485,11 +485,11 @@ for (int i =0; i < READ_LENGTH; i++){
 			if (cur_idx == key_num * KEY_LENGTH || 
 				path[cur_lane + 1].path_cost[cur_idx] < path[cur_lane].path_cost[cur_idx + 1]){
 
-				if (error_ptr < MAX_ERROR_NUM) {	// DHL: block error
+				//if (error_ptr < MAX_ERROR_NUM) {	// DHL: block error
 					result.error[error_ptr].diff = INSERTION;
 					result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
 					result.error[error_ptr].diff_char = test_read[result.error[error_ptr].location];
-				}
+				//}
 				if (error_ptr >= MAX_ERROR_NUM) {	// DHL: block error 
 					break;
 				}
