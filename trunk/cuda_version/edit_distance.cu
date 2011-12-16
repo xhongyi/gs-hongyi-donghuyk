@@ -127,22 +127,22 @@ __device__ ED_result editDistanceCal(char* test_read, char* ref_read,
 			main_lane, max_indel_num, max_diff_num);
 /*
 	for (int i = 0; i < 12; i++) {
-		printf("Now path i: %i\n", i);
+		//printf("Now path i: %i\n", i);
 		for (int j = 0; j <= 108; j++) {
-			printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
+			//printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
 		}
 	}
 */
 	//__syncthreads(); //Force all threads synchronize.
 
 	DEBUG_PRINT2("BWDeditDistanceCal started  threadId: %i\n", threadIdx.x); //We should see all threads print b. However, it is not doing that.
-	DEBUG_PRINT2("***---Befor BWD key_num : %i\n", key_num);
+	//DEBUG_PRINT2("***---Befor BWD key_num : %i\n", key_num);
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num, path,
 			main_lane, max_indel_num, max_diff_num);
 	DEBUG_PRINT2("2 Directions have finished  threadId: %i\n", threadIdx.x);
 
 	if (BWD_result.correct)
-		printf("BWD is correct!!!  threadId: %i\n", threadIdx.x);
+		//printf("BWD is correct!!!  threadId: %i\n", threadIdx.x);
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
@@ -229,7 +229,8 @@ __device__ ED_result editDistanceCalFWD(char* test_read, char* ref_read,
 		 * then they would loop like 20~100 times. That's why we want to strip out the divergent portion and put it in
 		 * a different path picking loop.
 		 */
-		while (!ED_finished) {
+		for (int m = 0; m <= READ_LENGTH - key_num * KEY_LENGTH; m++) { 
+		//while (!ED_finished) {
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx >= READ_LENGTH - max_indel_num) {
 				//Test if it's the last element
@@ -413,7 +414,8 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 		int slide_stop = 0;
 
 		//Slide down the lane.
-		while (!ED_finished) {
+		for (int m = 0; m <= READ_LENGTH - key_num * KEY_LENGTH; m++) { 
+		//while (!ED_finished) {
 			//Conservative test, speed up common case
 			if (path[cur_lane].front_idx <= max_indel_num) {
 				//Test if it's the last element
@@ -430,7 +432,7 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 			test_idx = path[cur_lane].front_idx + cur_lane - main_lane - 1;
 			ref_idx = path[cur_lane].front_idx - 1;
 
-			printf("cur_lane: %i, path[%i].front_idx: %i\n", cur_lane, cur_lane, path[cur_lane].front_idx);
+			//printf("cur_lane: %i, path[%i].front_idx: %i\n", cur_lane, cur_lane, path[cur_lane].front_idx);
 		
 			//test if can slide down
 			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
@@ -449,10 +451,10 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 			//Check itself
 			if (path[cur_lane].path_cost[path[cur_lane].front_idx] > cur_dist
 					+ slide_stop) {
-				printf("***key_num: %i  cur_dist: %i + slide_stop: %i = %i\n", key_num, cur_dist, slide_stop, (cur_dist + slide_stop) );
+				//printf("***key_num: %i  cur_dist: %i + slide_stop: %i = %i\n", key_num, cur_dist, slide_stop, (cur_dist + slide_stop) );
 				path[cur_lane].path_cost[path[cur_lane].front_idx] = cur_dist
 						+ slide_stop;
-				printf("path[%i].path_cost[%i] = %i\n", cur_lane, path[cur_lane].front_idx, path[cur_lane].path_cost[path[cur_lane].front_idx]);
+				//printf("path[%i].path_cost[%i] = %i\n", cur_lane, path[cur_lane].front_idx, path[cur_lane].path_cost[path[cur_lane].front_idx]);
 			}
 			//Check lower (left) neighbor
 			if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
@@ -460,18 +462,18 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 				path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
 						= cur_dist + 1;
 
-				printf("path[%i].path_cost[%i] = %i\n", cur_lane, path[cur_lane].front_idx, path[cur_lane].path_cost[path[cur_lane].front_idx]);
+				//printf("path[%i].path_cost[%i] = %i\n", cur_lane, path[cur_lane].front_idx, path[cur_lane].path_cost[path[cur_lane].front_idx]);
 			//stop if can't slide anymore
 			if (slide_stop == 1) {
 				break;
 			}
 		}
-		printf("cur_lane: %i, path[%i].front_idx: %i\n", cur_lane, cur_lane, path[cur_lane].front_idx);
+		//printf("cur_lane: %i, path[%i].front_idx: %i\n", cur_lane, cur_lane, path[cur_lane].front_idx);
 		/*
 		for (int i = 0; i < 12; i++) {
-			printf("Now path i: %i\n", i);
+			//printf("Now path i: %i\n", i);
 			for (int j = 0; j <= 12; j++) {
-				printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
+				//printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
 			}
 		}
 		*/
@@ -481,9 +483,9 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 	DEBUG_PRINT2("inside editCalBWD, after path cost generation b  threadId: %i\n", threadIdx.x);
 	/*
 	for (int i = 0; i < 12; i++) {
-		printf("Now path i: %i\n", i);
+		//printf("Now path i: %i\n", i);
 		for (int j = 0; j <= 108; j++) {
-			printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
+			//printf("path[%i].path_cost[%i]: %i\n", i, j, path[i].path_cost[j]);
 		}
 	}
 	*/
@@ -491,12 +493,12 @@ __device__ ED_result editDistanceCalBWD(char* test_read, char* ref_read,
 	//Tracing back period
 	DEBUG_PRINT2("result_correct: %i", result.correct);
 	if (result.correct == false){
-	DEBUG_PRINT2("result_correct: %i", result.correct);
-DEBUG_PRINT2("1xxx: %i\n", threadIdx.x);
+	//DEBUG_PRINT2("result_correct: %i", result.correct);
+	//DEBUG_PRINT2("1xxx: %i\n", threadIdx.x);
 		return result;
 	}
 	else { //If pass the test, trace back
-DEBUG_PRINT2("2xxx: %i\n", threadIdx.x);
+		//DEBUG_PRINT2("2xxx: %i\n", threadIdx.x);
 		//char temp_result[30]; //Temp string. Used for appending.
 		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
@@ -505,6 +507,7 @@ DEBUG_PRINT2("2xxx: %i\n", threadIdx.x);
 		cur_dist = path[cur_lane].path_cost[cur_idx];
 
 		int error_ptr = 0;
+/*
 DEBUG_PRINT2("3xxx: %i\n", threadIdx.x);		
 for (int i =0; i < READ_LENGTH; i++){
 	DEBUG_PRINT2("%c", test_read[i]);
@@ -514,13 +517,15 @@ for (int i =0; i < READ_LENGTH; i++){
 	DEBUG_PRINT2("%c", ref_read[i]);
 }
 	DEBUG_PRINT1("\n");
-
+*/
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+/*
 			DEBUG_PRINT3("4xxx: %i key_number: %i \n", threadIdx.x, key_num);
 			DEBUG_PRINT2("cur_idx: %i\n", cur_idx);
 			DEBUG_PRINT2("cur_lane: %i\n", cur_lane);
 			DEBUG_PRINT4("path[%i].path_cost[%i]: %i\n", cur_lane, cur_idx, path[cur_lane].path_cost[cur_idx]);
 			DEBUG_PRINT2("key_num * KEY_LENGTH: %i\n", key_num * KEY_LENGTH);
+*/
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH || 
 				path[cur_lane + 1].path_cost[cur_idx] < path[cur_lane].path_cost[cur_idx + 1]){
@@ -536,20 +541,22 @@ for (int i =0; i < READ_LENGTH; i++){
 
 				error_ptr++;
 				cur_lane++;
+/*
 				DEBUG_PRINT5("4xx6: threadIdx %i / error_ptr: %i / cur_lane: %i main_lane: %i", 
 							threadIdx.x, error_ptr, cur_lane, main_lane);
 				DEBUG_PRINT3(" cur_idx: %i / key_num * KEY_LENGTH: %i\n", 
 							cur_idx, key_num*KEY_LENGTH);
 				DEBUG_PRINT3(" path_cost: %i / path_cost: %i\n", 
 							path[cur_lane + 1].path_cost[cur_idx], path[cur_lane].path_cost[cur_idx + 1]);
+*/
 				continue;
 			}
 
-DEBUG_PRINT1("Check deletion0\n");
+			//DEBUG_PRINT1("Check deletion0\n");
 			//If we should have a deletion
 			if (path[cur_lane - 1].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx + 1]) {
-DEBUG_PRINT1("Check deletion1\n");
+			//DEBUG_PRINT1("Check deletion1\n");
 				result.error[error_ptr].diff = DELETION;
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
@@ -561,11 +568,11 @@ DEBUG_PRINT1("Check deletion1\n");
 				continue;
 			}
 
-DEBUG_PRINT1("Check mismatch0\n");
+			//DEBUG_PRINT1("Check mismatch0\n");
 			//Check if we have a mismatch
 			if (path[cur_lane].path_cost[cur_idx + 1]
 					< path[cur_lane].path_cost[cur_idx]) {
-DEBUG_PRINT1("Check mismatch1\n");
+			//DEBUG_PRINT1("Check mismatch1\n");
 				result.error[error_ptr].diff = MISMATCH;
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
@@ -576,7 +583,7 @@ DEBUG_PRINT1("Check mismatch1\n");
 				continue;
 			}
 
-DEBUG_PRINT1("index increase\n");
+			//DEBUG_PRINT1("index increase\n");
 			//Move to the next element
 			cur_idx++;
 		}
