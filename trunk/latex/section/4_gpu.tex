@@ -6,8 +6,18 @@ processor one fragment. For each fragment, we then spawn 32 threads as a warp.
 For each thread, they have 2 phases in calculation. Phase 1 is the adjacency
 filtering and phase 2 is edit-distance calculation. To keep as much thread in a
 warp as possible, we synchronize between 2 phases. The flow chart is shown in
-Figure 4.  We have three main problems with this naïve implementation. We will
+Figure~\ref{fig:gpu}.  We have three main problems with this naïve implementation. We will
 describe them below. \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t]
+\centering
+\vspace{0.1in}
+\includegraphics[width=3in]{./figure/gpu_B.pdf} \vspace{0in}
+\caption{GPU flow chart}
+\label{fig:gpu}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 One problem we face in our CUDA implementation is that the edit distance
 calculation diverges a lot in control path. This is because the algorithm we

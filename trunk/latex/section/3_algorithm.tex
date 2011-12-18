@@ -16,6 +16,16 @@ have longer coordinate list. As a result, when sampling, we will have higher
 chance encounter these expensive keys since they show up more frequently in
 human DNA. \\
  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[t] 
+\centering
+\vspace{0.1in}
+\includegraphics[width=3in]{./figure/Entry_Size_B.pdf} \vspace{0in}
+\caption{The coordinate entry size}
+\label{fig:entry_size} 
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 Figure~\ref{fig:entry_size} shows the coordinates entry size for chromosome 1.
 For a vast majority of the entries, there is 0 coordinate stored inside which
 means this pattern never shows up in this chromosome. However, there are also
@@ -37,16 +47,6 @@ bandwidth, on chip cache as well as execution time.\\
 \begin{figure}[t] 
 \centering
 \vspace{0.1in}
-\includegraphics[width=3in]{./figure/Entry_Size_B.pdf} \vspace{0in}
-\caption{The coordinate entry size}
-\label{fig:entry_size} 
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t] 
-\centering
-\vspace{0.1in}
 \includegraphics[width=3in]{./figure/Edit_Dist_B.pdf} \vspace{0in}
 \caption{The number of edit-distance performs}
 \label{fig:edit_dist} 
@@ -58,7 +58,7 @@ divided into N segments, and we probe e+1 segments’ coordinate lists as we
 described in 2.2.1. Then for each coordinate stored in the coordinate list, if
 such coordinate is a potential match, the adjacent keys have adjacent locations
 stored in their coordinate lists. An example will be the best explanation. For
-instance, as shown in Figure~\ref{ad_filtering}, a fragment f is divided into
+instance, as shown in Figure~\ref{fig:ad_filtering}, a fragment f is divided into
 N segments s1, s2… sN, with each segments being L in length. When probing the
 coordinate entry for the first segment, on the first coordinate coor1 from s1,
 we test if coor1 + L is located in the coordinate list of s2 and if coor1 + 2*L
@@ -72,7 +72,7 @@ constrain from all segments to N – e segments is that now there could be at
 most errors in the fragment, which in the worst case could be distributed in e
 segments. In presents of insertion and deletions, the filtering test will be
 further relaxed to the range of expected coordinate plus or minus e. For
-example in Figure~\ref{ad_filtering}, if now the error number e is set to 3,
+example in Figure~\ref{fig:ad_filtering}, if now the error number e is set to 3,
 then for coor1, instead of searching for coor1 + L in the coordinate list of
 s2, we now search for coor1 + L +- e for s2 and coor1 + L*2 +-e for s3, so on
 and so forth.  Additionally, instead of requiring matches for all of the
@@ -132,16 +132,17 @@ we assume that the fragment has some errors caused by a certain reason, like
 individual DNA difference or platform biases, and the errors are located at the
 searching key for hash table, then, the coordinates according to the search key
 have potential errors.  Finally, we lose the chance that we can find out exact
-matching cases with allowing these errors.\\ The obvious solution of this
-potential problem is to select multiple search keys within the fragment, which
-is based on Pigeon Hole theorem. Pigeon Hole theorem is that if there are “m”
-pigeon and \textit{m+1} hole which can be occupied by just one pigeon, then,
-one of the holes has to be blanked at least. So, if \textit{m+1} keys are
-selected as search key to guarantee \textit{m} allowable errors, then, one of
-the search keys don’t has errors at least.  Figure~\ref{fig:pigeon} shows the
-worst case of error distribution. 5 errors distributed across the different
-keys. In this case, if we select any 6 keys of total keys, we can get a key
-which do not has errors at least. 
+matching cases with allowing these errors.\\
+
+The obvious solution of this potential problem is to select multiple search
+keys within the fragment, which is based on Pigeon Hole theorem. Pigeon Hole
+theorem is that if there are “m” pigeon and \textit{m+1} hole which can be
+occupied by just one pigeon, then, one of the holes has to be blanked at least.
+So, if \textit{m+1} keys are selected as search key to guarantee \textit{m}
+allowable errors, then, one of the search keys don’t has errors at least.
+Figure~\ref{fig:pigeon} shows the worst case of error distribution. 5 errors
+distributed across the different keys. In this case, if we select any 6 keys of
+total keys, we can get a key which do not has errors at least. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[b] \centering \vspace{0.1in}
@@ -168,42 +169,43 @@ previous Adjacency filtering at specific sized, 100ea in our implementation,
 array to filter out the redundant Adjacency filter.  If it is matched, then, we
 simply cancel the reserved Adjacency filtering.
 
-\textbf{Imbalance of the number of key entry size} In section~\ref{sec:af} , Adjacency
-filtering drastically reduces the number of string comparison perform. However,
-Adjacency filtering also requires large computational resources for searching
-the expected coordinate in hash table to decide whether this location can be
-potentially matched to fragment or not. The imbalance of key entry size
-exacerbates the problem because we have to perform Adjacency filtering as much
-as key entry size. Figure~\ref{fig:key_dist}  shows the distribution of key
-entry size within one chromosome. If we use the fragments which are located at
-“A” position, about 150,000 Adjacency filtering performs are required. The
-number of fragments located at “A” position is over 1000. Now, the dominant
-computation requirement changes from the string comparison perform to Adjacency
-Filtering perform.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[b] \centering \vspace{0.1in}
+\begin{figure}[t] \centering \vspace{0.1in}
 \includegraphics[height=1.7in]{./figure/Key_Dist_B.pdf} \vspace{0in}
 \caption{Adjacency Filtering Distribution} 
 \label{fig:key_dist} 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Imbalance of the number of key entry size} In section~\ref{sec:af},
+Adjacency filtering drastically reduces the number of string comparison
+perform. However, Adjacency filtering also requires large computational
+resources for searching the expected coordinate in hash table to decide whether
+this location can be potentially matched to fragment or not. The imbalance of
+key entry size exacerbates the problem because we have to perform Adjacency
+filtering as much as key entry size. Figure~\ref{fig:key_dist}  shows the
+distribution of key entry size within one chromosome. If we use the fragments
+which are located at \textit{A} position, about 150,000 Adjacency filtering performs
+are required. The number of fragments located at “A” position is over 1000.
+Now, the dominant computation requirement changes from the string comparison
+perform to Adjacency Filtering perform.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[t] \centering \vspace{0.1in}
+\begin{figure}[h] \centering \vspace{0.1in}
 \includegraphics[width=3.0in]{./figure/Cheap_Key_B.pdf} \vspace{0in}
 \caption{Cheap Key Selection Mechanism} 
 \label{fig:cheap_key} 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[h] \centering \vspace{0.1in}
+\begin{figure}[b] \centering \vspace{0.1in}
 \includegraphics[width=3.0in]{./figure/CK_Result_B.pdf} \vspace{0in}
 \caption{Cheap Key Selection Result} 
 \label{fig:ck_result} 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[b] \centering \vspace{0.1in}
+\begin{figure}[t] \centering \vspace{0.1in}
 \includegraphics[height=1.7in]{./figure/Key_Dist2_B.pdf} \vspace{0in}
 \caption{Efficiency of Cheap Key Selection} 
 \label{fig:key_dist2} 
