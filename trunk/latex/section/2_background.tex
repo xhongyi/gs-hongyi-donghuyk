@@ -1,0 +1,179 @@
+\section{Background} \label{sec:background} 
+
+Several mechanisms have been proposed for next generation sequence alignment.
+They can be summarized into two categories: Burrows-Wheeler transform based
+aligning tool and hash-table based aligning tool. Burrows-Wheeler transform
+based aligning tools usually can search for exact match very fast while slow
+with inexact matches (matches with the presents of errors). Hash-table based
+aligning tools are slow in general but they promise to find all possible
+locations in reference DNA sequence where the reference DNA string has fewer
+than e number of errors. We will briefly describe how they work by showing one
+example implementation for each category. \\
+
+\subsection{Burrows-Wheeler transform based aligning tools} 
+
+Burrows-Wheeler transform, together with backward search, is able to mimic the
+top-down traversal on the prefix tree of the reference gnome with relatively
+small memory footprint. The time complexity of finding the exact match is O(m),
+with m being the fragment length. For inexact match, such implementations
+normally will have to traverse neighbor sibling nodes at every level of the
+tree and their corresponding descendants. Such branching traversing behavior
+causes the complexity of inexact match to be roughly O(me). To further explain
+how it works, let us look at one typical tool BWA.  To understand BWA, we will
+have to first understand how prefix tree and backward search works. Then we
+will explain how Burrows-Wheeler transform and backward searching can be used
+to solve DNA sequencing problem.  
+
+\subsubsection{Prefix tree and string matching} 
+
+The prefix tree of string X is a tree where each edge is labeled with a letter
+and the string concatenation of the edge letters on one path from a leaf to the
+root gives a unique prefix of string X. With the prefix tree, testing whether a
+query W is an exact substring of X is equivalent to finding the path starting
+from root and reconstructs W along the way. Such testing procedure can be done
+in O($\mid$W$\mid$) ($\mid$W$\mid$ is the length of W) time by matching each
+letter of W to an edge, starting from root.  For inexact match, instead of
+matching letters for all edges along the path, now there will be at most e
+different edges allowed for one traverse from leaf to root. In order to achieve
+such error endurance and collect all potential paths, mismatches as well as
+deletion and insertion will have to be allowed at each step traversing the
+tree, which means not only the exact match edge will be considered traversing
+down, but also sibling not matching edges will be traversed for completeness,
+we call this full traverse.  However, for each different edge ever passed, the
+error counter of such path will be incremented, and the traverse will stop
+whenever the error counter exceeds the error threshold e.  
+
+\subsubsection{Burrows-Wheeler transform and backward searching} 
+
+Burrows-Wheeler transform is a string transformation function, where for an
+input string X it first rotates the text and stores every rotated string in a
+matrix. Then, it sorts all rotated string in lexicographic order. The
+transformed result string B of string X will be the right most column of the
+matrix. There is also a sorted rotation index vector S[], where S[i] denotes
+the original order of the now sorted ith rotated string.  There is an important
+property associated with Burrows-Wheeler transformed string. To explain the
+that, we first define:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{small}
+\begin{align*} 
+&\mathit{R}_{min} = \mathit{min}\{k:\ W\ is\ the\ prefix\ of\ X_{s[k]}\} \\
+&\mathit{R}_{max} = \mathit{max}\{k:\ W\ is\ the\ prefix\ of\ X_{s[k]}\} 
+\end{align*}
+\end{small}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Above equations translate to \textit{R$_{min}$(W) is the smallest order k of
+the rotated string of X$_{s[k]}$ where W is the prefix of X$_{s[k]}$. Rmax(W)
+vice versa.} If there is just 1 single exact match, R$_{min}$(W) = Rmax(W). Let
+C(a) be the number of symbols in X that are lexicographically smaller than a
+and O(a, i) be the number of occurrences of a in Burrows-Wheeler transformed
+string B[0, i], Ferragina and Manzini proved that:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{small}
+\begin{align*} 
+&\mathit{R}_{min}(aW) = C(a) + O(a,R_{min}(W) -1 ) + 1 \\
+&\mathit{R}_{max}(aW) = C(a) + O(a,R_{max}(W) -1 ) \\
+&\mathit{R}_{min}(aW) <= \mathit{R}_{max}(aW) 
+\end{align*}
+\end{small}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Above equations translated to \textit{given R$_{max}$(W) and R$_{min}$(W) of
+string W, we can get the R$_{max}$ and R$_{min}$ for a new string aW where aW
+is the original string W with 1 more letter "a" attached in front of it.}
+Ferragina and Manzini further proved that these 3 condition holds if and only
+if aW is also a substring of X.  Given these 3 equations, together with
+pre-calculated values of C(a) and Burrows-Wheeler transformed string B, one can
+quickly get the one of exact match location by picking either R$_{min}$ or
+R$_{max}$ and get their corresponding S[R$_{min}$] and S[R$_{max}$]. The way it
+calculates R$_{min}$(aW) and R$_{max}$(aW) given R$_{min}$(W) and R$_{max}$(W)
+is exactly a mimic of traversing the prefix tree.  For exact match, BWA saves
+memory since they do not need to store the prefix tree but just a
+Burrows-Wheeler transformed string B and some pre-calculated values of C(a)
+where a will be any of the for base pairs \{A, C, T, G\}. However, when
+matching for inexact case, BWA will also need to mimic full traversing of the
+prefix tree by also calculating not only R$_{min}$(aW) and R$_{max}$(aW) for
+each additional letter a, but also R$_{max}$(bW) and R$_{max}$(bW) where b can
+be all the other mismatched base-pair. The branching behavior will become even
+worse when taking insertions and deletions into account. As a result, BWA
+performs poorly when trying to get all possible locations.\\
+
+\subsection{Hash-table based aligning tools} 
+
+Hash-table based DNA aligning tools on the other hand, store all locations of
+reference DNA and the corresponding pattern at the location in a hash-table,
+where the pattern is the key and the corresponding locations are contends
+associated with each key (the locations is also called coordinates they are
+inter-changeable in this paper). For each aligning process, generally a
+hash-table based aligning tool will first break the fragment into several small
+segments and then use the segments as keys to look into the hash-table. The
+hash-table returns all locations that the query pattern associates so that the
+tool can retrieve fragment-size long reference DNA sequence at each location.
+Finally there will be a string comparison test, which determines the similarity
+between input fragment string and the reference strings at each location
+returned by hash-table. Only the locations that pass the string comparison test
+with a high confidence score will be considered a potential match up.  Among
+all hash-table aligning tools, we analyzed mrFAST, which is a widely used tool
+guaranteeing full coverage of all possible locations within some error number
+\textit{e}.  
+
+\subsubsection{Hash-table query} 
+
+The first step of aligning process for mrFAST is cutting an input fragment into
+several small segments and performing the hash-table look up. For exact
+matches, picking any segment as key to access hash-table would guarantee full
+coverage of all exact match locations, since the coordinates stored inside the
+hash-table matching one segment is the super set of the coordinates matching
+the whole fragment (the whole fragment can be matched only if the segment is
+matched).  For inexact match, if we allow e errors, then picking e + 1 segments
+as keys will cover all potential locations, since at least 1 key will guarantee
+to be error free, by Pigeon Hole theory (If there is m+1 pigeon and m holes, at
+least one hole will have 2 pigeons).  Normally, researcher will allow around 5\%
+of the fragment as errors. With a pattern length (key length of the hash-table)
+of 12 base pairs, the worst case would be using half of the segments as keys.
+If however, the error number is larger than the segments number, the pigeonhole
+theory will no longer hold, simply because there are not enough segments. To
+solve such problem, one can shrink the segment (key) length thus force
+producing shorter but more segments.  Notice that this will decrease the length
+of the keys and causing more coalescing and longer coordinate list in the hash
+table. As we will see later, this may degrade the performance as now each key
+will have a longer coordinate list to traverse, which results in more string
+compares. \\
+
+\subsection{String Compares} 
+
+There are lots of string compare functions.  SARUMAN uses Needleman-Wunsch
+algorithm, while mrFAST uses Ukkonen’s edit-distance calculation algorithms.
+The detail of edit-distance calculation algorithm is out of the scope of this
+paper. But in short, it returns the exact number of mismatches, insertions and
+deletions as well as their locations and different contents. While providing
+such detailed information between input fragment string and reference DNA
+string, edit-distance calculation is extremely computationally expensive. As a
+result, we should avoid calling edit-distance calculation if the coordinate can
+be rejected at early stage, before edit-distance calculation.  In short, mrFAST
+provides full coverage for all possible matching locations given an max error
+number e. However, due to large amount of edit-distance calculations and their
+intrinsic expensive property, mrFAST suffers from long execution time. \\
+
+\subsection{FastHASH} 
+
+As mentioned earlier, Burrows-Wheeler transform based aligning tools, or any
+other suffix tree or prefix tree based aligning tools are fast for exact match
+but will get exponentially slower as the number of error tolerance increases.
+On the other hand, the computation complexity of hash-table based DNA aligning
+tools grows linearly as error tolerance increases but they are slow in general.
+Our goal is to provide a fast but comprehensive DNA aligning tool. By
+comprehensive we mean promise full coverage for finding all potential locations
+where the number of differences between input fragment and reference DNA string
+is lower than a user set error number e. To preserve this comprehensive
+property while avoiding exponential slow down as error rate increases, we
+decide to optimize hash-table based aligning tool mrFAST. \\
+
+%The rest of the
+%paper is organized as the following: Section 3 will describe algorithm
+%optimizations. Section 4 will describe GPU implementations. Section 5 will
+%describe methodology. Section 6 will provide results and analysis. Section 7
+%will be conclusion. Finally section 8 will be future work. \\
+

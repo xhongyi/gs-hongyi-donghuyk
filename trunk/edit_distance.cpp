@@ -475,7 +475,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 						|| (cur_lane < main_lane && path[cur_lane].front_idx //Deletion Lane
 								== main_lane - cur_lane)) {
 								
-					cout << "Should never got here!!!" << endl;
+					//cout << "Should never got here!!!" << endl;
 					ED_finished = true;
 					result.correct = true;
 					break;

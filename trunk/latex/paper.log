@@ -1,0 +1,993 @@
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.13)  18 DEC 2011 15:40
+entering extended mode
+ %&-line parsing enabled.
+**paper
+(./paper.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(./template.tex (/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texmf-texlive/tex/latex/geometry/geometry.sty
+Package: geometry 2008/12/21 v4.2 Page Geometry
+
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/share/texmf-texlive/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+\Gm@cnth=\count87
+\Gm@cntv=\count88
+\c@Gm@tempcnt=\count89
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@dimlist=\toks15
+
+(/usr/share/texmf-texlive/tex/xelatex/xetexconfig/geometry.cfg))
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2010/03/12 v0.04p Graphics/color for pdfTeX
+\Gread@gobject=\count90
+))
+\Gin@req@height=\dimen107
+\Gin@req@width=\dimen108
+)
+(/usr/share/texmf-texlive/tex/latex/mdwtools/mdwlist.sty
+Package: mdwlist 1996/05/02 1.1 Various list-related things
+)
+(/usr/share/texmf-texlive/tex/latex/ltxmisc/url.sty
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+(/usr/share/texmf-texlive/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count91
+\float@exts=\toks16
+\float@box=\box26
+\@float@everytoks=\toks17
+\@floatcapt=\box27
+)
+(/usr/share/texmf-texlive/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen109
+\lightrulewidth=\dimen110
+\cmidrulewidth=\dimen111
+\belowrulesep=\dimen112
+\belowbottomsep=\dimen113
+\aboverulesep=\dimen114
+\abovetopsep=\dimen115
+\cmidrulesep=\dimen116
+\cmidrulekern=\dimen117
+\defaultaddspace=\dimen118
+\@cmidla=\count92
+\@cmidlb=\count93
+\@aboverulesep=\dimen119
+\@belowrulesep=\dimen120
+\@thisruleclass=\count94
+\@lastruleclass=\count95
+\@thisrulewidth=\dimen121
+)
+(/usr/share/texmf-texlive/tex/latex/lineno/lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count96
+\output=\toks18
+\linenoprevgraf=\count97
+\linenumbersep=\dimen122
+\linenumberwidth=\dimen123
+\c@linenumber=\count98
+\c@pagewiselinenumber=\count99
+\c@LN@truepage=\count100
+\c@internallinenumber=\count101
+\c@internallinenumbers=\count102
+\quotelinenumbersep=\dimen124
+\bframerule=\dimen125
+\bframesep=\dimen126
+\bframebox=\box28
+LaTeX Info: Redefining \\ on input line 3056.
+)
+(/usr/share/texmf-texlive/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/share/texmf-texlive/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/etc/texmf/tex/latex/config/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+
+(/usr/share/texmf-texlive/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
+))
+(/usr/share/texmf-texlive/tex/latex/psnfss/helvet.sty
+Package: helvet 2005/04/12 PSNFSS-v9.2a (WaS) 
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip43
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texmf-texlive/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks19
+\ex@=\dimen127
+))
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen128
+)
+(/usr/share/texmf-texlive/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count103
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count104
+\leftroot@=\count105
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count106
+\DOTSCASE@=\count107
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box29
+\strutbox@=\box30
+\big@size=\dimen129
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count108
+\c@MaxMatrixCols=\count109
+\dotsspace@=\muskip11
+\c@parentequation=\count110
+\dspbrk@lvl=\count111
+\tag@help=\toks20
+\row@=\count112
+\column@=\count113
+\maxfields@=\count114
+\andhelp@=\toks21
+\eqnshift@=\dimen130
+\alignsep@=\dimen131
+\tagshift@=\dimen132
+\tagwidth@=\dimen133
+\totwidth@=\dimen134
+\lineht@=\dimen135
+\@envbody=\toks22
+\multlinegap=\skip44
+\multlinetaggap=\skip45
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2009/06/22 v3.00
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2009/06/22 v3.00 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 96.
+))
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks24
+\c@algorithm=\count115
+)
+(/usr/share/texmf-texlive/tex/latex/algorithms/algorithmic.sty
+Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
+\c@ALC@unique=\count116
+\c@ALC@line=\count117
+\c@ALC@rem=\count118
+\c@ALC@depth=\count119
+\ALC@tlm=\skip46
+\algorithmicindent=\skip47
+)
+(/usr/share/texmf-texlive/tex/latex/titlesec/titlesec.sty
+Package: titlesec 2007/08/12 v2.8 Sectioning titles
+\ttl@box=\box31
+\beforetitleunit=\skip48
+\aftertitleunit=\skip49
+\ttl@plus=\dimen136
+\ttl@minus=\dimen137
+\ttl@toksa=\toks25
+\titlewidth=\dimen138
+\titlewidthlast=\dimen139
+\titlewidthfirst=\dimen140
+)
+(/usr/share/texmf-texlive/tex/latex/caption/caption.sty
+Package: caption 2009/10/09 v3.1k Customizing captions (AR)
+
+(/usr/share/texmf-texlive/tex/latex/caption/caption3.sty
+Package: caption3 2009/10/09 v3.1k caption3 kernel (AR)
+\captionmargin=\dimen141
+\captionmargin@=\dimen142
+\captionwidth=\dimen143
+\caption@indent=\dimen144
+\caption@parindent=\dimen145
+\caption@hangindent=\dimen146
+)
+\c@ContinuedFloat=\count120
+Package caption Info: float package is loaded.
+)
+(/usr/share/texmf-texlive/tex/latex/subfig/subfig.sty
+Package: subfig 2005/06/28 ver: 1.3 subfig package
+\c@KVtest=\count121
+\sf@farskip=\skip50
+\sf@captopadj=\dimen147
+\sf@capskip=\skip51
+\sf@nearskip=\skip52
+\c@subfigure=\count122
+\c@subfigure@save=\count123
+\c@lofdepth=\count124
+\c@subtable=\count125
+\c@subtable@save=\count126
+\c@lotdepth=\count127
+\sf@top=\skip53
+\sf@bottom=\skip54
+)
+(/usr/share/texmf-texlive/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen148
+\WF@size=\dimen149
+\c@WF@wrappedlines=\count128
+\WF@box=\box32
+\WF@everypar=\toks26
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/share/texmf-texlive/tex/latex/abstract/abstract.sty
+Package: abstract 2009/06/08 v1.2a configurable abstracts
+\abstitleskip=\skip55
+\absleftindent=\skip56
+\absrightindent=\skip57
+\absparindent=\skip58
+\absparsep=\skip59
+)
+(/usr/share/texmf-texlive/tex/latex/tools/indentfirst.sty
+Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
+)
+(/usr/share/texmf-texlive/tex/latex/tools/verbatim.sty
+Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks27
+\verbatim@line=\toks28
+\verbatim@in@stream=\read1
+)
+(/usr/share/texmf-texlive/tex/latex/setspace/setspace.sty
+Package: setspace 2000/12/01 6.7 Contributed and Supported LaTeX2e package
+
+Package: `setspace' 6.7 <2000/12/01>
+) (/usr/share/texmf-texlive/tex/latex/datetime/datetime.sty
+Package: datetime 2007/08/20 v2.55 Date Time Package
+
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fmtcount.sty
+Package: fmtcount 2009/10/02 v1.31
+\c@padzeroesN=\count129
+
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-english.def
+File: fc-english 2007/05/26
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-UKenglish.def
+File: fc-UKenglish 2007/06/14
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-british.def
+File: fc-british 2007/06/14
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-USenglish.def
+File: fc-USenglish 2007/06/14
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-spanish.def
+File: fc-spanish.def 2007/05/26
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-portuges.def
+File: fc-portuges.def 2007/05/26
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-french.def
+File: fc-french.def 2007/05/26
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-german.def
+File: fc-german.def 2007/06/14
+)
+(/usr/share/texmf-texlive/tex/latex/fmtcount/fc-italian.def
+File: fc-italian.def 2009/10/02 Italian support for fmtcount (Edoardo Pasca)
+)
+No configuration file fmtcount.cfg found.
+\@DT@modctr=\count130
+\@ordinalctr=\count131
+\@orgargctr=\count132
+\@strctr=\count133
+\@tmpstrctr=\count134
+\@DT@loopN=\count135
+\@DT@X=\count136
+)
+\@day=\count137
+\@month=\count138
+\@year=\count139
+Package datetime Info: No datetime.cfg file found, using default settings on in
+put line 167.
+LaTeX Info: Redefining \currenttime on input line 232.
+\@dtctr=\count140
+\dayofyear=\count141
+\dayofweek=\count142
+LaTeX Info: Redefining \today on input line 428.
+\c@HOUR=\count143
+\c@HOURXII=\count144
+\c@MINUTE=\count145
+\c@TOHOUR=\count146
+\c@TOMINUTE=\count147
+\dt@a=\toks29
+\dt@b=\toks30
+) (/usr/share/texmf-texlive/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen150
+)
+(/usr/share/texmf-texlive/tex/latex/tools/xspace.sty
+Package: xspace 2006/05/08 v1.12 Space after command names (DPC,MH)
+))
+
+LaTeX Warning: Unused global option(s):
+    [times].
+
+(./paper.aux)
+\openout1 = `paper.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
+LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 41.
+ (/usr/share/texmf-texlive/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+*geometry auto-detecting driver*
+*geometry detected driver: pdftex*
+-------------------- Geometry parameters
+paper: class default
+landscape: --
+twocolumn: true
+twoside: --
+asymmetric: --
+h-parts: 72.26999pt, 469.75502pt, 72.26999pt
+v-parts: 72.26999pt, 650.43001pt, 72.26999pt
+hmarginratio: --
+vmarginratio: --
+lines: --
+heightrounded: --
+bindingoffset: 0.0pt
+truedimen: --
+includehead: --
+includefoot: --
+includemp: --
+driver: pdftex
+-------------------- Page layout dimensions and switches
+\paperwidth  614.295pt
+\paperheight 794.96999pt
+\textwidth  469.75502pt
+\textheight 650.43001pt
+\oddsidemargin  0.0pt
+\evensidemargin 0.0pt
+\topmargin  -37.0pt
+\headheight 12.0pt
+\headsep    25.0pt
+\footskip   30.0pt
+\marginparwidth 4.0pt
+\marginparsep   10.0pt
+\columnsep  18.06749pt
+\skip\footins  9.0pt plus 4.0pt minus 2.0pt
+\hoffset 0.0pt
+\voffset 0.0pt
+\mag 1000
+\@twocolumntrue 
+(1in=72.27pt, 1cm=28.45pt)
+-----------------------
+(/usr/share/texmf/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count148
+\scratchdimen=\dimen151
+\scratchbox=\box33
+\nofMPsegments=\count149
+\nofMParguments=\count150
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count151
+\MPscratchDim=\dimen152
+\MPnumerator=\count152
+\everyMPtoPDFconversion=\toks32
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
+LaTeX Info: Redefining \subref on input line 41.
+Package caption Info: wrapfig package is loaded.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 42.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 42.
+LaTeX Font Info:    Try loading font information for U+msa on input line 42.
+ (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2009/06/22 v3.00 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 42.
+
+(/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2009/06/22 v3.00 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 42.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
+ (./section/0_abstract.tex)
+Underfull \hbox (badness 1577) in paragraph at lines 1--46
+[]\OT1/ptm/m/it/10 The ad-vent of Next-generation se-quenc-ing (NGS)
+ []
+
+
+Underfull \hbox (badness 3179) in paragraph at lines 1--46
+\OT1/ptm/m/it/10 ef-fec-tively by di-vid-ing in-di-vid-ual DNA to mas-sive
+ []
+
+
+Underfull \hbox (badness 2343) in paragraph at lines 1--46
+\OT1/ptm/m/it/10 FastHASH, which dras-ti-cally im-proves per-for-mance
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1--46
+
+ []
+
+(./section/1_introduction.tex
+
+LaTeX Warning: Citation `roche445' on page 1 undefined on input line 26.
+
+
+Underfull \hbox (badness 1253) in paragraph at lines 13--45
+\OT1/ptm/m/n/10 DNA se-quenc-ing tech-niques [[], [], [], [], []] are
+ []
+
+
+Underfull \hbox (badness 4441) in paragraph at lines 13--45
+\OT1/ptm/m/n/10 tech-nolo-gies pro-vide low-cost and high-throughput
+ []
+
+
+Underfull \hbox (badness 1824) in paragraph at lines 13--45
+\OT1/ptm/m/n/10 com-pu-ta-tional re-sources, i.e. match-ing 31.5mil-lon
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--45
+
+ []
+
+
+Underfull \hbox (badness 3138) in paragraph at lines 46--62
+\OT1/ptm/m/n/10 These tools are com-pre-hen-sive, how-ever they are
+ []
+
+
+Underfull \hbox (badness 1490) in paragraph at lines 46--62
+\OT1/ptm/m/n/10 Single-instruction Multi-data (SIMD) ar-chi-tec-ture or
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--62
+
+ []
+
+
+Underfull \hbox (badness 5771) in paragraph at lines 63--80
+[]\OT1/ptm/m/n/10 In this work, we pro-posed a new al-go-rithm,
+ []
+
+
+Underfull \hbox (badness 1910) in paragraph at lines 63--80
+\OT1/ptm/m/n/10 FastHASH, which dras-ti-cally im-proves per-for-mance
+ []
+
+
+Underfull \hbox (badness 1303) in paragraph at lines 63--80
+\OT1/ptm/m/n/10 com-par-i-son func-tion to ex-tract com-plete dif-fer-en-tial
+ []
+
+
+Underfull \hbox (badness 1009) in paragraph at lines 63--80
+\OT1/ptm/m/n/10 two key ideas to re-duce both type of com-pu-ta-tion.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--80
+
+ []
+
+
+Underfull \vbox (badness 6825) has occurred while \output is active []
+
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 81--87
+
+ []
+
+) (./section/2_background.tex
+Underfull \hbox (badness 10000) in paragraph at lines 3--12
+
+ []
+
+
+Underfull \hbox (badness 5374) in paragraph at lines 13--13
+ |[]\OT1/ptm/b/n/10 Burrows-Wheeler trans-form based align-ing
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 95.
+
+(/usr/share/texmf-texlive/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 95.
+
+Underfull \hbox (badness 1803) in paragraph at lines 83--102
+\OT1/ptm/m/n/10 and Manzini fur-ther proved that these 3 con-di-tion
+ []
+
+
+Underfull \hbox (badness 1264) in paragraph at lines 83--102
+\OT1/ptm/m/n/10 to mimic full travers-ing of the pre-fix tree by also
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--102
+
+ []
+
+
+Underfull \hbox (badness 3815) in paragraph at lines 124--144
+\OT1/ptm/m/n/10 since the co-or-di-nates stored in-side the hash-table
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--144
+
+ []
+
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--159
+\OT1/ptm/m/n/10 MAN uses Needleman-Wunsch al-go-rithm, while
+ []
+
+
+Underfull \hbox (badness 3078) in paragraph at lines 147--159
+\OT1/ptm/m/n/10 pro-vid-ing such de-tailed in-for-ma-tion be-tween in-put
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 147--159
+
+ []
+
+[3]
+Underfull \hbox (badness 1199) in paragraph at lines 162--173
+[]\OT1/ptm/m/n/10 As men-tioned ear-lier, Burrows-Wheeler trans-form
+ []
+
+
+Underfull \hbox (badness 1137) in paragraph at lines 162--173
+\OT1/ptm/m/n/10 com-plex-ity of hash-table based DNA align-ing tools
+ []
+
+
+Underfull \hbox (badness 1033) in paragraph at lines 162--173
+\OT1/ptm/m/n/10 grows lin-early as er-ror tol-er-ance in-creases but they
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 162--173
+
+ []
+
+) (./section/3_algorithm.tex
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no î in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--18
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 19--35
+
+ []
+
+<./figure/Entry_Size_B.pdf, id=24, 811.03pt x 527.9725pt>
+File: ./figure/Entry_Size_B.pdf Graphic file (type pdf)
+
+<use ./figure/Entry_Size_B.pdf>
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 41.
+
+<./figure/Edit_Dist_B.pdf, id=25, 715.67375pt x 491.8375pt>
+File: ./figure/Edit_Dist_B.pdf Graphic file (type pdf)
+
+<use ./figure/Edit_Dist_B.pdf>
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ¶ in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+
+Underfull \hbox (badness 2012) in paragraph at lines 56--80
+\OT1/ptm/m/n/10 lo-ca-tions, which means all cor-re-spond-ing lo-ca-tions
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--80
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4 <./figure/Entry_Size_B.pdf> <./figure/Edit_Dist_B.pdf>]
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+
+Underfull \hbox (badness 1097) in paragraph at lines 81--96
+\OT1/ptm/m/n/10 For a match-ing in-put frag-ment and ref-er-ence DNA
+ []
+
+
+Underfull \hbox (badness 4024) in paragraph at lines 81--96
+\OT1/ptm/m/n/10 re-place edit-distance cal-cu-la-tion, it did dras-ti-cally
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--96
+
+ []
+
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+<./figure/pigeon_B.pdf, id=38, 288.07625pt x 234.8775pt>
+File: ./figure/pigeon_B.pdf Graphic file (type pdf)
+
+<use ./figure/pigeon_B.pdf> [5]
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+
+<./figure/Key_Dist_B.pdf, id=42, 740.7675pt x 400.49625pt>
+File: ./figure/Key_Dist_B.pdf Graphic file (type pdf)
+
+<use ./figure/Key_Dist_B.pdf>
+Overfull \hbox (1.39551pt too wide) in paragraph at lines 175--176
+ [][] 
+ []
+
+<./figure/Cheap_Key_B.pdf, id=43, 720.6925pt x 224.84pt>
+File: ./figure/Cheap_Key_B.pdf Graphic file (type pdf)
+
+<use ./figure/Cheap_Key_B.pdf>
+<./figure/CK_Result_B.pdf, id=44, 756.8275pt x 178.6675pt>
+File: ./figure/CK_Result_B.pdf Graphic file (type pdf)
+
+<use ./figure/CK_Result_B.pdf>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<./figure/Key_Dist2_B.pdf, id=45, 740.7675pt x 396.48125pt>
+File: ./figure/Key_Dist2_B.pdf Graphic file (type pdf)
+
+<use ./figure/Key_Dist2_B.pdf>
+Overfull \hbox (3.70135pt too wide) in paragraph at lines 196--197
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--231
+
+ []
+
+
+Underfull \vbox (badness 5260) has occurred while \output is active []
+
+)
+(./section/4_gpu.tex
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no Ø in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 3--11
+
+ []
+
+
+Underfull \vbox (badness 2142) has occurred while \output is active []
+
+ [6 <./figure/pigeon_B.pdf> <./figure/Key_Dist_B.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 12--19
+
+ []
+
+) (./section/5_methodology.tex
+Underfull \hbox (badness 1237) in paragraph at lines 20--1
+\OT1/ptm/m/n/10 and sub-ject to edit-distance cal-cu-la-tion. The third
+ []
+
+
+Underfull \hbox (badness 2080) in paragraph at lines 20--1
+\OT1/ptm/m/n/10 by de-sign-ing a smarter sched-uler that dy-nam-i-cally
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--1
+
+ []
+
+
+Underfull \hbox (badness 1281) in paragraph at lines 5--31
+\OT1/ptm/m/n/10 size also re-quires huge amount of time to trans-fer
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--31
+
+ []
+
+[7 <./figure/Cheap_Key_B.pdf> <./figure/CK_Result_B.pdf> <./figure/Key_Dist2_B.
+pdf>]
+Underfull \hbox (badness 1668) in paragraph at lines 34--41
+\OT1/ptm/m/n/10 that, the se-lected sub-strings are shuf-fled with ran-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--41
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--55
+
+ []
+
+) (./section/6_evaluation.tex
+<./figure/Detail_Error_B.pdf, id=68, 262.9825pt x 185.69376pt>
+File: ./figure/Detail_Error_B.pdf Graphic file (type pdf)
+
+<use ./figure/Detail_Error_B.pdf>
+<./figure/CPU_Result_B.pdf, id=69, 340.27126pt x 198.7425pt>
+File: ./figure/CPU_Result_B.pdf Graphic file (type pdf)
+
+<use ./figure/CPU_Result_B.pdf>
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+
+Underfull \hbox (badness 2469) in paragraph at lines 37--70
+\OT1/ptm/m/n/10 mem-ory for se-quenc-ing the in-put frag-ment set to
+ []
+
+
+Underfull \hbox (badness 1571) in paragraph at lines 37--70
+\OT1/ptm/m/n/10 hash ta-bles cor-re-spond-ing to each chro-mo-some fro
+ []
+
+
+Underfull \hbox (badness 2158) in paragraph at lines 37--70
+\OT1/ptm/m/n/10 Fil-ter-ing, the string com-par-i-son is per-formed only
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 37--70
+
+ []
+
+[8 <./figure/Detail_Error_B.pdf> <./figure/CPU_Result_B.pdf>]
+<./figure/GPU_portion_B.pdf, id=79, 307.1475pt x 176.66pt>
+File: ./figure/GPU_portion_B.pdf Graphic file (type pdf)
+
+<use ./figure/GPU_portion_B.pdf>
+<./figure/GPU_Result_B.pdf, id=80, 339.2675pt x 198.7425pt>
+File: ./figure/GPU_Result_B.pdf Graphic file (type pdf)
+
+<use ./figure/GPU_Result_B.pdf>) (./section/7_analysis.tex
+Underfull \hbox (badness 1033) in paragraph at lines 88--1
+\OT1/ptm/m/n/10 are shipped to the GPU. Af-ter that, GPU op-er-ated
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--1
+
+ []
+
+
+Underfull \vbox (badness 1783) has occurred while \output is active []
+
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ì in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 3--34
+
+ []
+
+[9 <./figure/GPU_portion_B.pdf> <./figure/GPU_Result_B.pdf>]
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+
+Underfull \hbox (badness 10000) in paragraph at lines 35--46
+
+ []
+
+)
+Underfull \hbox (badness 10000) in paragraph at lines 47--57
+
+ []
+
+(./paper.bbl
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
+
+Underfull \hbox (badness 10000) in paragraph at lines 4--9
+\OT1/pcr/m/n/8 http : / / http : / / marketing . appliedbiosystems .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4--9
+\OT1/pcr/m/n/8 com / images / Product / Solid _ Knowledge / flash /
+ []
+
+
+Underfull \vbox (badness 1052) has occurred while \output is active []
+
+Missing character: There is no √ in font ptmr7t!
+Missing character: There is no § in font ptmr7t!
+) [10]
+(./paper.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 5692 strings out of 493848
+ 84015 string characters out of 1152822
+ 182783 words of memory out of 3000000
+ 8777 multiletter control sequences out of 15000+50000
+ 31328 words of font info for 78 fonts, out of 3000000 for 9000
+ 714 hyphenation exceptions out of 8191
+ 38i,15n,38p,902b,413s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/typ
+e1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
+r6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/
+share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-t
+exlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/font
+s/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/fonts/type1/publ
+ic/amsfonts/cm/cmti9.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr
+8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/t
+exmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/t
+ype1/urw/times/utmri8a.pfb>
+Output written on paper.pdf (10 pages, 2618551 bytes).
+PDF statistics:
+ 135 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 56 words of extra memory for PDF output out of 10000 (max. 10000000)
+

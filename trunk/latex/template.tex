@@ -1,0 +1,184 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Yoongu's paper template
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%submission
+%\documentclass[11pt]{article}
+
+%camera ready
+\documentclass[times, 10pt, twocolumn]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[top=1.0in, bottom=1.0in, left=1.0in, right=1.0in]{geometry} %margins
+\usepackage{graphicx}   %include graphics
+\usepackage{mdwlist}    %vertically compact lists, itemize
+\usepackage{url}        %citing websites in bibliography
+\usepackage{float}
+\usepackage{booktabs}   %pretty tables
+\usepackage{lineno}     %line numbering
+%\usepackage[maxnames=20]{biblatex}  %maxnames prevents the use of "et al."
+%\usepackage{authblk}   %easy for grouping authors into affiliations
+%\usepackage{subfig}     %line numbering
+
+%font
+\usepackage{times}
+\usepackage[usenames, dvipsnames]{color}
+\usepackage[scaled=0.92]{helvet}    %helvetica is larger than times
+%\usepackage{bbding}     %\CheckmarkBold, \XSolidBrush
+%\usepackage{pifont}     %circled numbers: \ding{202}
+
+%math
+\usepackage{amsmath}    %\begin{align*}: better than eqnarray, asterisk = no equation numbers
+\usepackage{amssymb}    %\varnothing (null set symbol)
+%\usepackage{stmaryrd}   %\shortrightarrow
+
+%algorithm
+\usepackage{algorithm}     %the algorithm package itself
+\usepackage{algorithmic}   %the floater wrapper for the algorithm package
+
+%section title
+\usepackage[compact]{titlesec}  %modify section/subsection titles
+
+%figures
+%\usepackage[font={footnotesize,sf}, labelfont=bf, textfont=bf, labelsep=period]{caption}
+\usepackage[font={small}, labelfont=bf, labelsep=period]{caption} %needs to come before subfig
+\usepackage{subfig}     %figures within figures: (a), (b), ...
+%\usepackage[tight, footnotesize]{subfigure}  %figures within figures: (a), (b), ...
+\usepackage{wrapfig}
+
+%text
+\usepackage{abstract}       %abstract font
+\usepackage{indentfirst}    %indent first paragraph
+\usepackage{verbatim}       %\being{comment}, \end{comment}
+
+%compactify
+\usepackage{setspace}   %doublespacing and singlespacing
+%\usepackage{bibspacing} %compact bibliography
+%\setlength{\bibspacing}{\baselineskip}
+
+%etc
+\usepackage[us,12hr]{datetime}
+%\usepackage{fancyhdr}   %page header/footer
+\usepackage{multirow}   %vertically merged cells in tabular
+\usepackage{xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ignore}[1]{}   %comment command for Onur
+\newcommand{\ra}{$\shortrightarrow$}
+\newcommand{\la}{$\shortleftarrow$}
+\newcommand{\lra}{$\leftrightarrow$}
+\newcommand{\cmark}{\CheckmarkBold}
+\newcommand{\xmark}{\XSolidBrush}
+\newcommand{\til}{$\sim$}
+%\renewcommand{\linenumberfont}{\normalfont\tt\footnotesize}
+\newcommand{\lati}{{\em i)} }
+\newcommand{\latii}{{\em ii)} }
+\newcommand{\latiii}{{\em iii)} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%section title
+\titlelabel{\thetitle.\hspace{8pt}}    %add period and whitespace after number
+\titleformat*{\section}{\bf \fontsize{12pt}{13pt}\selectfont}
+\titleformat*{\subsection}{\bf \fontsize{10pt}{11pt}\selectfont}
+
+%\titleformat*{\section}{\bf \fontsize{18pt}{19pt}\selectfont}
+%\renewcommand{\thesection}{\Roman{section}.\hspace{8pt}}
+%\titleformat*{\subsection}{\bf \fontsize{12pt}{13pt}\selectfont}
+%\renewcommand{\thesubsection}{\arabic{subsection}.\hspace{6pt}}
+%\titleformat*{\subsubsection}{\fontsize{10pt}{11pt}\selectfont}
+%\renewcommand{\thesubsubsection}{\bf \alph{subsubsection})\hspace{3pt}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% compactify for text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\linespread{0.83}
+%\linespread{1.1}
+%\linespread{1.5}
+
+%spacing between two columns of text
+\setlength{\columnsep}{0.25in}
+
+%spacing between paragraphs
+%\setlength{\parskip}{0in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% compactify for floats
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%space between floats
+\setlength{\floatsep}{0.1\floatsep}     %single column
+\setlength{\dblfloatsep}{0.1\floatsep}  %double column
+
+%space between last-top or first-bottom float and the text
+\setlength{\textfloatsep}{0.1\textfloatsep}     %single column
+\setlength{\dbltextfloatsep}{0.1\textfloatsep}  %double column
+
+%space left on top and bottom of an in-text float
+\setlength{\intextsep}{0.05in}
+
+%space above caption
+\setlength{\abovecaptionskip}{0.1in}
+%space below caption
+\setlength{\belowcaptionskip}{0.0in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% header
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\setlength{\headheight}{11pt}
+
+%header for first page
+%\fancypagestyle{plain}{
+%\lhead{}
+%\rhead{}
+%\chead{}
+%\lfoot{}
+%}
+%
+%header for all other pages
+%\pagestyle{plain}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%biblatex
+%\bibstyle{abbrv}
+%\renewcommand{\bibfont}{\small}
+
+%bib (plain vanilla)
+\bibliographystyle{abbrv}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Misc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\setlength{\parindent}{0in}
+
+%helvetica
+%\newfont{\hel}{phvr at 10pt} %must specify size; not good for adaptive scaling
+\newcommand{\hel}{\fontfamily{phv}\selectfont}
+
+%red font (denotes new changes)
+\newcommand{\red}{\color{Red}}
+
+%blue font (denotes candidates to be taken out)
+\newcommand{\blue}{\color{BlueViolet}}
+
+%arg max
+%\DeclareMathOperator*{\argmin}{arg\,min}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% abstract
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%spacing between title and text
+\setlength{\abstitleskip}{-0.15in}
+
+%fonts
+\renewcommand{\abstractnamefont}{\bf \fontsize{12pt}{13pt}\selectfont}
+\renewcommand{\abstracttextfont}{\it}
+
+%compact
+\setlength{\absleftindent}{0in}
+\setlength{\absrightindent}{0in}

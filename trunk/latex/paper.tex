@@ -1,0 +1,68 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% template
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{template}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\bf\Large
+FastHASH: A new GPU-friendly algorithms for fast and comprehensive next generation sequence mapping
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% date
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\date{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% authors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{
+\normalsize
+\begin{tabular}[t]{cc}
+Hongyi Xin & Donghyuk Lee    \\
+\texttt{hxin@cs.cmu.edu}    & \texttt{donghyu1@andrew.ece.cmu.edu}        \\
+\multicolumn{2}{c}{Carnegie Mellon University}
+\end{tabular}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% authors (using package "authblk")
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\author[1]{Yoongu Kim} 
+%\author[2]{Yoongu Kim} 
+%\affil[1]{Department of Electrical and Computer Engineering\\Carnegie Mellon University}
+%\affil[2]{Department of Electrical and Computer Engineering\\Carnegie Mellon University}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% document proper
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{./section/0_abstract.tex}
+\end{abstract}
+
+\singlespacing
+
+\input{./section/1_introduction}
+\input{./section/2_background.tex}
+\input{./section/3_algorithm.tex}
+\input{./section/4_gpu.tex}
+\input{./section/5_methodology.tex}
+\input{./section/6_evaluation}
+\input{./section/7_analysis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\clearpage
+%\linespread{0.8}
+\begin{footnotesize}
+\bibliography{ref}
+\end{footnotesize}
+
+\end{document}
+

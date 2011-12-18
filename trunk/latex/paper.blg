@@ -1,0 +1,48 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: paper.aux
+The style file: abbrv.bst
+Database file #1: ref.bib
+Warning--I didn't find a database entry for "roche445"
+Warning--empty institution in Burrows94ablock-sorting
+You've used 14 entries,
+            2118 wiz_defined-function locations,
+            560 strings with 5436 characters,
+and the built_in function-call counts, 3129 in all, are:
+= -- 312
+> -- 142
+< -- 0
++ -- 61
+- -- 44
+* -- 145
+:= -- 614
+add.period$ -- 42
+call.type$ -- 14
+change.case$ -- 73
+chr.to.int$ -- 0
+cite$ -- 15
+duplicate$ -- 120
+empty$ -- 232
+format.name$ -- 44
+if$ -- 619
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 4
+newline$ -- 73
+num.names$ -- 28
+pop$ -- 58
+preamble$ -- 1
+purify$ -- 50
+quote$ -- 0
+skip$ -- 82
+stack$ -- 0
+substring$ -- 85
+swap$ -- 5
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 56
+warning$ -- 1
+while$ -- 29
+width$ -- 16
+write$ -- 150
+(There were 2 warnings)

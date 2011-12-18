@@ -15,8 +15,8 @@ using namespace std;
 int main() {
 	char test_read[READ_LENGTH + 1];
 	char ref_read[READ_LENGTH + 1];
-	set_max_indel_num(5);
-	set_max_diff_num(5);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
 	allocatePath();
 	cout << "started" << endl;
 	strcpy(test_read, "CACGTTTTATTTTATTTTTTGAGATGGAGTCTCACTCTGTCACCCAGGCTGGAGTGTGGTGGCGCAATCTTTGCTCACTGCAACCTCCGCCTCCCGGGTTCAAGCGAT" );
