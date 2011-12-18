@@ -1,0 +1,80 @@
+\begin{thebibliography}{10}
+
+\bibitem{solid}
+{Applied Biosystems}.
+\newblock {The Applied Biosystems SOLiD System}.
+\newblock
+  \url{http://http://marketing.appliedbiosystems.com/images/Product/Solid_Know%
+ledge/flash/102207/solid.html/}.
+
+\bibitem{illumina}
+D.~R. Bentle.
+\newblock Whole-genome re-sequencing.
+\newblock Technical report, Current Opinion in Genetics \& Development, 2006.
+
+\bibitem{Burrows94ablock-sorting}
+M.~Burrows, D.~J. Wheeler, M.~Burrows, and D.~J. Wheeler.
+\newblock A block-sorting lossless data compression algorithm.
+\newblock Technical report, 1994.
+
+\bibitem{genome_sequence_2}
+P.~e.~a. Campbell.
+\newblock Identification of somatically acquired rearrangements in cancer using
+  genome-wide massively parallel paired-end sequencing.
+\newblock Technical report, Nat. Genet., 2008.
+
+\bibitem{genome_sequence_4}
+D.~e.~a. Chiang.
+\newblock High-resolution mapping of copy-number alterations with massively
+  parallel sequencing.
+\newblock Technical report, Nature Methods, 2009.
+
+\bibitem{mrFast}
+A.~et~al.
+\newblock mrsfast: a cache-oblivious algorithm for short-read mapping.
+\newblock Technical report, Natura Methods, 2010.
+
+\bibitem{soap2}
+L.~et~al.
+\newblock Soap2: an improved ultrafast tool for short read alignment.
+\newblock {\em Bioinformatics}, 2009.
+
+\bibitem{shrimp}
+R.~et~al.
+\newblock Shrimp: Accurate mapping of short color-space reads.
+\newblock {\em PLoS}, 2009.
+
+\bibitem{tools}
+R.~et~al.
+\newblock Comparative analysis of algorithms for next-generation sequencing
+  read alignment.
+\newblock Technical report, Bioinformatics, 2011.
+
+\bibitem{Ferragina07compressedrepresentations}
+P.~Ferragina, G.~Manzini, V.~Mäkinen, and G.~Navarro.
+\newblock Compressed representations of sequences and full-text indexes.
+\newblock {\em ACM Transactions on Algorithms}, 3:2007, 2007.
+
+\bibitem{bwa}
+L.~H. and D.~R.
+\newblock Fast and accurate short read alignment with burrows-wheeler
+  transform.
+\newblock {\em Bioinformatics}, 2009.
+
+\bibitem{genome_sequence_0}
+J.~Shendure and H.~Ji.
+\newblock Next-generation dna sequencing.
+\newblock Technical report, Nature Biotechnology, 2008.
+
+\bibitem{genome_sequence_1}
+J.~e.~a. Wang.
+\newblock The diploid genome sequence of an asian individual.
+\newblock Technical report, Nature, 2008.
+
+\bibitem{genome_sequence_3}
+D.~e.~a. Wheeler.
+\newblock The complete genome of an individual by massively parallel dna
+  sequencing.
+\newblock Technical report, Nature, 2008.
+
+\end{thebibliography}

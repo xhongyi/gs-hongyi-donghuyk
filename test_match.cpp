@@ -12,8 +12,8 @@
 using namespace std;
 
 int main() {
-	set_max_indel_num(1);
-	set_max_diff_num(2);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
 	loadHash("toy_hash_0");
 	list<match_result> result;
 //	string testee = "ACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCCTAACCCTA";

@@ -1,0 +1,87 @@
+\section{Introduction} \label{sec:introduction} 
+
+%The advent of Next-generation sequencing (NGS) makes it possible to produce DNA
+%sequence information effectively by dividing individual DNA to massive number
+%of short fragments and reading these massive sequences concurrently. At the
+%result of these parallelized processing, high computational resources are
+%needed to reconstruct the divided fragment sequence as the original order.
+%mrFAST, one of the DNA sequence matching tools, promise highest
+%comprehensiveness, however, it is slower than other tools. We propose a new
+%algorithm, FastHASH, which drastically improves performance over mrFAST, while
+%maintaining comprehensiveness.\\
+
+\subsection{Next-generation DNA sequencing} For a long time, many researchers
+have tried to find out the relationship between DNA and other characteristics,
+like species, ethnic group and individual specific characteristics, i.e.
+hereditary diseases.  As the result of these studies, a lot of useful
+characteristic information determined by individual DNA are discovered, which
+can be applied to individual medical services. However, the high cost of
+individual DNA sequencing would makes it difficult not only to use DNA
+information for individual medical broadly, but also to accelerate the
+development of DNA related studies.  Next-generation DNA sequencing
+techniques~\cite{genome_sequence_0, genome_sequence_1, genome_sequence_2,
+genome_sequence_3, genome_sequence_4} are introduced to make it possible to
+reduce the DNA sequencing cost drastically by analyzing individual DNA as
+massively parallelized manners, like Roche/454 FlX
+Pyrosequencer~\cite{roche445}, Illumina Genome Analyzer~\cite{illumina} and
+Applied Biosystems SOLiD Sequencer~\cite{solid}. The main features of these
+techniques are 1) to divide individual human genome as small fragments of 100 -
+200 base pairs length and 2) to analyze them concurrently. So, by these
+parallelized methods, the DNA analyzing cost can be drastically reduced.
+However, after that, the massive DNA sequence data divided to short sized
+fragment have to be reconstructed as the orders of original sequence. The
+possible way to reconstruct the divided individual DNA fragments is to match
+them to Reference DNA sequences, already constructed and verified the
+correctness by previous studies. This reconstruction method is available
+because the DNA differences or variations between individual humans or living
+creatures within same species are small.  So, Next-generation sequencing
+technologies provide low-cost and high-throughput genome sequencing at the cost
+of requiring enormous computational resources, i.e. matching 31.5millon
+fragments that each fragment has 100 base pairs, to 3.15 billion sized
+Reference sequence with allowing several mismatches or indel (insertion or
+deletion of gene). Now, one of the key challenging points of Next-generation
+DNA sequencing techniques is how we can match these massive fragments to
+Reference sequence cost-efficiently. \\
+
+\subsection{DNA Sequencing tools} For last several years, many tools for DNA
+sequence matching are introduced~\cite{tools} and they can be divided to two
+groups by their characteristics. The one group of tools is more focused on the
+matching speed, based on the Burrows-Wheeler-Transform (BWT) (Burrows and
+Wheeler, 1994)~\cite{Burrows94ablock-sorting} and Ferragina-Manzini
+index~\cite{Ferragina07compressedrepresentations} such as BWA (Li and Durbin,
+2009)~\cite{bwa} and SOAP2 (Li et al., 2009)~\cite{soap2}. These tools are fast
+for searching for exact matching. However, they are not comprehensive, i.e.
+they do not search for all possible locations of each fragments. The other
+approach puts emphasis on the comprehensiveness based on hash table based
+seed-and-extend algorithms such as mrFAST (AlKan et al., 2009)~\cite{mrFast}
+and SHRiMP(Rumble et al., 2009)~\cite{shrimp}. These tools are comprehensive,
+however they are typically slower than the tools of the formal approach. Both
+of these two matching algorithms branches are trying to make their algorithms
+to be compatible to Single-instruction Multi-data (SIMD) architecture or
+General-purpose graphic processing units (GPGPU) to increase matching speed. \\
+
+\subsection{New Algorithm: FastHash} In this work, we proposed a new algorithm,
+FastHASH, which drastically improves performance over mrFAST~\cite{mrFast},
+while maintaining comprehensiveness. Our key observation is that mrFAST
+performs too many costly computations that can be avoided by a smart algorithm.
+For every read, mrFAST will first find out all potential locations in reference
+genome. Then for each possible location mrFAST performs an expensive string
+comparison function to extract complete differential information between the
+input read and the reference genome, even if the location will not match. We
+propose two key ideas to reduce both type of computation. First, we drastically
+reduce the number of potential locations considered for string compare
+function, while still preserving comprehensiveness. We call this method Cheap
+Key Selection. Second, we drastically reduce the number of string comparison
+performed by rejecting obvious incorrect locations in the early stages of
+mapping. We call this method Adjacent Filtering. Our initial CPU implementation
+of FastHASH provides 14-fold speed up over mrFAST, while still preserving
+comprehensiveness. Since FastHASH does not diverge, which is essential for GPU
+implementation, it is also compatible on GPUs. \\
+
+In the next section, we describe the matching algorithms and the
+characteristics of representative matching tools. In section 3, we present the
+mechanism of FastHash in detail. In Section 4, we describe the mechanism of our
+gpu implementation. We also describe our test environment and methodology in
+secton 5. In Section 5. Finally, we conclude with the performance of FastHASH
+compared with mrFAST in Section 6. \\
+

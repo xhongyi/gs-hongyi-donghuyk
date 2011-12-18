@@ -24,8 +24,8 @@ using namespace std;
 void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name);
 
 void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name) {
-	set_max_indel_num(5);
-	set_max_diff_num(5);
+	set_max_indel_num(3);
+	set_max_diff_num(3);
         allocatePath();
 	ifstream ref_file;
 	ofstream store_file;

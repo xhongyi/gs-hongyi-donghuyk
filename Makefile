@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS = -pg -O3
+CFLAGS = -O3 -pg
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
@@ -39,3 +39,5 @@ test_ref_loader: hash_loader.h hash_loader.cpp test_ref_loader.cpp
 
 test_shuffle: load_shuffled_read.h load_shuffled_read.cpp test_shuffle.cpp
 	$(CC) $(CFLAGS) load_shuffled_read.cpp test_shuffle.cpp -o test_shuffle
+aaa: aaa.cpp
+	$(CC) $(CFLAGS) aaa.cpp -o aaa
