@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.13)  18 DEC 2011 15:40
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.11.13)  18 DEC 2011 23:26
 entering extended mode
  %&-line parsing enabled.
 **paper
@@ -495,71 +495,82 @@ Underfull \hbox (badness 10000) in paragraph at lines 1--46
  []
 
 (./section/1_introduction.tex
-
-LaTeX Warning: Citation `roche445' on page 1 undefined on input line 26.
-
-
-Underfull \hbox (badness 1253) in paragraph at lines 13--45
+Underfull \hbox (badness 1253) in paragraph at lines 13--44
 \OT1/ptm/m/n/10 DNA se-quenc-ing tech-niques [[], [], [], [], []] are
  []
 
 
-Underfull \hbox (badness 4441) in paragraph at lines 13--45
+Underfull \hbox (badness 1881) in paragraph at lines 13--44
+\OT1/ptm/m/n/10 the frag-ments to re-con-struct the orig-i-nal se-quence.
+ []
+
+
+Underfull \hbox (badness 1210) in paragraph at lines 13--44
+\OT1/ptm/m/n/10 se-quence, a known, com-plete and ver-i-fied stan-dard
+ []
+
+
+Underfull \hbox (badness 4441) in paragraph at lines 13--44
 \OT1/ptm/m/n/10 tech-nolo-gies pro-vide low-cost and high-throughput
  []
 
 
-Underfull \hbox (badness 1824) in paragraph at lines 13--45
-\OT1/ptm/m/n/10 com-pu-ta-tional re-sources, i.e. match-ing 31.5mil-lon
+Underfull \hbox (badness 2393) in paragraph at lines 13--44
+\OT1/ptm/m/n/10 al-low-ing sev-eral mis-matches or in-del (in-ser-tion or
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 13--45
+Underfull \hbox (badness 10000) in paragraph at lines 13--44
 
  []
 
 
-Underfull \hbox (badness 3138) in paragraph at lines 46--62
+Underfull \hbox (badness 3138) in paragraph at lines 45--61
 \OT1/ptm/m/n/10 These tools are com-pre-hen-sive, how-ever they are
  []
 
 
-Underfull \hbox (badness 1490) in paragraph at lines 46--62
+Underfull \hbox (badness 1490) in paragraph at lines 45--61
 \OT1/ptm/m/n/10 Single-instruction Multi-data (SIMD) ar-chi-tec-ture or
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--62
+Underfull \hbox (badness 10000) in paragraph at lines 45--61
 
  []
 
 
-Underfull \hbox (badness 5771) in paragraph at lines 63--80
+Underfull \hbox (badness 5771) in paragraph at lines 62--80
 []\OT1/ptm/m/n/10 In this work, we pro-posed a new al-go-rithm,
  []
 
 
-Underfull \hbox (badness 1910) in paragraph at lines 63--80
+Underfull \hbox (badness 1910) in paragraph at lines 62--80
 \OT1/ptm/m/n/10 FastHASH, which dras-ti-cally im-proves per-for-mance
  []
 
 
-Underfull \hbox (badness 1303) in paragraph at lines 63--80
-\OT1/ptm/m/n/10 com-par-i-son func-tion to ex-tract com-plete dif-fer-en-tial
+Underfull \hbox (badness 1990) in paragraph at lines 62--80
+\OT1/ptm/m/n/10 Then for each pos-si-ble lo-ca-tion mr-FAST per-forms
  []
 
 
-Underfull \hbox (badness 1009) in paragraph at lines 63--80
-\OT1/ptm/m/n/10 two key ideas to re-duce both type of com-pu-ta-tion.
+Underfull \hbox (badness 1975) in paragraph at lines 62--80
+\OT1/ptm/m/n/10 an ex-pen-sive string com-par-i-son func-tion to ex-tract
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--80
+Underfull \hbox (badness 3428) in paragraph at lines 62--80
+\OT1/ptm/m/n/10 func-tion, while still pre-serv-ing com-pre-hen-sive-ness.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--80
 
  []
 
 
-Underfull \vbox (badness 6825) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -580,38 +591,38 @@ Underfull \hbox (badness 5374) in paragraph at lines 13--13
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 7981) has occurred while \output is active []
 
  [2]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 95.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 97.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 95.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 97.
 
-Underfull \hbox (badness 1803) in paragraph at lines 83--102
+Underfull \hbox (badness 1803) in paragraph at lines 85--104
 \OT1/ptm/m/n/10 and Manzini fur-ther proved that these 3 con-di-tion
  []
 
 
-Underfull \hbox (badness 1264) in paragraph at lines 83--102
+Underfull \hbox (badness 1264) in paragraph at lines 85--104
 \OT1/ptm/m/n/10 to mimic full travers-ing of the pre-fix tree by also
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 83--102
+Underfull \hbox (badness 10000) in paragraph at lines 85--104
 
  []
 
 
-Underfull \hbox (badness 3815) in paragraph at lines 124--144
+Underfull \hbox (badness 3815) in paragraph at lines 126--146
 \OT1/ptm/m/n/10 since the co-or-di-nates stored in-side the hash-table
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--144
+Underfull \hbox (badness 10000) in paragraph at lines 126--146
 
  []
 
@@ -619,51 +630,42 @@ Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
 
-Underfull \hbox (badness 10000) in paragraph at lines 147--159
-\OT1/ptm/m/n/10 MAN uses Needleman-Wunsch al-go-rithm, while
+Underfull \hbox (badness 2503) in paragraph at lines 149--162
+\OT1/ptm/m/n/10 MAN [[]] uses Needleman-Wunsch al-go-rithm [[]],
  []
 
 
-Underfull \hbox (badness 3078) in paragraph at lines 147--159
-\OT1/ptm/m/n/10 pro-vid-ing such de-tailed in-for-ma-tion be-tween in-put
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 147--159
+Underfull \hbox (badness 10000) in paragraph at lines 149--162
 
  []
 
 [3]
-Underfull \hbox (badness 1199) in paragraph at lines 162--173
+Underfull \hbox (badness 1199) in paragraph at lines 165--176
 []\OT1/ptm/m/n/10 As men-tioned ear-lier, Burrows-Wheeler trans-form
  []
 
 
-Underfull \hbox (badness 1137) in paragraph at lines 162--173
+Underfull \hbox (badness 1137) in paragraph at lines 165--176
 \OT1/ptm/m/n/10 com-plex-ity of hash-table based DNA align-ing tools
  []
 
 
-Underfull \hbox (badness 1033) in paragraph at lines 162--173
+Underfull \hbox (badness 1033) in paragraph at lines 165--176
 \OT1/ptm/m/n/10 grows lin-early as er-ror tol-er-ance in-creases but they
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--173
+Underfull \hbox (badness 10000) in paragraph at lines 165--176
 
  []
 
 ) (./section/3_algorithm.tex
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no î in font ptmr7t!
-
-Underfull \hbox (badness 10000) in paragraph at lines 5--18
-
+Underfull \hbox (badness 1616) in paragraph at lines 5--20
+\OT1/ptm/m/n/10 not only com-pu-ta-tional cost is high, but also that
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 19--35
+Underfull \hbox (badness 10000) in paragraph at lines 5--20
 
  []
 
@@ -672,135 +674,89 @@ File: ./figure/Entry_Size_B.pdf Graphic file (type pdf)
 
 <use ./figure/Entry_Size_B.pdf>
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 41.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 26.
 
-<./figure/Edit_Dist_B.pdf, id=25, 715.67375pt x 491.8375pt>
-File: ./figure/Edit_Dist_B.pdf Graphic file (type pdf)
+Underfull \hbox (badness 10000) in paragraph at lines 31--47
 
-<use ./figure/Edit_Dist_B.pdf>
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ô in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ¶ in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
+ []
 
-Underfull \hbox (badness 2012) in paragraph at lines 56--80
-\OT1/ptm/m/n/10 lo-ca-tions, which means all cor-re-spond-ing lo-ca-tions
+<./figure/Edit_Perform_B.pdf, id=25, 575.14874pt x 207.77625pt>
+File: ./figure/Edit_Perform_B.pdf Graphic file (type pdf)
+
+<use ./figure/Edit_Perform_B.pdf>
+Missing character: There is no ‚ in font ptmri7t!
+Missing character: There is no Ä in font ptmri7t!
+Missing character: There is no ¶ in font ptmri7t!
+
+Underfull \hbox (badness 1242) in paragraph at lines 58--86
+\OT1/ptm/m/n/10 lo-ca-tions should be stored in-side the cor-re-spond-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--80
+Underfull \hbox (badness 10000) in paragraph at lines 58--86
 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 4024) has occurred while \output is active []
 
- [4 <./figure/Entry_Size_B.pdf> <./figure/Edit_Dist_B.pdf>]
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
-
-Underfull \hbox (badness 1097) in paragraph at lines 81--96
-\OT1/ptm/m/n/10 For a match-ing in-put frag-ment and ref-er-ence DNA
- []
-
-
-Underfull \hbox (badness 4024) in paragraph at lines 81--96
-\OT1/ptm/m/n/10 re-place edit-distance cal-cu-la-tion, it did dras-ti-cally
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--96
+ [4 <./figure/Entry_Size_B.pdf> <./figure/Edit_Perform_B.pdf>]
+<./figure/AD_1_B.pdf, id=35, 674.52pt x 333.245pt>
+File: ./figure/AD_1_B.pdf Graphic file (type pdf)
+ <use ./figure/AD_1_B.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 97--112
 
  []
 
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ô in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
+<./figure/AD_2_B.pdf, id=36, 674.52pt x 333.245pt>
+File: ./figure/AD_2_B.pdf Graphic file (type pdf)
+ <use ./figure/AD_2_B.pdf>
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \hbox (badness 10000) in paragraph at lines 127--153
 
+ []
 
-<./figure/pigeon_B.pdf, id=38, 288.07625pt x 234.8775pt>
+[5 <./figure/AD_1_B.pdf> <./figure/AD_2_B.pdf>]
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ô in font ptmr7t!
+
+<./figure/pigeon_B.pdf, id=46, 288.07625pt x 234.8775pt>
 File: ./figure/pigeon_B.pdf Graphic file (type pdf)
 
-<use ./figure/pigeon_B.pdf> [5]
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
+<use ./figure/pigeon_B.pdf>
+Underfull \vbox (badness 1221) has occurred while \output is active []
 
-<./figure/Key_Dist_B.pdf, id=42, 740.7675pt x 400.49625pt>
+
+<./figure/Key_Dist_B.pdf, id=47, 740.7675pt x 400.49625pt>
 File: ./figure/Key_Dist_B.pdf Graphic file (type pdf)
 
 <use ./figure/Key_Dist_B.pdf>
-Overfull \hbox (1.39551pt too wide) in paragraph at lines 175--176
+Overfull \hbox (1.39551pt too wide) in paragraph at lines 192--193
  [][] 
  []
 
-<./figure/Cheap_Key_B.pdf, id=43, 720.6925pt x 224.84pt>
+<./figure/Cheap_Key_B.pdf, id=48, 720.6925pt x 224.84pt>
 File: ./figure/Cheap_Key_B.pdf Graphic file (type pdf)
 
 <use ./figure/Cheap_Key_B.pdf>
-<./figure/CK_Result_B.pdf, id=44, 756.8275pt x 178.6675pt>
+<./figure/CK_Result_B.pdf, id=49, 756.8275pt x 178.6675pt>
 File: ./figure/CK_Result_B.pdf Graphic file (type pdf)
 
 <use ./figure/CK_Result_B.pdf>
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-<./figure/Key_Dist2_B.pdf, id=45, 740.7675pt x 396.48125pt>
+<./figure/Key_Dist2_B.pdf, id=50, 740.7675pt x 396.48125pt>
 File: ./figure/Key_Dist2_B.pdf Graphic file (type pdf)
 
 <use ./figure/Key_Dist2_B.pdf>
-Overfull \hbox (3.70135pt too wide) in paragraph at lines 196--197
+Overfull \hbox (3.70135pt too wide) in paragraph at lines 228--229
  [][] 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 202--231
-
- []
-
-
-Underfull \vbox (badness 5260) has occurred while \output is active []
-
-)
-(./section/4_gpu.tex
+) (./section/4_gpu.tex [6 <./figure/pigeon_B.pdf> <./figure/Key_Dist_B.pdf> <./
+figure/Cheap_Key_B.pdf> <./figure/CK_Result_B.pdf>]
 Missing character: There is no √ in font ptmr7t!
 Missing character: There is no Ø in font ptmr7t!
 
@@ -808,30 +764,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 3--11
 
  []
 
+<./figure/gpu_B.pdf, id=66, 604.2575pt x 374.39874pt>
+File: ./figure/gpu_B.pdf Graphic file (type pdf)
+ <use ./figure/gpu_B.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 22--29
 
-Underfull \vbox (badness 2142) has occurred while \output is active []
+ []
 
- [6 <./figure/pigeon_B.pdf> <./figure/Key_Dist_B.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 12--19
+
+Underfull \hbox (badness 10000) in paragraph at lines 30--41
 
  []
 
 ) (./section/5_methodology.tex
-Underfull \hbox (badness 1237) in paragraph at lines 20--1
-\OT1/ptm/m/n/10 and sub-ject to edit-distance cal-cu-la-tion. The third
- []
-
-
-Underfull \hbox (badness 2080) in paragraph at lines 20--1
-\OT1/ptm/m/n/10 by de-sign-ing a smarter sched-uler that dy-nam-i-cally
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 20--1
+Underfull \hbox (badness 10000) in paragraph at lines 42--1
 
  []
 
 
+Underfull \vbox (badness 4454) has occurred while \output is active []
+
+ [7 <./figure/Key_Dist2_B.pdf> <./figure/gpu_B.pdf>]
 Underfull \hbox (badness 1281) in paragraph at lines 5--31
 \OT1/ptm/m/n/10 size also re-quires huge amount of time to trans-fer
  []
@@ -841,10 +794,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--31
 
  []
 
-[7 <./figure/Cheap_Key_B.pdf> <./figure/CK_Result_B.pdf> <./figure/Key_Dist2_B.
-pdf>]
-Underfull \hbox (badness 1668) in paragraph at lines 34--41
-\OT1/ptm/m/n/10 that, the se-lected sub-strings are shuf-fled with ran-
+
+Underfull \hbox (badness 2020) in paragraph at lines 34--41
+\OT1/ptm/m/n/10 meth-ods make the in-put set to be more near the
  []
 
 
@@ -858,11 +810,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 44--55
  []
 
 ) (./section/6_evaluation.tex
-<./figure/Detail_Error_B.pdf, id=68, 262.9825pt x 185.69376pt>
+Underfull \hbox (badness 2310) in paragraph at lines 5--21
+\OT1/ptm/m/n/10 the po-ten-tial match-ing co-or-di-nates, the num-ber of
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--21
+
+ []
+
+[8] <./figure/Detail_Error_B.pdf, id=80, 262.9825pt x 185.69376pt>
 File: ./figure/Detail_Error_B.pdf Graphic file (type pdf)
 
 <use ./figure/Detail_Error_B.pdf>
-<./figure/CPU_Result_B.pdf, id=69, 340.27126pt x 198.7425pt>
+<./figure/CPU_Result_B.pdf, id=81, 340.27126pt x 198.7425pt>
 File: ./figure/CPU_Result_B.pdf Graphic file (type pdf)
 
 <use ./figure/CPU_Result_B.pdf>
@@ -873,71 +834,98 @@ Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
 
-Underfull \hbox (badness 2469) in paragraph at lines 37--70
-\OT1/ptm/m/n/10 mem-ory for se-quenc-ing the in-put frag-ment set to
+Underfull \hbox (badness 2435) in paragraph at lines 39--73
+\OT1/ptm/m/n/10 cor-re-spond-ing to each chro-mo-some from ref-er-ence
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 37--70
-\OT1/ptm/m/n/10 hash ta-bles cor-re-spond-ing to each chro-mo-some fro
+Underfull \hbox (badness 1137) in paragraph at lines 39--73
+\OT1/ptm/m/n/10 frag-ments is per-formed with one of the hash ta-ble
  []
 
 
-Underfull \hbox (badness 2158) in paragraph at lines 37--70
-\OT1/ptm/m/n/10 Fil-ter-ing, the string com-par-i-son is per-formed only
+Underfull \hbox (badness 1122) in paragraph at lines 39--73
+\OT1/ptm/m/n/10 of CPU im-ple-men-ta-tion. The case us-ing only the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--70
+Underfull \hbox (badness 10000) in paragraph at lines 39--73
 
  []
 
-[8 <./figure/Detail_Error_B.pdf> <./figure/CPU_Result_B.pdf>]
-<./figure/GPU_portion_B.pdf, id=79, 307.1475pt x 176.66pt>
+<./figure/GPU_portion_B.pdf, id=82, 307.1475pt x 176.66pt>
 File: ./figure/GPU_portion_B.pdf Graphic file (type pdf)
 
 <use ./figure/GPU_portion_B.pdf>
-<./figure/GPU_Result_B.pdf, id=80, 339.2675pt x 198.7425pt>
+<./figure/GPU_Result_B.pdf, id=83, 339.2675pt x 198.7425pt>
 File: ./figure/GPU_Result_B.pdf Graphic file (type pdf)
 
-<use ./figure/GPU_Result_B.pdf>) (./section/7_analysis.tex
-Underfull \hbox (badness 1033) in paragraph at lines 88--1
+<use ./figure/GPU_Result_B.pdf>
+Underfull \hbox (badness 1033) in paragraph at lines 93--105
 \OT1/ptm/m/n/10 are shipped to the GPU. Af-ter that, GPU op-er-ated
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--1
+Underfull \hbox (badness 10000) in paragraph at lines 93--105
 
  []
 
+[9 <./figure/Detail_Error_B.pdf> <./figure/CPU_Result_B.pdf> <./figure/GPU_port
+ion_B.pdf> <./figure/GPU_Result_B.pdf>]
+Underfull \hbox (badness 1087) in paragraph at lines 108--119
+\OT1/ptm/m/n/10 of FastHASH. Two tools also used the same in-put
+ []
 
-Underfull \vbox (badness 1783) has occurred while \output is active []
 
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ì in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-
-Underfull \hbox (badness 10000) in paragraph at lines 3--34
+Underfull \hbox (badness 10000) in paragraph at lines 108--119
 
  []
 
-[9 <./figure/GPU_portion_B.pdf> <./figure/GPU_Result_B.pdf>]
+<./figure/BWA_B.pdf, id=99, 340.27126pt x 199.74625pt>
+File: ./figure/BWA_B.pdf Graphic file (type pdf)
+
+<use ./figure/BWA_B.pdf>) (./section/7_analysis.tex
+Underfull \hbox (badness 10000) in paragraph at lines 3--36
+
+ []
+
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ô in font ptmr7t!
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--46
+Underfull \hbox (badness 10000) in paragraph at lines 48--53
 
  []
 
-)
-Underfull \hbox (badness 10000) in paragraph at lines 47--57
+
+Underfull \vbox (badness 1082) has occurred while \output is active []
+
+ [10 <./figure/BWA_B.pdf>] <./figure/C0912_AF_B.pdf, id=106, 339.2675pt x 199.7
+4625pt>
+File: ./figure/C0912_AF_B.pdf Graphic file (type pdf)
+
+<use ./figure/C0912_AF_B.pdf>
+<./figure/C0912_ED_B.pdf, id=107, 339.2675pt x 199.74625pt>
+File: ./figure/C0912_ED_B.pdf Graphic file (type pdf)
+
+<use ./figure/C0912_ED_B.pdf>
+<./figure/C0912_Speed_B.pdf, id=108, 339.2675pt x 199.74625pt>
+File: ./figure/C0912_Speed_B.pdf Graphic file (type pdf)
+
+<use ./figure/C0912_Speed_B.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 81--89
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+<./figure/Warp2_B.pdf, id=109, 341.275pt x 398.48875pt>
+File: ./figure/Warp2_B.pdf Graphic file (type pdf)
+
+<use ./figure/Warp2_B.pdf>) (./section/8_conclusion.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 3--58
 
  []
 
@@ -945,49 +933,45 @@ Underfull \hbox (badness 10000) in paragraph at lines 47--57
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 4--9
+Underfull \hbox (badness 10000) in paragraph at lines 9--14
 \OT1/pcr/m/n/8 http : / / http : / / marketing . appliedbiosystems .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 4--9
+Underfull \hbox (badness 10000) in paragraph at lines 9--14
 \OT1/pcr/m/n/8 com / images / Product / Solid _ Knowledge / flash /
  []
 
-
-Underfull \vbox (badness 1052) has occurred while \output is active []
-
+[11 <./figure/C0912_AF_B.pdf> <./figure/C0912_ED_B.pdf> <./figure/C0912_Speed_B
+.pdf> <./figure/Warp2_B.pdf>]
 Missing character: There is no √ in font ptmr7t!
 Missing character: There is no § in font ptmr7t!
-) [10]
-(./paper.aux)
+) [12
 
-LaTeX Warning: There were undefined references.
-
- ) 
+] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 5692 strings out of 493848
- 84015 string characters out of 1152822
- 182783 words of memory out of 3000000
- 8777 multiletter control sequences out of 15000+50000
+ 5754 strings out of 493848
+ 85217 string characters out of 1152822
+ 179962 words of memory out of 3000000
+ 8828 multiletter control sequences out of 15000+50000
  31328 words of font info for 78 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
  38i,15n,38p,902b,413s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
-ve/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/typ
-e1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/type1/public/am
-sfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-r6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/
-share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-t
-exlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/font
-s/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/fonts/type1/publ
-ic/amsfonts/cm/cmti9.pfb></usr/share/texmf-texlive/fonts/type1/urw/courier/ucrr
-8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/t
-exmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/t
-ype1/urw/times/utmri8a.pfb>
-Output written on paper.pdf (10 pages, 2618551 bytes).
+{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/sh
+are/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-te
+xlive/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-texlive/fonts/
+type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public
+/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/
+cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr9.pfb></us
+r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmti9.pfb></usr/share/texmf-texlive/fonts/type1/u
+rw/courier/ucrr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmb8a.pf
+b></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-
+texlive/fonts/type1/urw/times/utmri8a.pfb>
+Output written on paper.pdf (12 pages, 3455902 bytes).
 PDF statistics:
- 135 PDF objects out of 1000 (max. 8388607)
+ 170 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 56 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 96 words of extra memory for PDF output out of 10000 (max. 10000000)
 

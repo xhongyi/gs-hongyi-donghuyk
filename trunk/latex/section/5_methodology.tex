@@ -2,25 +2,25 @@
 
 \subsection{Hash table \& Key size} \label{sec:method_hash} 
 
-The number of base pairs of whole DNA sequence is about 3.15billion. So, the
+The number of base pairs of whole DNA sequence is about 3.15 billion. So, the
 number of coordinate corresponding to the whole DNA sequence is also the same
-with the number of base pairs of whole DNA sequence.  About 12GBytes memory
+with the number of base pairs of whole DNA sequence. About 12GBytes memory
 capacity is needed just for preserving the coordinates in hash table. To reduce
 the requirement of huge memory capacity to preserve the hash table, we divide
 the whole DNA sequence to 22 hash tables based on the chromosomes. The memory
 size to preserve the index of hash table is directly related to the key length,
 i.e. total 10.5MByte is need for preserving the index of hash table,
 corresponding to 10 base pairs length key and if we increase the number of key
-size to 15 base pair length, then, we need 16Gbyte just for preserving the
+size to 15 base pair length, then, we need 16Gbytes just for preserving the
 index of hash table. Large table size also requires huge amount of time to
-transfer data from files to main memory.  There is one more consideration point
+transfer data from files to main memory. There is one more consideration point
 for choosing the key length as index. If we reduce the key length for index of
 hash table, then, the number of coordinates corresponding to each index is
-drastically increased.  This means that it take long time to find out the
-coordinate for retrieve the reference sequences for sting comparison, also it
+drastically increased. This means that it take long time to find out the
+coordinate for retrieving the reference sequences for sting comparison, also it
 requires a lot of time for Adjacency Filtering. The number of operations
 required for Adjacency Filtering is proportional to log (the number of
-coordinate corresponding to the index).  
+coordinate corresponding to the index).
 %Figure [?] shows the required time for
 %Adjacency Filtering at the case 9 key lengths and 12 key lengths for index. 
 The two factors, the requirement of memory capacity for hash table and the
@@ -32,11 +32,11 @@ environmental change, i.e. the advent of huge memory size at low cost.\\
 \subsection{Input fragment set} \label{sec:medhod_input}
 
 The input fragments are selected from the substrings of the first chromosome of
-Reference sequence. After that, the selected substrings are shuffled with
-random for eliminated the similarity between adjacency fragments and reduce the
-effect of caching caused by the similarity of these adjacency fragments. These
+Reference sequence. After that, the selected substrings are shuffled randomly
+to eliminate the similarity between adjacency fragments and reduce the effect
+of caching caused by the similarity of these adjacency fragments. These
 randomization methods make the input set to be more near the real input
-fragments. Total 1million fragments are selected as input fragments set by
+fragments. Total 1 million fragments are selected as input fragments set by
 using these methods. The size of input fragment is 108ea base pair length.\\
 
 \subsection{Hardware environment} \label{sec:method_hw}

@@ -2,47 +2,55 @@ This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
 The top-level auxiliary file: paper.aux
 The style file: abbrv.bst
 Database file #1: ref.bib
-Warning--I didn't find a database entry for "roche445"
-Warning--empty institution in Burrows94ablock-sorting
-You've used 14 entries,
+Warning--empty journal in mrFast
+Warning--empty journal in illumina
+Warning--empty journal in Burrows94ablock-sorting
+Warning--empty journal in genome_sequence_2
+Warning--empty journal in genome_sequence_4
+Warning--empty journal in roche454
+Warning--empty journal in tools
+Warning--empty journal in genome_sequence_0
+Warning--empty journal in genome_sequence_1
+Warning--empty journal in genome_sequence_3
+You've used 18 entries,
             2118 wiz_defined-function locations,
-            560 strings with 5436 characters,
-and the built_in function-call counts, 3129 in all, are:
-= -- 312
-> -- 142
+            576 strings with 5978 characters,
+and the built_in function-call counts, 4435 in all, are:
+= -- 409
+> -- 241
 < -- 0
-+ -- 61
-- -- 44
-* -- 145
-:= -- 614
-add.period$ -- 42
-call.type$ -- 14
-change.case$ -- 73
++ -- 98
+- -- 76
+* -- 233
+:= -- 824
+add.period$ -- 54
+call.type$ -- 18
+change.case$ -- 92
 chr.to.int$ -- 0
-cite$ -- 15
-duplicate$ -- 120
-empty$ -- 232
-format.name$ -- 44
-if$ -- 619
+cite$ -- 28
+duplicate$ -- 178
+empty$ -- 318
+format.name$ -- 76
+if$ -- 874
 int.to.chr$ -- 0
-int.to.str$ -- 14
-missing$ -- 4
-newline$ -- 73
-num.names$ -- 28
-pop$ -- 58
+int.to.str$ -- 18
+missing$ -- 17
+newline$ -- 93
+num.names$ -- 36
+pop$ -- 114
 preamble$ -- 1
-purify$ -- 50
+purify$ -- 74
 quote$ -- 0
-skip$ -- 82
+skip$ -- 138
 stack$ -- 0
-substring$ -- 85
-swap$ -- 5
+substring$ -- 106
+swap$ -- 8
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 56
-warning$ -- 1
-while$ -- 29
-width$ -- 16
-write$ -- 150
-(There were 2 warnings)
+type$ -- 72
+warning$ -- 10
+while$ -- 37
+width$ -- 20
+write$ -- 172
+(There were 10 warnings)
