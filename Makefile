@@ -34,6 +34,9 @@ test_correct:common.h correctness_checker.h common.cpp fragment_match.h fragment
 test_prefil:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  prefil_distribution.cpp edit_distance.h edit_distance.cpp test_prefil.cpp
 	$(CC) $(CFLAGS) prefil_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_prefil.cpp -o test_prefil
 
+test_GPU:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp  prefil_distribution.cpp edit_distance.h edit_distance.cpp test_prefil.cpp
+	$(CC) $(CFLAGS) GPU_distribution.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_GPU.cpp -o test_GPU
+
 test_ref_loader: hash_loader.h hash_loader.cpp test_ref_loader.cpp
 	$(CC) $(CFLAGS) hash_loader.cpp test_ref_loader.cpp -o test_ref_loader
 

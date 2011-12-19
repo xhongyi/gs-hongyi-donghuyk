@@ -8,7 +8,7 @@
 #ifndef COMMOM_H_
 #define COMMOM_H_
 
-#define DEBUG
+//#define DEBUG
 //#define DEBUGX
 
 #ifdef DEBUG

@@ -8,7 +8,6 @@
 #include <sstream>
 #include <iostream>
 #include <assert.h>
-#include "common.h"
 #include "edit_distance.h"
 #include "edit_distribution.h"
 #include "fragment_match.h"
@@ -213,6 +212,62 @@ int binary_filtering_cost(string fragment) {
 	for (int k = 0; k < max_diff_num + 1; k++) {
 		result += keys_input[k].key_entry_size;
 	}
+	return result;
+}
+
+GPU_data binary_filtering_GPU_cost(string fragment) {
+	GPU_data result = {0, 0};
+	key_struct sort_input[KEY_NUMBER];
+	for (int i = 0; i < KEY_NUMBER; i++) {
+		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
+		int key_hash = hashVal(key);
+		int key_entry = hash_table[key_hash];
+		int key_entry_size = coordinate[key_entry];
+		sort_input[i].order = 0;
+		sort_input[i].key_number = i;
+		sort_input[i].key_entry = key_entry;
+		sort_input[i].key_entry_size = key_entry_size;
+	}
+
+	key_struct keys_input[KEY_NUMBER];
+	sortPrefilter(keys_input, sort_input);
+	previous_result.size = 0;
+	final_result return_result;
+	return_result.total_binary_search = 0;
+	return_result.total_edit_perform = 0;
+	return_result.total_correct_num = 0;
+
+	for (int k = 0; k < max_diff_num + 1; k++) {
+		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
+				+ keys_input[k].key_entry_size; i++) {
+			int coor_value = coordinate[i];
+			int diff_num = 0;
+			if (!searchPrevious(coor_value, keys_input[k].key_number,
+					previous_result)) {
+				return_result.total_binary_search++;
+				for (int j = 0; j < KEY_NUMBER; j++) {
+					if (j - diff_num > KEY_NUMBER - max_diff_num)
+						break;
+					if (!searchKey(coor_value + (keys_input[j].key_number
+							- keys_input[k].key_number) * KEY_LENGTH,
+							keys_input[j].key_entry,
+							keys_input[j].key_entry_size)) {
+						diff_num++;
+						if (diff_num > max_diff_num)
+							break;
+					}
+				}
+				if (diff_num <= max_diff_num) {
+					result.ED_count++;
+				}
+			}
+		}
+	}
+
+	for (int k = 0; k < max_diff_num + 1; k++) {
+		result.AF_count += keys_input[k].key_entry_size;
+	}
+
 	return result;
 }
 
