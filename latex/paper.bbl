@@ -1,5 +1,10 @@
 \begin{thebibliography}{10}
 
+\bibitem{mrFast}
+C.~Alkan and et~al.
+\newblock mrsfast: a cache-oblivious algorithm for short-read mapping.
+\newblock 2010.
+
 \bibitem{solid}
 {Applied Biosystems}.
 \newblock {The Applied Biosystems SOLiD System}.
@@ -10,45 +15,30 @@ ledge/flash/102207/solid.html/}.
 \bibitem{illumina}
 D.~R. Bentle.
 \newblock Whole-genome re-sequencing.
-\newblock Technical report, Current Opinion in Genetics \& Development, 2006.
+\newblock 2006.
+
+\bibitem{saruman}
+J.~T. Blom~J and et~al.
+\newblock Exact and complete short-read alignment to microbial genomes using
+  graphics processing unit programming.
+\newblock {\em Bioinformatics}, 2011.
 
 \bibitem{Burrows94ablock-sorting}
 M.~Burrows, D.~J. Wheeler, M.~Burrows, and D.~J. Wheeler.
 \newblock A block-sorting lossless data compression algorithm.
-\newblock Technical report, 1994.
+\newblock 1994.
 
 \bibitem{genome_sequence_2}
-P.~e.~a. Campbell.
+P.~Campbell and et~al.
 \newblock Identification of somatically acquired rearrangements in cancer using
   genome-wide massively parallel paired-end sequencing.
-\newblock Technical report, Nat. Genet., 2008.
+\newblock 2008.
 
 \bibitem{genome_sequence_4}
-D.~e.~a. Chiang.
+D.~Chiang and et~al.
 \newblock High-resolution mapping of copy-number alterations with massively
   parallel sequencing.
-\newblock Technical report, Nature Methods, 2009.
-
-\bibitem{mrFast}
-A.~et~al.
-\newblock mrsfast: a cache-oblivious algorithm for short-read mapping.
-\newblock Technical report, Natura Methods, 2010.
-
-\bibitem{soap2}
-L.~et~al.
-\newblock Soap2: an improved ultrafast tool for short read alignment.
-\newblock {\em Bioinformatics}, 2009.
-
-\bibitem{shrimp}
-R.~et~al.
-\newblock Shrimp: Accurate mapping of short color-space reads.
-\newblock {\em PLoS}, 2009.
-
-\bibitem{tools}
-R.~et~al.
-\newblock Comparative analysis of algorithms for next-generation sequencing
-  read alignment.
-\newblock Technical report, Bioinformatics, 2011.
+\newblock 2009.
 
 \bibitem{Ferragina07compressedrepresentations}
 P.~Ferragina, G.~Manzini, V.~Mäkinen, and G.~Navarro.
@@ -61,20 +51,52 @@ L.~H. and D.~R.
   transform.
 \newblock {\em Bioinformatics}, 2009.
 
+\bibitem{soap2}
+Li and et~al.
+\newblock Soap2: an improved ultrafast tool for short read alignment.
+\newblock {\em Bioinformatics}, 2009.
+
+\bibitem{roche454}
+M.~Margulies and et~al.
+\newblock Genome sequencing in microfabricated high-density picolitre reactors.
+\newblock 2005.
+
+\bibitem{needleman}
+S.~B. Needleman and C.~D. Wunsch.
+\newblock A general method applicable to the search for similarities in the
+  amino acid sequence of two proteins.
+\newblock {\em Journal of Molecular Biology}, 1970.
+
+\bibitem{tools}
+Ruffalo, , and et~al.
+\newblock Comparative analysis of algorithms for next-generation sequencing
+  read alignment.
+\newblock 2011.
+
+\bibitem{shrimp}
+Rumble and et~al.
+\newblock Shrimp: Accurate mapping of short color-space reads.
+\newblock {\em PLoS}, 2009.
+
 \bibitem{genome_sequence_0}
 J.~Shendure and H.~Ji.
 \newblock Next-generation dna sequencing.
-\newblock Technical report, Nature Biotechnology, 2008.
+\newblock 2008.
+
+\bibitem{ukkonen}
+E.~Ukkonen.
+\newblock Finding approximate patterns in strings.
+\newblock {\em Journal of Algorithms}, 1985.
 
 \bibitem{genome_sequence_1}
-J.~e.~a. Wang.
+J.~Wang and et~al.
 \newblock The diploid genome sequence of an asian individual.
-\newblock Technical report, Nature, 2008.
+\newblock 2008.
 
 \bibitem{genome_sequence_3}
-D.~e.~a. Wheeler.
+D.~Wheeler and et~al.
 \newblock The complete genome of an individual by massively parallel dna
   sequencing.
-\newblock Technical report, Nature, 2008.
+\newblock 2008.
 
 \end{thebibliography}
