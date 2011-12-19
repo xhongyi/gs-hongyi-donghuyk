@@ -61,4 +61,8 @@ int hashVal(string key);
  */
 //int hashIdx(string key);
 
+struct GPU_data {
+	int AF_count;
+	int ED_count;
+};
 #endif /* COMMOM_H_ */

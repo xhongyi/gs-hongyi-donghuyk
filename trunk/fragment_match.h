@@ -92,6 +92,8 @@ bool searchPrevious(int coor_value, int start_key_entry, previous_coor previous_
  */
 int binary_filtering_cost(string fragment);
 
+GPU_data binary_filtering_GPU_cost(string fragment);
+
 /*
  * Function: Get the result list without any filtering. Used in modeling original mrFAST
  */
