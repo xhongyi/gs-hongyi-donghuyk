@@ -1,0 +1,156 @@
+\section{Sample}
+\label{sec:sample}
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum~\cite{patt85}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% itemize
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%default
+\begin{itemize*}
+\item item0
+\item item1
+\end{itemize*}
+
+%customized
+{\setlength{\leftmargini}{0.2in}
+\begin{itemize*}
+\item item0
+\item item1
+\end{itemize*}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% figure
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%default
+\begin{figure}[h]
+\centering
+%\includegraphics[height=1in]{fig/fig0}
+\vspace{1in}
+\caption{caption}
+\label{fig:naive}
+\end{figure}
+
+%subfloat
+\begin{figure}[h!]
+\centering
+\subfloat[subcaption0]{
+\label{fig:subfig0}
+%\includegraphics[width=1.0in]{fig/fig0}
+\hspace{1.0in}
+}
+\subfloat[subcaption1]{
+\label{fig:subfig1}
+%\includegraphics[width=1.0in]{fig/fig1}
+\hspace{1.0in}
+}
+\caption{caption}
+\label{fig:fig}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% table
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%default
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+    &   foobar  \\ \hline \hline
+foo &   bar     \\ \hline 
+\end{tabular}
+\caption{caption}
+\label{table:table}
+\end{center}
+\end{table}
+
+%multirow, multicolumn
+\begin{table}[h]
+\begin{footnotesize}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+
+\multirow{3}{*}{} & \multicolumn{3}{|c|}{Memory access behavior} \\ \cline{2-4}
+
+& \multirow{2}{1.6cm}{\centering Memory\\intensity} 
+& \multirow{2}{1.5cm}{\centering Bank-level\\parallelism} 
+& \multirow{2}{1.5cm}{\centering Row-buffer\\locality} \\ 
+
+& & & \\ \hline
+\hline
+
+\multirow{2}{1.2cm}{\centering \hel Random-\\access} 
+& \multirow{2}{1.6cm}{\centering High} 
+& \multirow{2}{2.1cm}{\centering High}
+& \multirow{2}{1.5cm}{\centering Low}\\
+
+& & & \\ \hline
+
+\multirow{2}{1.2cm}{\centering \hel Streaming}
+& \multirow{2}{1.6cm}{\centering High} 
+& \multirow{2}{2.1cm}{\centering Low}
+& \multirow{2}{1.5cm}{\centering High}\\
+
+& & & \\ \hline
+
+\end{tabular}
+\end{center}
+\end{footnotesize}
+\caption{Caption.}
+\label{table:table}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% math
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{small}
+\begin{align*} 
+&\mathit{Weighted\ Speedup} = \sum_i{\frac{IPC^{\mathit{shared}}_i}{IPC^{\mathit{alone}}_i}} \\
+&\mathit{Harmonic\ Speedup} = {\frac{N}{\sum_i{\frac{IPC^{\mathit{alone}}_i}{IPC^{\mathit{share}}_i}}}} \\
+&\mathit{Maximum\ Slowdown} = \max_i{\frac{IPC^{\mathit{alone}}_i}{IPC^{\mathit{shared}}_i}}
+\end{align*}
+\end{small}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% algorithm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{algorithm}[h]
+\caption{caption}
+\label{algo:algo}
+\begin{algorithmic}
+\footnotesize{
+\STATE \textbf{\underline{Initialization}:}
+\STATE $\mathit{LatencyCluster} \leftarrow \varnothing$; $\mathit{BandwidthCluster} \leftarrow \varnothing$
+\STATE $\mathit{Unclassified} \leftarrow \{\mathit{thread}_i: 1 \leq i \leq N_{\mathit{threads}}\}$
+\STATE $\mathit{SumBW} \leftarrow 0$
+\STATE
+\STATE \textbf{\underline{Per-thread parameters}:}
+\STATE $\cdot\:\mathit{MPKI}_i$: Misses per kiloinstruction of $\mathit{thread}_i$
+\STATE $\cdot\:\mathit{BWusage}_i$: BW used by $\mathit{thread}_i$ during previous quantum
+\STATE
+\STATE \textbf{\underline{Clustering}:} (beginning of quantum)
+\STATE $\mathit{TotalBWusage} \leftarrow \sum_{i}{\mathit{BWusage}}_i$
+\WHILE{$\mathit{Unclassified} \neq \varnothing$}
+\STATE $j = \arg\min\limits_{i} {\mathit{MPKI}_i}$ \texttt{//find thread with lowest MPKI} 
+\STATE $\mathit{SumBW} \leftarrow \mathit{SumBW} + \mathit{BWusage}_j$ 
+\IF{$\mathit{SumBW} \leq \mathit{ClusterThresh} \cdot \mathit{TotalBWusage}$}
+\STATE $\mathit{Unclassified} \leftarrow \mathit{Unclassified} - \{\mathit{thread}_j\}$
+\STATE $\mathit{LatencyCluster} \leftarrow \mathit{LatencyCluster} \cup \{\mathit{thread}_j\}$
+\ELSE 
+\STATE \textbf{break}
+\ENDIF
+\ENDWHILE
+\STATE $\mathit{BandwidthCluster} \leftarrow \mathit{Unclassified}$
+}
+\end{algorithmic}
+\end{algorithm}
+
+
