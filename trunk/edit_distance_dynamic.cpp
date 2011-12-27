@@ -79,6 +79,17 @@ int main_lane;
 int cur_lane;
 int cur_dist;
 
+int min_cost (int a, int b, int c) {
+	int temp;
+	if (a < b)
+		temp = a;
+	else
+		temp = b;
+	if (c < temp)
+		temp = c;
+	return temp;
+}
+
 void allocatePath() {
 	path = new ED_path[max_indel_num * 2 + 3];
 	main_lane = max_indel_num + 1;
@@ -159,7 +170,7 @@ ED_result editDistanceCal_helper(char* test_read, char* ref_read, int key_num,
 	//strcpy(result.compare_result, "\0");
 
 	//Current distance pointer set to 0
-	cur_idx = key_num * KEY_LENGTH;
+	int cur_idx = key_num * KEY_LENGTH;
 
 	bool ED_finished = false;
 
