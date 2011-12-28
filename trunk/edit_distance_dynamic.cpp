@@ -79,7 +79,7 @@ int main_lane;
 int cur_lane;
 int cur_dist;
 
-int min_cost (int a, int b, int c) {
+int min_cost(int a, int b, int c) {
 	int temp;
 	if (a < b)
 		temp = a;
@@ -120,8 +120,8 @@ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
 	//This is the result index used to probe the result error queue.
 	int error_idx = 0;
 
-	if (FWD_result.correct && BWD_result.correct && result.diff_num
-			<= max_diff_num) {
+	if (FWD_result.correct && BWD_result.correct
+			&& result.diff_num <= max_diff_num) {
 
 		result.correct = true;
 
@@ -179,39 +179,62 @@ ED_result editDistanceCal_helper(char* test_read, char* ref_read, int key_num,
 	int ref_idx;
 
 	//Starting portion. Need to test start and test ends.
-	while ((direction > 0) ? (cur_idx <= key_num * KEY_LENGTH + max_indel_num)
-			: (cur_idx >= key_num * KEY_LENGTH - max_indel_num)) {
+	while ((direction > 0) ?
+			(cur_idx <= key_num * KEY_LENGTH + max_indel_num) :
+			(cur_idx >= key_num * KEY_LENGTH - max_indel_num)) {
 		for (cur_lane = 1; cur_lane <= max_indel_num * 2 + 1; cur_lane++) {
+
 			//Check if it is the starting position
-			if (cur_lane >= main_lane && ((direction > 0) ? (cur_idx == key_num
-					* KEY_LENGTH) : (cur_idx == key_num * KEY_LENGTH
-					- (cur_lane - main_lane)))) {
+			if (cur_lane >= main_lane
+					&& ((direction > 0) ?
+							(cur_idx == key_num * KEY_LENGTH) :
+							(cur_idx
+									== key_num * KEY_LENGTH
+											- (cur_lane - main_lane)))) {
 				path[cur_lane].path_cost[cur_idx] = cur_lane - main_lane;
-			} else if ((cur_lane < main_lane && ((direction > 0) ? (cur_idx
-					== key_num * KEY_LENGTH + main_lane - cur_lane) : (cur_idx
-					== key_num * KEY_LENGTH)))) {
+			} else if ((cur_lane < main_lane
+					&& ((direction > 0) ?
+							(cur_idx
+									== key_num * KEY_LENGTH + main_lane
+											- cur_lane) :
+							(cur_idx == key_num * KEY_LENGTH)))) {
 				path[cur_lane].path_cost[cur_idx] = main_lane - cur_lane;
 			}
 
 			//If not ended then calculate the distance
-			else if ((direction > 0) ? (cur_idx >= key_num * KEY_LENGTH + (main_lane - cur_lane) && cur_idx <= READ_LENGTH
-					- (cur_lane - main_lane)) : () ) {
-				test_idx = cur_idx + cur_lane - main_lane;
-				ref_idx = cur_idx;
+			else if (
+					(direction > 0) ?
+							(cur_idx
+									>= key_num * KEY_LENGTH
+											+ (main_lane - cur_lane)
+									&& cur_idx
+											<= READ_LENGTH
+													- (cur_lane - main_lane)) :
+							(cur_idx
+									<= key_num * KEY_LENGTH
+											- (cur_lane - main_lane)
+									&& cur_idx >= 0 + (main_lane - cur_lane))) {
+
+				test_idx =
+						cur_idx + cur_lane - main_lane - (direction > 0) ?
+								1 : 0;
+				ref_idx = cur_idx - (direction > 0) ? 1 : 0;
 
 				//If equal, get the smallest distance
 				if (test_read[test_idx] == ref_read[ref_idx]) {
 					path[cur_lane].path_cost[cur_idx] = min_cost(
-							path[cur_lane].path_cost[cur_idx - 1],
-							path[cur_lane - 1].path_cost[cur_idx] + 1,
-							path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+							path[cur_lane].path_cost[cur_idx - direction],
+							path[cur_lane - direction].path_cost[cur_idx] + 1,
+							path[cur_lane + direction].path_cost[cur_idx
+									- direction] + 1);
 				}
 				//If not equal
 				else {
 					path[cur_lane].path_cost[cur_idx] = min_cost(
-							path[cur_lane].path_cost[cur_idx - 1] + 1,
-							path[cur_lane - 1].path_cost[cur_idx] + 1,
-							path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+							path[cur_lane].path_cost[cur_idx - direction] + 1,
+							path[cur_lane - direction].path_cost[cur_idx] + 1,
+							path[cur_lane + direction].path_cost[cur_idx
+									- direction] + 1);
 				}
 			}
 		}
@@ -219,524 +242,453 @@ ED_result editDistanceCal_helper(char* test_read, char* ref_read, int key_num,
 	}
 
 	//Middle portion, just calculate edit distance.
-	while ((direction > 0) ? (cur_idx <= READ_LENGTH - max_indel_num)
-			: (cur_idx >= max_indel_num)) {
+	while ((direction > 0) ?
+			(cur_idx <= READ_LENGTH - max_indel_num) :
+			(cur_idx >= 0 + max_indel_num)) {
 		for (cur_lane = 1; cur_lane <= max_indel_num * 2 + 1; cur_lane++) {
 
-			test_idx = cur_idx + cur_lane - main_lane;
-			ref_idx = cur_idx;
+			test_idx = cur_idx + cur_lane - main_lane - (direction > 0) ? 1 : 0;
+			ref_idx = cur_idx - (direction > 0) ? 1 : 0;
 
 			//If equal, get the smallest distance
 			if (test_read[test_idx] == ref_read[ref_idx]) {
-				path[cur_lane].path_cost[cur_idx] = min_cost(
-						path[cur_lane].path_cost[cur_idx - 1],
-						path[cur_lane - 1].path_cost[cur_idx] + 1,
-						path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+				path[cur_lane].path_cost[cur_idx] =
+						min_cost(
+								path[cur_lane].path_cost[cur_idx - direction],
+								path[cur_lane - direction].path_cost[cur_idx]
+										+ 1,
+								path[cur_lane + direction].path_cost[cur_idx
+										- direction] + 1);
 			}
 			//If not equal
 			else {
-				path[cur_lane].path_cost[cur_idx] = min_cost(
-						path[cur_lane].path_cost[cur_idx - 1] + 1,
-						path[cur_lane - 1].path_cost[cur_idx] + 1,
-						path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+				path[cur_lane].path_cost[cur_idx] =
+						min_cost(
+								path[cur_lane].path_cost[cur_idx - direction]
+										+ 1,
+								path[cur_lane - direction].path_cost[cur_idx]
+										+ 1,
+								path[cur_lane + direction].path_cost[cur_idx
+										- direction] + 1);
 			}
 		}
-		cur_idx++;
+		cur_idx += direction;
 	}
 
 	//End portion, test end.
 	while ((direction > 0) ? (cur_idx <= READ_LENGTH) : (cur_idx >= 0)) {
 		for (cur_lane = 1; cur_lane <= max_indel_num * 2 + 1; cur_lane++) {
-			if (!(cur_lane > main_lane && cur_idx > READ_LENGTH - (cur_lane
-					- main_lane))) {
-				test_idx = cur_idx + cur_lane - main_lane;
-				ref_idx = cur_idx;
+			if ((direction > 0) ?
+					(cur_idx <= READ_LENGTH - (cur_lane - main_lane)) :
+					(cur_idx >= 0 + (main_lane - cur_lane))) {
+
+				test_idx =
+						cur_idx + cur_lane - main_lane - (direction > 0) ?
+								1 : 0;
+				ref_idx = cur_idx - (direction > 0) ? 1 : 0;
 
 				//If equal, get the smallest distance
 				if (test_read[test_idx] == ref_read[ref_idx]) {
 					path[cur_lane].path_cost[cur_idx] = min_cost(
-							path[cur_lane].path_cost[cur_idx - 1],
-							path[cur_lane - 1].path_cost[cur_idx] + 1,
-							path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+							path[cur_lane].path_cost[cur_idx - direction],
+							path[cur_lane - direction].path_cost[cur_idx] + 1,
+							path[cur_lane + direction].path_cost[cur_idx
+									- direction] + 1);
 				}
 				//If not equal
 				else {
 					path[cur_lane].path_cost[cur_idx] = min_cost(
-							path[cur_lane].path_cost[cur_idx - 1] + 1,
-							path[cur_lane - 1].path_cost[cur_idx] + 1,
-							path[cur_lane + 1].path_cost[cur_idx - 1] + 1);
+							path[cur_lane].path_cost[cur_idx - direction] + 1,
+							path[cur_lane - direction].path_cost[cur_idx] + 1,
+							path[cur_lane + direction].path_cost[cur_idx
+									- direction] + 1);
 				}
 			}
 		}
-		cur_idx++;
-	}
-}
-
-//Pick a lane to go through
-while (!ED_finished) {
-	//cout << "Here 0" << endl;
-	//First Pick a path.
-	while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
-		if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
-			if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
-				//TODO: BREAK AND END.
-				ED_finished = true;
-				result.correct = false;
-				break;
-			} else {
-				//Go to next tier
-				cur_lane = 1;
-				cur_dist++;
-			}
-		} else {
-			cur_lane++;
-		}
+		cur_idx += direction;
 	}
 
-	//Indicate if the lane should be stopped
-	int slide_stop = 0;
 
-	//cout << "cur_dist: " << cur_dist << endl;
-	//cout << "cur_lane: " << cur_lane << endl;
 
-	//Slide down the lane.
-	while (!ED_finished) {
-		//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
-		//Conservative test, speed up common case
-		if (path[cur_lane].front_idx >= READ_LENGTH - max_indel_num) {
-			//Test if it's the last element
-			if ((cur_lane <= main_lane && path[cur_lane].front_idx
-							== READ_LENGTH) //Insertion lane
-					|| (cur_lane > main_lane && path[cur_lane].front_idx //Deletion Lane
-							== READ_LENGTH + main_lane - cur_lane)) {
-				ED_finished = true;
-				result.correct = true;
-				break;
-			}
-		}
+	//Tracing back period
+	if (result.correct == false)
+		return result;
+	else { //If pass the test, trace back
 
-		//Compute string idx:
-		test_idx = path[cur_lane].front_idx + cur_lane - main_lane;
-		ref_idx = path[cur_lane].front_idx;
+		char temp_result[30]; //Temp string. Used for appending.
+		int cur_idx =
+				(cur_lane <= main_lane) ?
+						READ_LENGTH : READ_LENGTH + main_lane - cur_lane;
 
-		//test if can slide down
-		if (!(path[cur_lane].path_cost[path[cur_lane].front_idx + 1]
-						== cur_dist //If can just slide
-						|| test_read[test_idx] == ref_read[ref_idx]))
-		slide_stop = 1;
+		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
-		//Check neighbor lanes and update them. Modify -> increment -> modify
-		//Check lower neighbor
-		if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
-				> cur_dist + slide_stop + 1)
-		path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
-		= cur_dist + 1;
-		//Increment
-		path[cur_lane].front_idx++;
-		//Check itself
-		if (path[cur_lane].path_cost[path[cur_lane].front_idx] > cur_dist
-				+ slide_stop)
-		path[cur_lane].path_cost[path[cur_lane].front_idx] = cur_dist
-		+ slide_stop;
-		//Check upper (right) neighbor
-		if (path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
-				> cur_dist + slide_stop + 1)
-		path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
-		= cur_dist + 1;
+		cur_dist = path[cur_lane].path_cost[cur_idx];
 
-		//stop if can't slide anymore
-		if (slide_stop == 1)
-		break;
-	}
-}
+		int error_ptr = 0;
 
-//cout << "Path generated" << endl;
-
-//Tracing back period
-if (result.correct == false)
-return result;
-else { //If pass the test, trace back
-
-	char temp_result[30]; //Temp string. Used for appending.
-	int cur_idx = (cur_lane <= main_lane) ? READ_LENGTH : READ_LENGTH
-	+ main_lane - cur_lane;
-
-	result.diff_num = path[cur_lane].path_cost[cur_idx];
-
-	cur_dist = path[cur_lane].path_cost[cur_idx];
-
-	int error_ptr = 0;
-
-	//		int same_count = 0;
-	//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
-	while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+		//		int same_count = 0;
 		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 
-		//If we should have an insertion
-		if (cur_idx == key_num * KEY_LENGTH
-				|| path[cur_lane - 1].path_cost[cur_idx]
-				< path[cur_lane].path_cost[cur_idx - 1]) {
+			//If we should have an insertion
+			if (cur_idx == key_num * KEY_LENGTH
+					|| path[cur_lane - 1].path_cost[cur_idx]
+							< path[cur_lane].path_cost[cur_idx - 1]) {
 
-			result.error[error_ptr].diff = INSERTION;
-			result.error[error_ptr].location = cur_idx + cur_lane
-			- main_lane - 1;
-			result.error[error_ptr].diff_char
-			= test_read[result.error[error_ptr].location];
-			error_ptr++;
-			/*
-			 if (same_count != 0) {
-			 //cout << "Here m" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "^%c%d%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 same_count, temp_result);
-			 }
-			 else {
-			 //cout << "Here n" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "^%c%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 temp_result);
-			 }
-			 */
-			cur_lane--;
-			//same_count = 0;
-			continue;
+				result.error[error_ptr].diff = INSERTION;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane - 1;
+				result.error[error_ptr].diff_char =
+						test_read[result.error[error_ptr].location];
+				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here m" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "^%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+				 }
+				 else {
+				 //cout << "Here n" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "^%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 }
+				 */
+				cur_lane--;
+				//same_count = 0;
+				continue;
+			}
+
+			//If we should have a deletion
+			if (path[cur_lane + 1].path_cost[cur_idx - 1]
+					< path[cur_lane].path_cost[cur_idx - 1]) {
+
+				result.error[error_ptr].diff = DELETION;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane - 1;
+				result.error[error_ptr].diff_char = ref_read[cur_idx];
+				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here x" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "`%c%d%s",
+				 ref_read[cur_idx - 1], same_count,
+				 temp_result);
+				 } else {
+				 //cout << "Here y" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
+				 temp_result);
+				 }
+				 */
+				cur_lane++;
+				cur_idx--;
+				//same_count = 0;
+				continue;
+			}
+
+			//Check if we have a mismatch
+			if (path[cur_lane].path_cost[cur_idx - 1]
+					< path[cur_lane].path_cost[cur_idx]) {
+
+				result.error[error_ptr].diff = MISMATCH;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane - 1;
+				result.error[error_ptr].diff_char =
+						test_read[result.error[error_ptr].location];
+				error_ptr++;
+				/*
+				 //cout << "Here1" << endl;
+				 if (same_count != 0) {
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+
+				 //cout << "Here2" << endl;
+				 } else {
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 //cout << "Here3" << endl;
+				 }
+				 */
+				cur_idx--;
+				//same_count = 0;
+				continue;
+			}
+
+			//Move to the next element
+			cur_idx -= direction;
 		}
 
-		//If we should have a deletion
-		if (path[cur_lane + 1].path_cost[cur_idx - 1]
-				< path[cur_lane].path_cost[cur_idx - 1]) {
-
-			result.error[error_ptr].diff = DELETION;
-			result.error[error_ptr].location = cur_idx + cur_lane
-			- main_lane - 1;
-			result.error[error_ptr].diff_char = ref_read[cur_idx];
-			error_ptr++;
-			/*
-			 if (same_count != 0) {
-			 //cout << "Here x" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "`%c%d%s",
-			 ref_read[cur_idx - 1], same_count,
-			 temp_result);
-			 } else {
-			 //cout << "Here y" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
-			 temp_result);
-			 }
-			 */
-			cur_lane++;
-			cur_idx--;
-			//same_count = 0;
-			continue;
-		}
-
-		//Check if we have a mismatch
-		if (path[cur_lane].path_cost[cur_idx - 1]
-				< path[cur_lane].path_cost[cur_idx]) {
-
-			result.error[error_ptr].diff = MISMATCH;
-			result.error[error_ptr].location = cur_idx + cur_lane
-			- main_lane - 1;
-			result.error[error_ptr].diff_char
-			= test_read[result.error[error_ptr].location];
-			error_ptr++;
-			/*
-			 //cout << "Here1" << endl;
-			 if (same_count != 0) {
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "%c%d%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 same_count, temp_result);
-
-			 //cout << "Here2" << endl;
-			 } else {
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "%c%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 temp_result);
-			 //cout << "Here3" << endl;
-			 }
-			 */
-			cur_idx--;
-			//same_count = 0;
-			continue;
-		}
-
-		//Move to the next element
-		cur_idx--;
-		//same_count++;
-		//cout << "same_count: " << same_count << endl;
+		//The 2 number should match. The error iteration should finally meet the total number
+		assert(error_ptr == result.diff_num);
 	}
-
-	//The 2 number should match. The error iteration should finally meet the total number
-	assert (error_ptr == result.diff_num);
-	/*
-	 if (same_count != 0) { //If we have some same count at the begining
-	 //cout << "Here t" << endl;
-	 strcpy(temp_result, result.compare_result);
-	 sprintf(result.compare_result, "%d%s", same_count,
-	 temp_result);
-	 }
-	 */
-}
-return result;
+	return result;
 }
 
 ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 //Return result;
-ED_result result;
+	ED_result result;
 //strcpy(result.compare_result, "\0");
 
 //Initialize the Front of each lane
-initializeBWDFront(key_num);
+	initializeBWDFront(key_num);
 
 //Current distance pointer set to 0
-cur_dist = 0;
+	cur_dist = 0;
 //Start at the main lane
-cur_lane = main_lane;
+	cur_lane = main_lane;
 //Set the first cost of the main lane to 0
-path[cur_lane].path_cost[path[cur_lane].front_idx] = 0;
+	path[cur_lane].path_cost[path[cur_lane].front_idx] = 0;
 
-bool ED_finished = false;
+	bool ED_finished = false;
 
 //String pointers. Used in comparing characters
-int test_idx;
-int ref_idx;
+	int test_idx;
+	int ref_idx;
 
 //Pick a lane to go through
-while (!ED_finished) {
-	//cout << "Here 0" << endl;
-	//First Pick a path.
-	while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
-		if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
-			if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
-				//TODO: BREAK AND END.
-				ED_finished = true;
-				result.correct = false;
-				break;
-			} else {
-				//Go to next tier
-				cur_lane = 1;
-				cur_dist++;
-			}
-		} else {
-			cur_lane++;
-		}
-	}
-
-	//Indicate if the lane should be stopped
-	int slide_stop = 0;
-
-	cout << "cur_dist: " << cur_dist << "  ED_finished: " << ED_finished
-			<< "  cur_lane: " << cur_lane << "  path[cur_lane].front_idx: "
-			<< path[cur_lane].front_idx << endl;
-
-	//cout << "cur_dist: " << cur_dist << endl;
-	//cout << "cur_lane: " << cur_lane << endl;
-
-	//Slide down the lane.
 	while (!ED_finished) {
-		//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
-		//Conservative test, speed up common case
-		if (path[cur_lane].front_idx <= max_indel_num) {
-			//Test if it's the last element
-			if ((cur_lane >= main_lane && (path[cur_lane].front_idx == 0)) //Insertion lane
-					|| (cur_lane < main_lane && (path[cur_lane].front_idx //Deletion Lane
-							== main_lane - cur_lane))) {
-
-				cout << "cur_lane: " << cur_lane
-						<< "  path[cur_lane].front_idx: "
-						<< path[cur_lane].front_idx << "  cur_dist: "
-						<< cur_dist << endl;
-				cout << "Should never got here!!!" << endl;
-				cout
-						<< "If got in, this should be true: (cur_lane < main_lane && (path[cur_lane].front_idx == main_lane - cur_lane) "
-						<< endl;
-				if ((cur_lane < main_lane && (path[cur_lane].front_idx //Deletion Lane
-						== main_lane - cur_lane)))
-					cout << "It is true" << endl;
-				else
-					cout << "But it is not!!!" << endl;
-
-				ED_finished = true;
-				result.correct = true;
-				break;
+//cout << "Here 0" << endl;
+//First Pick a path.
+		while (path[cur_lane].path_cost[path[cur_lane].front_idx] != cur_dist) {
+			if (cur_lane == max_indel_num * 2 + 1) { //Next is boundary
+				if (cur_dist >= max_diff_num) { //Check if we exceeds the max diff tolarence
+					//TODO: BREAK AND END.
+					ED_finished = true;
+					result.correct = false;
+					break;
+				} else {
+					//Go to next tier
+					cur_lane = 1;
+					cur_dist++;
+				}
+			} else {
+				cur_lane++;
 			}
 		}
 
-		//Compute string idx:
-		test_idx = path[cur_lane].front_idx + cur_lane - main_lane - 1;
-		ref_idx = path[cur_lane].front_idx - 1;
+//Indicate if the lane should be stopped
+		int slide_stop = 0;
 
-		//test if can slide down
-		if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
-				== cur_dist //If can just slide
-				|| test_read[test_idx] == ref_read[ref_idx]))
-			slide_stop = 1;
+		cout << "cur_dist: " << cur_dist << "  ED_finished: " << ED_finished
+				<< "  cur_lane: " << cur_lane << "  path[cur_lane].front_idx: "
+				<< path[cur_lane].front_idx << endl;
 
-		//Check neighbor lanes and update them. Modify -> decrement -> modify
-		//Check upper neighbor
-		if (path[cur_lane - 1].path_cost[path[cur_lane].front_idx] > cur_dist
-				+ slide_stop + 1)
-			path[cur_lane - 1].path_cost[path[cur_lane].front_idx] = cur_dist
-					+ 1;
-		//Decrement
-		path[cur_lane].front_idx--;
-		//Check itself
-		if (path[cur_lane].path_cost[path[cur_lane].front_idx] > cur_dist
-				+ slide_stop)
-			path[cur_lane].path_cost[path[cur_lane].front_idx] = cur_dist
-					+ slide_stop;
-		//Check lower (left) neighbor
-		if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx] > cur_dist
-				+ slide_stop + 1)
-			path[cur_lane + 1].path_cost[path[cur_lane].front_idx] = cur_dist
-					+ 1;
+//cout << "cur_dist: " << cur_dist << endl;
+//cout << "cur_lane: " << cur_lane << endl;
 
-		//stop if can't slide anymore
-		if (slide_stop == 1) {
-			break;
+//Slide down the lane.
+		while (!ED_finished) {
+			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
+			//Conservative test, speed up common case
+			if (path[cur_lane].front_idx <= max_indel_num) {
+				//Test if it's the last element
+				if ((cur_lane >= main_lane && (path[cur_lane].front_idx == 0)) //Insertion lane
+				|| (cur_lane < main_lane && (path[cur_lane].front_idx //Deletion Lane
+				== main_lane - cur_lane))) {
+
+					cout << "cur_lane: " << cur_lane
+							<< "  path[cur_lane].front_idx: "
+							<< path[cur_lane].front_idx << "  cur_dist: "
+							<< cur_dist << endl;
+					cout << "Should never got here!!!" << endl;
+					cout
+							<< "If got in, this should be true: (cur_lane < main_lane && (path[cur_lane].front_idx == main_lane - cur_lane) "
+							<< endl;
+					if ((cur_lane < main_lane && (path[cur_lane].front_idx //Deletion Lane
+					== main_lane - cur_lane)))
+						cout << "It is true" << endl;
+					else
+						cout << "But it is not!!!" << endl;
+
+					ED_finished = true;
+					result.correct = true;
+					break;
+				}
+			}
+
+			//Compute string idx:
+			test_idx = path[cur_lane].front_idx + cur_lane - main_lane - 1;
+			ref_idx = path[cur_lane].front_idx - 1;
+
+			//test if can slide down
+			if (!(path[cur_lane].path_cost[path[cur_lane].front_idx - 1]
+					== cur_dist //If can just slide
+			|| test_read[test_idx] == ref_read[ref_idx]))
+				slide_stop = 1;
+
+			//Check neighbor lanes and update them. Modify -> decrement -> modify
+			//Check upper neighbor
+			if (path[cur_lane - 1].path_cost[path[cur_lane].front_idx]
+					> cur_dist + slide_stop + 1)
+				path[cur_lane - 1].path_cost[path[cur_lane].front_idx] =
+						cur_dist + 1;
+			//Decrement
+			path[cur_lane].front_idx--;
+			//Check itself
+			if (path[cur_lane].path_cost[path[cur_lane].front_idx]
+					> cur_dist + slide_stop)
+				path[cur_lane].path_cost[path[cur_lane].front_idx] = cur_dist
+						+ slide_stop;
+			//Check lower (left) neighbor
+			if (path[cur_lane + 1].path_cost[path[cur_lane].front_idx]
+					> cur_dist + slide_stop + 1)
+				path[cur_lane + 1].path_cost[path[cur_lane].front_idx] =
+						cur_dist + 1;
+
+			//stop if can't slide anymore
+			if (slide_stop == 1) {
+				break;
+			}
 		}
 	}
-}
 
-cout << "IN BWD. result.correct = " << result.correct << endl;
+	cout << "IN BWD. result.correct = " << result.correct << endl;
 //cout << "Path generated" << endl;
 
 //Tracing back period
-if (result.correct == false)
-	return result;
-else { //If pass the test, trace back
+	if (result.correct == false)
+		return result;
+	else { //If pass the test, trace back
 
-	//char temp_result[30]; //Temp string. Used for appending.
-	int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
+//char temp_result[30]; //Temp string. Used for appending.
+		int cur_idx = (cur_lane >= main_lane) ? 0 : main_lane - cur_lane;
 
-	//cout << "cur_lane: " << cur_lane << endl;
-	//cout << "cur_idx: " << cur_idx << endl;
+//cout << "cur_lane: " << cur_lane << endl;
+//cout << "cur_idx: " << cur_idx << endl;
 
-	result.diff_num = path[cur_lane].path_cost[cur_idx];
+		result.diff_num = path[cur_lane].path_cost[cur_idx];
 
-	cur_dist = path[cur_lane].path_cost[cur_idx];
+		cur_dist = path[cur_lane].path_cost[cur_idx];
 
-	int error_ptr = 0;
+		int error_ptr = 0;
 
-	//		int same_count = 0;
-	cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
-	while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-		cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
-				<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
-				<< endl;
+//		int same_count = 0;
+		cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
+			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx
+					<< " cur_distance: " << path[cur_lane].path_cost[cur_idx]
+					<< endl;
 
-		//If we should have an insertion
-		if (cur_idx == key_num * KEY_LENGTH
-				|| path[cur_lane + 1].path_cost[cur_idx]
-						< path[cur_lane].path_cost[cur_idx + 1]) {
+			//If we should have an insertion
+			if (cur_idx == key_num * KEY_LENGTH
+					|| path[cur_lane + 1].path_cost[cur_idx]
+							< path[cur_lane].path_cost[cur_idx + 1]) {
 
-			result.error[error_ptr].diff = INSERTION;
-			result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
-			result.error[error_ptr].diff_char
-					= test_read[result.error[error_ptr].location];
-			error_ptr++;
-			/*
-			 if (same_count != 0) {
-			 //cout << "Here m" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "^%c%d%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 same_count, temp_result);
-			 }
-			 else {
-			 //cout << "Here n" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "^%c%s",
-			 test_read[cur_idx + cur_lane result_lane - 1],
-			 temp_result);
-			 }
-			 */
-			cur_lane++;
-			//same_count = 0;
-			continue;
-		}
+				result.error[error_ptr].diff = INSERTION;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane;
+				result.error[error_ptr].diff_char =
+						test_read[result.error[error_ptr].location];
+				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here m" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "^%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+				 }
+				 else {
+				 //cout << "Here n" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "^%c%s",
+				 test_read[cur_idx + cur_lane result_lane - 1],
+				 temp_result);
+				 }
+				 */
+				cur_lane++;
+				//same_count = 0;
+				continue;
+			}
 
-		//If we should have a deletion
-		if (path[cur_lane - 1].path_cost[cur_idx + 1]
-				< path[cur_lane].path_cost[cur_idx + 1]) {
+			//If we should have a deletion
+			if (path[cur_lane - 1].path_cost[cur_idx + 1]
+					< path[cur_lane].path_cost[cur_idx + 1]) {
 
-			result.error[error_ptr].diff = DELETION;
-			result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
-			result.error[error_ptr].diff_char = ref_read[cur_idx];
-			error_ptr++;
-			/*
-			 if (same_count != 0) {
-			 //cout << "Here x" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "`%c%d%s",
-			 ref_read[cur_idx - 1], same_count,
-			 temp_result);
-			 } else {
-			 //cout << "Here y" << endl;
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
-			 temp_result);
-			 }
-			 */
-			cur_lane--;
+				result.error[error_ptr].diff = DELETION;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane;
+				result.error[error_ptr].diff_char = ref_read[cur_idx];
+				error_ptr++;
+				/*
+				 if (same_count != 0) {
+				 //cout << "Here x" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "`%c%d%s",
+				 ref_read[cur_idx - 1], same_count,
+				 temp_result);
+				 } else {
+				 //cout << "Here y" << endl;
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "`%c%s", ref_read[cur_idx - 1],
+				 temp_result);
+				 }
+				 */
+				cur_lane--;
+				cur_idx++;
+				//same_count = 0;
+				continue;
+			}
+
+			//Check if we have a mismatch
+			if (path[cur_lane].path_cost[cur_idx + 1]
+					< path[cur_lane].path_cost[cur_idx]) {
+
+				result.error[error_ptr].diff = MISMATCH;
+				result.error[error_ptr].location = cur_idx + cur_lane
+						- main_lane;
+				result.error[error_ptr].diff_char =
+						test_read[result.error[error_ptr].location];
+				error_ptr++;
+				/*
+				 //cout << "Here1" << endl;
+				 if (same_count != 0) {
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "%c%d%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 same_count, temp_result);
+
+				 //cout << "Here2" << endl;
+				 } else {
+				 strcpy(temp_result, result.compare_result);
+				 sprintf(result.compare_result, "%c%s",
+				 test_read[cur_idx + cur_lane - main_lane - 1],
+				 temp_result);
+				 //cout << "Here3" << endl;
+				 }
+				 */
+				cur_idx++;
+				//same_count = 0;
+				continue;
+			}
+
+			//Move to the next element
 			cur_idx++;
-			//same_count = 0;
-			continue;
+			//same_count++;
+			//cout << "same_count: " << same_count << endl;
 		}
 
-		//Check if we have a mismatch
-		if (path[cur_lane].path_cost[cur_idx + 1]
-				< path[cur_lane].path_cost[cur_idx]) {
-
-			result.error[error_ptr].diff = MISMATCH;
-			result.error[error_ptr].location = cur_idx + cur_lane - main_lane;
-			result.error[error_ptr].diff_char
-					= test_read[result.error[error_ptr].location];
-			error_ptr++;
-			/*
-			 //cout << "Here1" << endl;
-			 if (same_count != 0) {
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "%c%d%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 same_count, temp_result);
-
-			 //cout << "Here2" << endl;
-			 } else {
-			 strcpy(temp_result, result.compare_result);
-			 sprintf(result.compare_result, "%c%s",
-			 test_read[cur_idx + cur_lane - main_lane - 1],
-			 temp_result);
-			 //cout << "Here3" << endl;
-			 }
-			 */
-			cur_idx++;
-			//same_count = 0;
-			continue;
-		}
-
-		//Move to the next element
-		cur_idx++;
-		//same_count++;
-		//cout << "same_count: " << same_count << endl;
+//The 2 number should match. The error iteration should finally meet the total number
+//cout << "error_ptr: " << error_ptr << endl;
+//cout << "result.diff_num: " << result.diff_num << endl;
+		assert(error_ptr == result.diff_num);
+		/*
+		 if (same_count != 0) { //If we have some same count at the begining
+		 //cout << "Here t" << endl;
+		 strcpy(temp_result, result.compare_result);
+		 sprintf(result.compare_result, "%d%s", same_count,
+		 temp_result);
+		 }
+		 */
 	}
-
-	//The 2 number should match. The error iteration should finally meet the total number
-	//cout << "error_ptr: " << error_ptr << endl;
-	//cout << "result.diff_num: " << result.diff_num << endl;
-	assert (error_ptr == result.diff_num);
-	/*
-	 if (same_count != 0) { //If we have some same count at the begining
-	 //cout << "Here t" << endl;
-	 strcpy(temp_result, result.compare_result);
-	 sprintf(result.compare_result, "%d%s", same_count,
-	 temp_result);
-	 }
-	 */
-}
-return result;
+	return result;
