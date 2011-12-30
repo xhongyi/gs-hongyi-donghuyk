@@ -201,5 +201,6 @@ void hashFileWriter(string hash_name) {
                 if (entry_size != 0)
                         store_file << endl;
         }
+		hash_table_counter = 0;
         store_file.close();
 }

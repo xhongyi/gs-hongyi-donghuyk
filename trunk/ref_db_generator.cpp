@@ -17,11 +17,15 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 	int contig_file_num = 0;
 	char * gen_file[200];
 	char   contig_name[MAX_CONTIG_NAME];
+	char   file_contig_name[MAX_CONTIG_NAME];
  	FILE * pFileR;
  	FILE * pFileW;
+ 	FILE * pFileW_name;
 	
 
  	pFileR = fopen (ref_file, "r");
+	sprintf(file_contig_name, "%s%s", gen_file_name, "name");
+	pFileW_name = fopen (file_contig_name, "w");
 
 	while (flag_ref_end == 0) {
 		if (i == 0) {
@@ -36,11 +40,11 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 				flag_first = 0;
 				flag_contig_name = 1;
 			} 
-			else if (mystring[REF_TABLE_SIZE-i]=='>'){			// Others
-                                newstring[j] = '\n';
-                                fwrite (newstring, 1, j+1, pFileW);
-                                j = 0;
-                		fprintf (stdout,"FILE CLOSE: %s \n", gen_file[file_num]);
+			else if (mystring[REF_TABLE_SIZE-i]=='>'){				// Others
+				newstring[j] = '\n';
+				fwrite (newstring, 1, j+1, pFileW);
+				j = 0;
+				fprintf (stdout,"FILE CLOSE: %s \n", gen_file[file_num]);
 				fclose(pFileW);
 				file_num = file_num + 1;
 				flag_contig_name = 1;
@@ -48,29 +52,35 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 					flag_ref_end = 1;
 				}
 			}
-			contig_name[contig_num] = mystring[REF_TABLE_SIZE-i];
-			contig_num = contig_num + 1;
-			i = i - 1;
+			if(mystring[REF_TABLE_SIZE-i] != '>'){
+				contig_name[contig_num] = mystring[REF_TABLE_SIZE-i];
+				contig_num = contig_num + 1;
+			}
+				i = i - 1;
 			if (mystring[REF_TABLE_SIZE-i] == '\n'){
-               			gen_file[file_num] = (char*)malloc(sizeof(gen_file_name)+file_num/10+1);
-                		sprintf (gen_file[file_num], "%s%i", gen_file_name ,file_num);
-                		fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
+//-------------------------------------------------------------------------------------
+				printf("contig name:%s\n", contig_name);
+				fprintf (pFileW_name, "%s\n", contig_name);
+//-------------------------------------------------------------------------------------
+			   	gen_file[file_num] = (char*)malloc(sizeof(gen_file_name)+file_num/10+1);
+				sprintf (gen_file[file_num], "%s%i", gen_file_name, file_num);
+				fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
 				pFileW = fopen (gen_file[file_num], "w");
 				contig_file_num = contig_file_num + 1;
 				flag_contig_name = 0;
 				contig_num = 0;
-                                newstring[j] = '\n';
-                                fwrite (newstring, 1, j+1, pFileW);
-                                j = 0;
+				newstring[j] = '\n';
+				fwrite (newstring, 1, j+1, pFileW);
+				j = 0;
 			}
 		} 
 		else {
 			if (flag_first == 1) {
-               			gen_file[file_num] = (char*)malloc(sizeof(gen_file_name)+file_num/10+1);
-                		sprintf (gen_file[file_num], "%s%i", gen_file_name ,file_num);
+			   	gen_file[file_num] = (char*)malloc(sizeof(gen_file_name)+file_num/10+1);
+				sprintf (gen_file[file_num], "%s%i", gen_file_name ,file_num);
 				pFileW = fopen (gen_file[file_num], "w");
 				flag_first = 0;
-                		fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
+				fprintf (stdout,"FILE OPEN : %s \n", gen_file[file_num]);
 			}
 			switch (mystring[REF_TABLE_SIZE-i]){
 				case 'A': newstring[j]='A'; j=j+1; break;
@@ -96,12 +106,13 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 				fwrite (newstring, 1, j+1, pFileW);
 				j = 0;
 				flag_ref_end = 1;
-                		fprintf (stdout,"FILE CLOSE: %s \n", gen_file[file_num]);
+				fprintf (stdout,"FILE CLOSE: %s \n", gen_file[file_num]);
  				fclose (pFileW);
 			}
 		}
 	}
  	fclose (pFileR);
+ 	fclose (pFileW_name);
 	free (mystring);
 	free (newstring);
 }
