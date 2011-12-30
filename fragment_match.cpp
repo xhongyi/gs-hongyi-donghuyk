@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <assert.h>
+#include <fstream>
 #include "edit_distance.h"
 #include "edit_distribution.h"
 #include "fragment_match.h"
@@ -172,6 +173,154 @@ final_result searchFragment(string fragment, string* ref) {
 						//cout << "  result: correct " << endl;
 					} else {
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "  result: not correct" <<endl;
+					}
+				}
+			}
+		}
+	}
+	return return_result;
+}
+
+final_result searchFragment_fastq(string fragment, string* ref, ofstream * output_file, 
+							char* contig_name, string fragment_name, string fragment_qual) {
+	key_struct sort_input[KEY_NUMBER];
+	for (int i = 0; i < KEY_NUMBER; i++) {
+		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
+		int key_hash = hashVal(key);
+		int key_entry = hash_table[key_hash];
+		int key_entry_size = coordinate[key_entry];
+		sort_input[i].order = 0;
+		sort_input[i].key_number = i;
+		sort_input[i].key_entry = key_entry;
+		sort_input[i].key_entry_size = key_entry_size;
+	}
+
+	key_struct keys_input[KEY_NUMBER];
+	sortPrefilter(keys_input, sort_input);
+	previous_result.size = 0;
+	final_result return_result;
+	return_result.total_binary_search = 0;
+	return_result.total_edit_perform = 0;
+	return_result.total_correct_num = 0;
+
+	for (int k = 0; k < max_diff_num + 1; k++) {
+		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
+				+ keys_input[k].key_entry_size; i++) {
+			int coor_value = coordinate[i];
+			int diff_num = 0;
+			if (!searchPrevious(coor_value, keys_input[k].key_number,
+					previous_result)) {
+				return_result.total_binary_search++;
+				for (int j = 0; j < KEY_NUMBER; j++) {
+					if (j - diff_num > KEY_NUMBER - max_diff_num)
+						break;
+					if (!searchKey(
+							coor_value + (keys_input[j].key_number
+									- keys_input[k].key_number) * KEY_LENGTH,
+							keys_input[j].key_entry,
+							keys_input[j].key_entry_size)) {
+						diff_num++;
+						if (diff_num > max_diff_num)
+							break;
+					}
+				}
+				if (diff_num <= max_diff_num) {
+					if (previous_result.size <= PREFILTER_SIZE) {
+						previous_result.coor[previous_result.size] = coor_value
+								- keys_input[k].key_number * KEY_LENGTH; //start_coor;
+						previous_result.size++;
+					}
+					return_result.total_edit_perform++;
+					string ref_str(FRAGMENT_LENGTH, 'A');
+					ref_str = (*ref).substr(
+							coor_value - keys_input[k].key_number * KEY_LENGTH,
+							FRAGMENT_LENGTH); //start_coor;
+
+					/////////////////////Just For Testing
+					char test_char[READ_LENGTH + 1];
+					char ref_char[READ_LENGTH + 1];
+					strcpy(test_char, fragment.c_str());
+					strcpy(ref_char, ref_str.c_str());
+					/*////////////////////Testing END
+					cout << "ref__read: " << ref_char << endl;
+					cout << "test_read: " << test_char << endl;
+					cout << "key_num__: " << keys_input[k].key_number << endl;
+					*/
+					ED_result edit_result = editDistanceCal(test_char,
+							ref_char, keys_input[k].key_number);
+					//---------------------------------------------------------------------------------
+					if (edit_result.correct) {
+						return_result.total_correct_num++;
+						(*output_file) << fragment_name << "	"
+									<< 0 << "	"
+									<< contig_name << "	"
+									<< coor_value - keys_input[k].key_number * KEY_LENGTH << "	"
+									<< 255 << "	";
+						int err_coor = 0;
+						for (int err_num = 0; err_num < edit_result.diff_num; err_num++){
+							if (edit_result.error[err_num].diff == INSERTION) {
+								if(edit_result.error[err_num].location - err_coor - 1 > 0) {
+									(*output_file) << edit_result.error[err_num].location - err_coor-1;
+									(*output_file) << "M1I";
+								}
+								err_coor = edit_result.error[err_num].location;
+							}
+							else if (edit_result.error[err_num].diff == DELETION) {
+								if(edit_result.error[err_num].location - err_coor - 1 > 0) {
+									(*output_file) << edit_result.error[err_num].location - err_coor-1;
+									(*output_file) << "M1D";
+								}
+								err_coor = edit_result.error[err_num].location;
+							}
+						}
+						if (err_coor < FRAGMENT_LENGTH) {
+							(*output_file) << FRAGMENT_LENGTH - err_coor << "M	";
+						}
+						(*output_file) << "*	0	0	"
+									<< test_char << "	"
+									<< fragment_qual << "	"
+									<< "NM:i:"	<< edit_result.diff_num << "	"
+									<< "MD:Z:";
+						err_coor = 0;
+						for (int err_num = 0; err_num < edit_result.diff_num; err_num++){
+							if (edit_result.error[err_num].diff == MISMATCH) {
+								if(edit_result.error[err_num].location - err_coor - 1 > 0) {
+									(*output_file) << edit_result.error[err_num].location - err_coor-1;
+								}
+								(*output_file) << edit_result.error[err_num].diff_char;
+								err_coor = edit_result.error[err_num].location;
+								
+							}
+							//else if (edit_result.error[err_num].diff == INSERTION) {
+								//if(edit_result.error[err_num].location - err_coor - 1 > 0) {
+								//	(*output_file) << edit_result.error[err_num].location - err_coor-1;
+								//}
+								//(*output_file) << "^";
+								//(*output_file) << edit_result.error[err_num].diff_char;
+								//err_coor = edit_result.error[err_num].location;
+							//}
+							else if (edit_result.error[err_num].diff == DELETION) {
+								if(edit_result.error[err_num].location - err_coor - 1 > 0) {
+									(*output_file) << edit_result.error[err_num].location - err_coor-1;
+								}
+								(*output_file) << "^";
+								(*output_file) << edit_result.error[err_num].diff_char;
+								err_coor = edit_result.error[err_num].location;
+							}
+						} 
+						if (err_coor < FRAGMENT_LENGTH) {
+							(*output_file) << FRAGMENT_LENGTH - err_coor;
+						}
+						(*output_file) << endl;
+					//---------------------------------------------------------------------------------
+
+						//cout << "ref_read      : " << ref_str << "  coordinate: "
+						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "  result: correct " << endl;
+					} else {
+						//cout << "ref_read      : " << ref_str << "  coordinate: "
+						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
 				}

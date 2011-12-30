@@ -118,7 +118,7 @@ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {
 	BWD_result = editDistanceCalBWD(test_read, ref_read, key_num);
 
 	if (BWD_result.correct)
-		cout << "BWD is correct!!!" << endl;
+		//cout << "BWD is correct!!!" << endl;
 
 	result.diff_num = FWD_result.diff_num + BWD_result.diff_num;
 
@@ -462,7 +462,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		//Indicate if the lane should be stopped
 		int slide_stop = 0;
 
-		cout  << "cur_dist: " << cur_dist << "  ED_finished: " << ED_finished << "  cur_lane: " << cur_lane << "  path[cur_lane].front_idx: " << path[cur_lane].front_idx << endl;
+		//cout  << "cur_dist: " << cur_dist << "  ED_finished: " << ED_finished << "  cur_lane: " << cur_lane << "  path[cur_lane].front_idx: " << path[cur_lane].front_idx << endl;
 
 		//cout << "cur_dist: " << cur_dist << endl;
 		//cout << "cur_lane: " << cur_lane << endl;
@@ -478,13 +478,14 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 								== main_lane - cur_lane) ) ) {
 								
 					//cout << "Should never got here!!!" << endl;
-					cout << "If got in, this should be true: (cur_lane < main_lane && (path[cur_lane].front_idx == main_lane - cur_lane) " << endl;
+					//cout << "If got in, this should be true: (cur_lane < main_lane && (path[cur_lane].front_idx == main_lane - cur_lane) " << endl;
 					if ( (cur_lane < main_lane && (path[cur_lane].front_idx //Deletion Lane
-							== main_lane - cur_lane) ) )
-						cout << "It is true" << endl;
-					else
-						cout << "But it is not!!!" << endl;
-
+							== main_lane - cur_lane) ) ){
+						//cout << "It is true" << endl;
+					}
+					else {
+						//cout << "But it is not!!!" << endl;
+					}
 					ED_finished = true;
 					result.correct = true;
 					break;
@@ -527,7 +528,7 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		}
 	}
 
-	cout << "IN BWD. result.correct = " << result.correct << endl;
+	//cout << "IN BWD. result.correct = " << result.correct << endl;
 	//cout << "Path generated" << endl;
 
 	//Tracing back period
@@ -548,9 +549,9 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 		int error_ptr = 0;
 
 		//		int same_count = 0;
-		cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
+		//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << endl;
 		while (cur_lane != main_lane || cur_idx != key_num * KEY_LENGTH) {
-			cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
+			//cout << "cur_lane: " << cur_lane << " cur_idx: " << cur_idx << " cur_distance: " << path[cur_lane].path_cost[cur_idx] << endl;
 
 			//If we should have an insertion
 			if (cur_idx == key_num * KEY_LENGTH

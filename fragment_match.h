@@ -70,12 +70,13 @@ void loadHash(string hash_name);
 final_result searchFragment (string fragment, string* ref);
 
 /*
- * Function:		Binary search if there exits an exact match on a target coordinate.
- * Input:			key is the searching target, and coordinate will be the target coordinate.
- * Modification:	result_idx will be changed to the index of the first possible match.
- * 					result_scope will be changed to the number of possible matches.
+ * Function:        Search the possible locations and calculate their relevance.
+ * Input:           fragment is the target gene sequence need to be mapped.
+ * Modification:    result will be the top RETURN_RESULT_NUM of results that could possibly
+ *                  be the mapping location.
  */
-
+final_result searchFragment_fastq (string fragment, string* ref, ofstream * output_file,
+                            char* contig_name, string fragment_name, string fragment_qual);
 
 /*
  * Function:		Free the allocated memory.
