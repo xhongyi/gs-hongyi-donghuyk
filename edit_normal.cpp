@@ -87,11 +87,10 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		loadHash(file_hash);
 		cout << "Status : End load hash table" << endl;
 		ref_file.open(file_ref);
-				if (!ref_file.is_open()) {
-						cout << " Error File Open : " << file_ref << endl;
-						break;
-				}
-
+			if (!ref_file.is_open()) {
+					cout << " Error File Open : " << file_ref << endl;
+					break;
+			}
 		time_t start_time;
 		time(&start_time);
 		input_file.open(result_input_name.c_str());
@@ -175,28 +174,34 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		}
 		store_file << endl;
 		store_file << "---------------------------------------------" << endl;
-		store_file << "total_binary_num   : " << total_binary_num << endl;
-		store_file << "total_fragment_num : " << total_fragment_num1 << endl;
-		store_file << "total_edit_num	 : " << total_edit_num << endl;
-		store_file << "total_pass_num	 : " << total_pass_num << endl;
-		store_file << "Start_time		 : " << ctime(&start_time);
-		store_file << "End_time		   : " << ctime(&end_time);
-		store_file << "TIme Diff		  : " << difftime(end_time,start_time) << endl;
-		store_file << "Accumulated Time   : " << accumulate_time << endl;
+		store_file << "total_binary_num___: " << total_binary_num << endl;
+		store_file << "total_fragment_num_: " << total_fragment_num1 << endl;
+		store_file << "total_edit_num_____: " << total_edit_num << endl;
+		store_file << "total_pass_num_____: " << total_pass_num << endl;
+		store_file << "Start_time_________: " << ctime(&start_time);
+		store_file << "End_time___________: " << ctime(&end_time);
+		store_file << "TIme Diff__________: " << difftime(end_time,start_time) << endl;
+		store_file << "Accumulated Time___: " << accumulate_time << endl;
 		store_file << "---------------------------------------------" << endl;
 
 		cout << "---------------------------------------------" << endl;
-		cout << "total_binary_num   : " << total_binary_num << endl;
-		cout << "total_fragment_num : " << total_fragment_num1 << endl;
-		cout << "total_edit_num	 : " << total_edit_num << endl;
-		cout << "total_pass_num	 : " << total_pass_num << endl;
-		cout << "Start_time		 : " << ctime(&start_time);
-		cout << "End_time		   : " << ctime(&end_time);
-		cout << "TIme Diff		  : " << difftime(end_time,start_time) << endl;
-		cout << "Accumulated Time   : " << accumulate_time << endl;
+		cout << "total_binary_num___: " << total_binary_num << endl;
+		cout << "total_fragment_num_: " << total_fragment_num1 << endl;
+		cout << "total_edit_num_____: " << total_edit_num << endl;
+		cout << "total_pass_num_____: " << total_pass_num << endl;
+		cout << "Start_time_________: " << ctime(&start_time);
+		cout << "End_time___________: " << ctime(&end_time);
+		cout << "TIme Diff__________: " << difftime(end_time,start_time) << endl;
+		cout << "Accumulated Time___: " << accumulate_time << endl;
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
+		freeHash();
+		free(file_ref);
+		free(file_hash);
+		free(file_store);
 	}
 	cout << "Accumulated Time : " << accumulate_time << endl;
 	output_file.close();
+	free(file_contig);
+	free(file_output);
 }
