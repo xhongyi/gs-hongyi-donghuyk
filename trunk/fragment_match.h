@@ -81,7 +81,7 @@ final_result searchFragment_fastq (string fragment, string* ref, ofstream * outp
 /*
  * Function:		Free the allocated memory.
  */
-void freeMem();
+void freeHash();
 
 /*
  * Function:		
@@ -99,4 +99,10 @@ GPU_data binary_filtering_GPU_cost(string fragment);
  * Function: Get the result list without any filtering. Used in modeling original mrFAST
  */
 list<match_result> noFilterSearch(string fragment);
+
+/*
+ * Function: Updated for allowing N 
+ */
+bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input, int allowable_key_num);
+
 #endif /* FRAGMENT_MATCH_H_ */

@@ -8,6 +8,7 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	int total_number;
 	int index;
 	int data;
+	int dummy;
 	int coordinate_index = 0;
 	int max_coordinate_num = 2;
 	FILE * pFileR;
@@ -16,19 +17,19 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	if (pFileR == NULL) {
 		printf("Error Open File : %s\n", hash_table_name);
 	}
-	fscanf(pFileR, "%i", &total_number);
+	dummy = fscanf(pFileR, "%i", &total_number);
 	*index_db = (int*) malloc(sizeof(int) * INDEX_NUM);
 	*coordinate_db = (int*) malloc(sizeof(int) * total_number);
 
 	// Read index number & coordinate based on index number
 	for (int i = 0; i < INDEX_NUM; i++) {
-		fscanf(pFileR, "%i", &index);
+		dummy = fscanf(pFileR, "%i", &index);
 		(*index_db)[i] = coordinate_index;
 		(*coordinate_db)[coordinate_index] = index;
 		coordinate_index = coordinate_index + 1;
 		// Read coordinate
 		for (int j = 0; j < index; j++) {
-			fscanf(pFileR, "%i", &data);
+			dummy = fscanf(pFileR, "%i", &data);
 			(*coordinate_db)[coordinate_index] = data;
 			coordinate_index = coordinate_index + 1;
 		}
@@ -37,11 +38,12 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 }
 
 void hashDistribution(char * hash_table_name) {
-	int    total_number;
-	int    sum_number;
-	int    index;
-	int    data;
-	int    coordinate_index = 0;
+	int total_number;
+	int sum_number;
+	int index;
+	int data;
+	int dummy;
+	int coordinate_index = 0;
 	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+20);
 	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM*INDEX_NUM);
 	FILE * pFileR;
@@ -51,7 +53,7 @@ void hashDistribution(char * hash_table_name) {
 	pFileR = fopen (hash_table_name, "r");
 	sprintf(gen_distribution_file, "%s%s\0", hash_table_name, "_distribution");
 	pFileOut = fopen (gen_distribution_file, "w");
-	fscanf(pFileR, "%i", &total_number);
+	dummy = fscanf(pFileR, "%i", &total_number);
 	fprintf(pFileOut, "total_number : %i \n", total_number);
 
 	// Initialize index_num preser area
@@ -60,12 +62,12 @@ void hashDistribution(char * hash_table_name) {
 	}
 	// Read index number & coordinate based on index number
 	for (int i = 0 ; i < INDEX_NUM ; i++) {
-		fscanf(pFileR, "%i", &index);
+		dummy = fscanf(pFileR, "%i", &index);
 		index_num[index] = index_num[index] + 1;
 		sum_number = sum_number + 1;
 	// Read coordinate      
 		for (int j = 0; j < index; j++){
-			fscanf(pFileR, "%i", &data);
+			dummy = fscanf(pFileR, "%i", &data);
 			sum_number = sum_number + 1;
 		}
 	}

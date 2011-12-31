@@ -33,6 +33,8 @@ int hashVal(string key) {
 		case 'T':
 			bp_val = 3;
 			break;
+		case 'N':
+			return -1;
 		default:
 			cerr << "Wrong bp: " << key[i];
 			exit(1);
