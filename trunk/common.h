@@ -14,10 +14,10 @@
 #define RELEVENCE_NUM 5
 #define REF_TABLE_SIZE 	100	// # of reference seqnence within one line.
 #define MAX_CONTIG_NAME 400	// # of character to make contig name string.
-#define MAX_CONTIG_FILE	22	// # of contig.
-#define READ_LENGTH		108		// # of read lenght from machine
-#define FRAGMENT_LENGTH		108		// # of read lenght from machine
-#define KEY_NUMBER		READ_LENGTH/KEY_LENGTH
+#define MAX_CONTIG_FILE	25	// # of contig.
+#define MAX_FRAGMENT_LENGTH 200
+//#define FRAGMENT_LENGTH		108		// # of read lenght from machine
+//#define KEY_NUMBER		FRAGMENT_LENGTH/KEY_LENGTH
 #define PREFILTER_SIZE		100
 #define READ_SIZE		1000000
 #define SKIP_BINARY_SEARCH	16777216
@@ -31,6 +31,11 @@ using namespace std;
 extern int max_indel_num;
 extern int max_diff_num;
 extern bool select_cheapest;
+extern int fragment_length_;
+extern int key_number_;
+
+void set_fragment_length(int num);
+void set_key_number(int num);
 
 void set_select_cheapest(bool choose); 
 

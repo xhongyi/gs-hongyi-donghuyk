@@ -13,7 +13,6 @@
 #include "common.h"
 
 int main(int argc, char* argv[]) {
-
 	char * file_ref		= (char*) malloc(sizeof(char)*20);	
 	char * file_ref2	= (char*) malloc(sizeof(char)*20);	
 	char * file_hash	= (char*) malloc(sizeof(char)*20);

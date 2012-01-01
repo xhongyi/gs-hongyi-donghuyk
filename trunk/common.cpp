@@ -11,6 +11,8 @@
 
 int max_indel_num = 0;
 int max_diff_num = 0;
+int fragment_length_ = 108;
+int key_number_ = 9;
 bool select_cheapest = true;
 
 int hashVal(string key) {
@@ -62,6 +64,13 @@ void set_select_cheapest(bool choose) {
 	select_cheapest = choose;
 }
 
+void set_fragment_length(int num) {
+	fragment_length_ = num;
+}
+
+void set_key_number(int num) {
+	key_number_ = num;
+}
 /*
 int hashIdx(string key) {
 	int bp_val = 0;

@@ -17,8 +17,6 @@
 #include "correctness_checker.h"
 #include "edit_distance.h"
 
-#define FRAGMENT_LENGTH 108
-
 using namespace std;
 
 void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name);
@@ -33,7 +31,7 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 	store_file.open(output_file_name.c_str()); 
 	list<match_result> first_filter_result;
 	list<match_result> cheap_filter_result;
-        string testee(FRAGMENT_LENGTH, 'A');
+        string testee(fragment_length_, 'A');
 	int gen_coord = 0;
 	char test_char;
 	cout << "Status : Start load hash table" << endl;
@@ -45,7 +43,7 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 		gen_coord = gen_coord + 1;
         } while (test_char == 'N');
         testee[0] = test_char;
-        for (int i = 1; i < FRAGMENT_LENGTH; i++) {
+        for (int i = 1; i < fragment_length_; i++) {
                 ref_file >> test_char;
 		gen_coord = gen_coord + 1;
 		if (test_char == 'N') {
@@ -60,7 +58,7 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 		ref_file >> test_char;
 		gen_coord = gen_coord + 1;
 		if (test_char == 'N') {
-	        	for (int i = 0; i < FRAGMENT_LENGTH; i++) {
+	        	for (int i = 0; i < fragment_length_; i++) {
        		         	ref_file >> test_char;
 				gen_coord = gen_coord + 1;
 				if (test_char == 'N'){ 
@@ -74,7 +72,7 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 				if (!ref_file.good()) break;
        		 	}
 		} else {
-			testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
+			testee = testee.substr(1, fragment_length_ - 1) + test_char;
 		}
 
 		set_select_cheapest(false);
@@ -82,12 +80,12 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 		set_select_cheapest(true);
 		cheap_filter_result = searchFragment(testee);
 
-		cout << "testee_coordinate:"  << gen_coord - READ_LENGTH << "  "<< endl;
+		cout << "testee_coordinate:"  << gen_coord - fragment_length_ << "  "<< endl;
 		cout << "testee_read      : " << testee << endl;
 
 		for(list<match_result>::iterator it_result = first_filter_result.begin(); it_result != first_filter_result.end(); ++it_result) {
-			string ref_str(FRAGMENT_LENGTH, 'A'); 
-			ref_str =  getRefSeq((*it_result).coordinate, FRAGMENT_LENGTH, ref2_file_name);
+			string ref_str(fragment_length_, 'A'); 
+			ref_str =  getRefSeq((*it_result).coordinate, fragment_length_, ref2_file_name);
 			ED_result edit_result = editDistanceCal(ref_str, testee);
 			if (edit_result.correct) {
 				it_result->correct = true;
@@ -101,8 +99,8 @@ void correctness_checker(string hash_file_name, string ref_file_name, string ref
 		}
 		cout << "--------" << endl;
 		for(list<match_result>::iterator it_result = cheap_filter_result.begin(); it_result != cheap_filter_result.end(); ++it_result) {
-			string ref_str(FRAGMENT_LENGTH, 'A'); 
-			ref_str =  getRefSeq((*it_result).coordinate, FRAGMENT_LENGTH, ref2_file_name);
+			string ref_str(fragment_length_, 'A'); 
+			ref_str =  getRefSeq((*it_result).coordinate, fragment_length_, ref2_file_name);
 			ED_result edit_result = editDistanceCal(ref_str, testee);
 			if (edit_result.correct) {
 				it_result->correct = true;

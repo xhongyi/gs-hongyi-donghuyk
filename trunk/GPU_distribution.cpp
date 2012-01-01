@@ -8,8 +8,6 @@
 #include "fragment_match.h"
 #include "prefil_distribution.h"
 
-#define FRAGMENT_LENGTH 108
-
 using namespace std;
 
 void prefil_distribution(string hash_file_name, string ref_file_name,
@@ -27,7 +25,7 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 		AF_distribution[i] = 0;
 		ED_distribution[i] = 0;
 	}
-	string testee(FRAGMENT_LENGTH, 'A');
+	string testee(fragment_length_, 'A');
 	int monitor_counter = 0; // for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
 	char test_char;
@@ -38,7 +36,7 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 		ref_file >> test_char;
 	} while (test_char == 'N');
 	testee[0] = test_char;
-	for (int i = 1; i < FRAGMENT_LENGTH; i++) {
+	for (int i = 1; i < fragment_length_; i++) {
 		ref_file >> test_char;
 		if (test_char == 'N') {
 			i = 0;
@@ -50,7 +48,7 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 		//cout << "string: "<< testee << endl;
 		ref_file >> test_char;
 		if (test_char == 'N') {
-			for (int i = 0; i < FRAGMENT_LENGTH; i++) {
+			for (int i = 0; i < fragment_length_; i++) {
 				ref_file >> test_char;
 				if (test_char == 'N') {
 					i = 0;
@@ -63,7 +61,7 @@ void prefil_distribution(string hash_file_name, string ref_file_name,
 					break;
 			}
 		} else {
-			testee = testee.substr(1, FRAGMENT_LENGTH - 1) + test_char;
+			testee = testee.substr(1, fragment_length_ - 1) + test_char;
 		}
 
 		result = binary_filtering_GPU_cost(testee);

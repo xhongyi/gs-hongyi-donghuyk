@@ -178,25 +178,28 @@ void hashFileWriter(string hash_name) {
         float monitor_counter2 = 0;       // for operation monitoring
         ofstream store_file;
         store_file.open(hash_name.c_str());
-        //store_file << "**Debug: hash_table_counter: " << hash_table_counter[i] << endl;
-        //store_file << "**Debug: 1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ): " << (1 << (2 * (KEY_LENGTH - HASH_FILE_POW) ) ) << endl;
         store_file << hash_table_counter + INDEX_NUM << endl;
+		//cout << "total hash_counter: " << hash_table_counter << endl;
+		//cout << "total INDEX_NUM   : " << INDEX_NUM << endl;
+	
         for (int j = 0; j < INDEX_NUM; j++) {
                 int entry_size = hash_table[j].size();
                 store_file << entry_size << endl;
-                monitor_counter  = monitor_counter  +1;  
-                //cout << "hash writer_entry_size: " << entry_size << endl;
+                monitor_counter  = monitor_counter  + 1;  
                 while (!hash_table[j].empty()) {
                         store_file << hash_table[j].back() << " ";
-                	//cout << "hash writer_coordinate: " << hash_table[j].back() << endl;
                         hash_table[j].pop_back();
-                	monitor_counter  = monitor_counter  +1;  
+                	monitor_counter  = monitor_counter  + 1;  
                 	if (monitor_counter >= (hash_table_counter + INDEX_NUM)/1000) {
-                		monitor_counter2 = monitor_counter2 +0.1;
-                        	//cout << "hash writer: %2.1f" << monitor_counter2 <<"%"<< endl;
+                		monitor_counter2 = monitor_counter2 + 0.1;
                         	fprintf(stdout, "hash writer: %2.1f%% \n", monitor_counter2); 
                         	monitor_counter = 0;
                 	}
+                }
+                if (monitor_counter >= (hash_table_counter + INDEX_NUM)/1000) {
+                	monitor_counter2 = monitor_counter2 + 0.1;
+                       	fprintf(stdout, "hash writer: %2.1f%% \n", monitor_counter2); 
+                       	monitor_counter = 0;
                 }
                 if (entry_size != 0)
                         store_file << endl;

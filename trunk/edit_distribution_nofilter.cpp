@@ -2,7 +2,7 @@
  * test_search.cpp
  *
  *  Created on: Oct 19, 2011
- *      Author: mac
+ *	  Author: mac
  */
 #include <iostream>
 #include <deque>
@@ -17,8 +17,6 @@
 #include "fragment_match.h"
 #include "edit_distance.h"
 #include "edit_distribution_nofilter.h"
-
-#define FRAGMENT_LENGTH 108
 
 using namespace std;
 
@@ -36,7 +34,7 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 	map<int, int> correct_count;
 	distribution.clear();
 	correct_count.clear();
-	string testee(FRAGMENT_LENGTH, 'A');
+	string testee(fragment_length_, 'A');
 	int monitor_counter = 0; // for operation monitoring
 	int correct_counter = 0; // for operation monitoring
 	int coor_list_counter = 0;
@@ -85,7 +83,7 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		input_file.open(result_input_name.c_str());
 		input_file >> testee;
 		do {
-			key_struct keys_input[KEY_NUMBER];
+			key_struct * keys_input = (key_struct*) malloc(key_number_*sizeof(keys_input));
 			for (int i = 0; i < max_diff_num + 1; i++) {
 				string key = testee.substr(KEY_LENGTH * i, KEY_LENGTH);
 				int key_hash = hashVal(key);
@@ -104,13 +102,13 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 								+ keys_input[k].key_entry_size; i++) {
 					match_result temp;
 					temp.coordinate = coordinate[i];
-					string ref_str(FRAGMENT_LENGTH, 'A');
-					ref_str = ref.substr(coordinate[i], FRAGMENT_LENGTH);
+					string ref_str(fragment_length_, 'A');
+					ref_str = ref.substr(coordinate[i], fragment_length_);
 					////////////////////Just For Testing
-					 char test_char[READ_LENGTH + 1];
-					 char ref_char[READ_LENGTH + 1];
-					 strcpy(test_char, testee.c_str());
-					 strcpy(ref_char, ref_str.c_str());
+					char* test_char = (char*) ((fragment_length_ + 1)*sizeof(char));
+					char* ref_char  = (char*) ((fragment_length_ + 1)*sizeof(char));
+					strcpy(test_char, testee.c_str());
+					strcpy(ref_char, ref_str.c_str());
 					 /////////////////////Testing END
 					ED_result edit_result = editDistanceCal(test_char,
 						ref_char, 0);
@@ -118,8 +116,11 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 					if (edit_result.correct) {
 						correct_counter = correct_counter + 1;
 					}
+					free(test_char);
+					free(ref_char);
 				}
 			}
+			free(keys_input);
 
 			distribution[coor_list_counter]++;
 			correct_count[correct_counter]++;
@@ -171,22 +172,22 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		store_file << endl;
 		store_file << "---------------------------------------------" << endl;
 		store_file << "total_fragment_num : " << total_fragment_num1 << endl;
-		store_file << "total_edit_num     : " << total_edit_num << endl;
-		store_file << "total_pass_num     : " << total_pass_num << endl;
-		store_file << "Start_time         : " << ctime(&start_time);
-		store_file << "End_time	          : " << ctime(&end_time);
-		store_file << "TIme Diff          : " << difftime(end_time, start_time)
+		store_file << "total_edit_num	 : " << total_edit_num << endl;
+		store_file << "total_pass_num	 : " << total_pass_num << endl;
+		store_file << "Start_time		 : " << ctime(&start_time);
+		store_file << "End_time			  : " << ctime(&end_time);
+		store_file << "TIme Diff		  : " << difftime(end_time, start_time)
 				<< endl;
 		store_file << "Accumulated Time   : " << accumulate_time << endl;
 		store_file << "---------------------------------------------" << endl;
 
 		cout << "---------------------------------------------" << endl;
 		cout << "total_fragment_num : " << total_fragment_num1 << endl;
-		cout << "total_edit_num:    : " << total_edit_num << endl;
-		cout << "total_pass_num     : " << total_pass_num << endl;
-		cout << "Start_time         : " << ctime(&start_time);
-		cout << "End_time           : " << ctime(&end_time);
-		cout << "TIme Diff          : " << difftime(end_time, start_time)
+		cout << "total_edit_num:	: " << total_edit_num << endl;
+		cout << "total_pass_num	 : " << total_pass_num << endl;
+		cout << "Start_time		 : " << ctime(&start_time);
+		cout << "End_time		   : " << ctime(&end_time);
+		cout << "TIme Diff		  : " << difftime(end_time, start_time)
 				<< endl;
 		cout << "Accumulated Time   : " << accumulate_time << endl;
 		cout << "---------------------------------------------" << endl;

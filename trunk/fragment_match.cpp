@@ -74,23 +74,23 @@ bool searchPrevious(int coor_value, int start_key_entry,
 
 bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {
 	if (select_cheapest == false) {
-		for (int i = 0; i < KEY_NUMBER; i++) {
+		for (int i = 0; i < key_number_; i++) {
 			sort_result[i].key_number = sort_input[i].key_number;
 			sort_result[i].key_entry = sort_input[i].key_entry;
 			sort_result[i].key_entry_size = sort_input[i].key_entry_size;
 		}
 		return true;
 	}
-	for (int i = 0; i < KEY_NUMBER; i++) {
-		for (int j = 0; j < KEY_NUMBER; j++) {
+	for (int i = 0; i < key_number_; i++) {
+		for (int j = 0; j < key_number_; j++) {
 			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
 				sort_input[i].order = sort_input[i].order + 1;
 			}
 		}
 	}
 	int loop_index = 0;
-	for (int i = 0; i < KEY_NUMBER; i++) {
-		for (int j = 0; j < KEY_NUMBER; j++) {
+	for (int i = 0; i < key_number_; i++) {
+		for (int j = 0; j < key_number_; j++) {
 			if (sort_input[j].order == i) {
 				sort_result[loop_index].key_entry = sort_input[j].key_entry;
 				sort_result[loop_index].key_number = sort_input[j].key_number;
@@ -139,8 +139,9 @@ bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input, int av
 }
 
 final_result searchFragment(string fragment, string* ref) {
-	key_struct sort_input[KEY_NUMBER];
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	key_struct* keys_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	for (int i = 0; i < key_number_; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
 		int key_hash = hashVal(key);
 		int key_entry = hash_table[key_hash];
@@ -151,7 +152,6 @@ final_result searchFragment(string fragment, string* ref) {
 		sort_input[i].key_entry_size = key_entry_size;
 	}
 
-	key_struct keys_input[KEY_NUMBER];
 	sortPrefilter(keys_input, sort_input);
 	previous_result.size = 0;
 	final_result return_result;
@@ -167,8 +167,8 @@ final_result searchFragment(string fragment, string* ref) {
 			if (!searchPrevious(coor_value, keys_input[k].key_number,
 					previous_result)) {
 				return_result.total_binary_search++;
-				for (int j = 0; j < KEY_NUMBER; j++) {
-					if (j - diff_num > KEY_NUMBER - max_diff_num)
+				for (int j = 0; j < key_number_; j++) {
+					if (j - diff_num > key_number_ - max_diff_num)
 						break;
 					if (!searchKey(
 							coor_value + (keys_input[j].key_number
@@ -187,14 +187,14 @@ final_result searchFragment(string fragment, string* ref) {
 						previous_result.size++;
 					}
 					return_result.total_edit_perform++;
-					string ref_str(FRAGMENT_LENGTH, 'A');
+					string ref_str(fragment_length_, 'A');
 					ref_str = (*ref).substr(
 							coor_value - keys_input[k].key_number * KEY_LENGTH,
-							FRAGMENT_LENGTH); //start_coor;
+							fragment_length_); //start_coor;
 
 					/////////////////////Just For Testing
-					char test_char[READ_LENGTH + 1];
-					char ref_char[READ_LENGTH + 1];
+					char* test_char = (char*) malloc((fragment_length_ + 1)*sizeof(char));
+					char* ref_char  = (char*) malloc((fragment_length_ + 1)*sizeof(char));
 					strcpy(test_char, fragment.c_str());
 					strcpy(ref_char, ref_str.c_str());
 					/*////////////////////Testing END
@@ -213,18 +213,23 @@ final_result searchFragment(string fragment, string* ref) {
 						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
+					free(test_char);
+					free(ref_char);
 				}
 			}
 		}
 	}
+	free(sort_input);
+	free(keys_input);
 	return return_result;
 }
 
 final_result searchFragment_fastq(string fragment, string* ref, ofstream * output_file, 
 							char* contig_name, string fragment_name, string fragment_qual) {
-	key_struct sort_input[KEY_NUMBER];
+	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	key_struct* keys_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
 	int available_key_num = 0;
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	for (int i = 0; i < key_number_; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
 		int key_hash = hashVal(key);
 		if (key_hash >= 0) {									// check if there is 'N'
@@ -237,8 +242,8 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 			available_key_num++;
 		}									
 	}
-	int n_num = KEY_NUMBER - available_key_num; 
-
+	int n_num = key_number_ - available_key_num; 
+/*
 	// Checking sorting input with N
 	cout << "number of N  : " << n_num << endl;
 	cout << "available key: " << available_key_num << endl;
@@ -250,7 +255,7 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 				<< endl;
 	}
 	cout << endl;
-
+*/
 	previous_result.size = 0;
 	final_result return_result;
 	return_result.total_binary_search = 0;
@@ -262,9 +267,8 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 	}
 	int potential_diff_num = max_diff_num - n_num;
 
-	key_struct keys_input[KEY_NUMBER];
 	sortPrefilterAllowN(keys_input, sort_input, available_key_num); // DHL
-
+/*
 	// Checking sorting input with N
 	cout << "number of N  : " << n_num << endl;
 	cout << "available key: " << available_key_num << endl;
@@ -277,18 +281,20 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 	}
 	cout << endl;
 	// ---------- Allow N ---------------
-	// KEY_NUMBER -> available_key_num
+	// key_number_ -> available_key_num
 	// max_diff_num -> potential_diff_num
 	// ----------------------------------
-
+*/
 	int operating_key_num = max_diff_num + 1 - n_num;
 	if (available_key_num < max_diff_num + 1 - n_num){
 		operating_key_num = available_key_num;
 	}
-
+/*
 	// Checking operating key with N
 	cout << "operating key: " << operating_key_num << endl;
-
+	cout << "fragment_leng: " << fragment_length_ << endl;
+	cout << "key_number   : " << key_number_ << endl;
+*/
 	for (int k = 0; k < operating_key_num; k++) {
 		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
 				+ keys_input[k].key_entry_size; i++) {
@@ -299,7 +305,7 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 
 				//-------------Binary Search---------------------------------------------------
 				for (int j = 0; j < available_key_num; j++) {
-					if (j - diff_num - n_num > KEY_NUMBER - max_diff_num)
+					if (j - diff_num - n_num > key_number_ - max_diff_num)
 						break;
 					if (!searchKey( coor_value + (keys_input[j].key_number - keys_input[k].key_number) * KEY_LENGTH,
 							keys_input[j].key_entry, keys_input[j].key_entry_size)) {
@@ -317,24 +323,44 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 						previous_result.size++;
 					}
 					return_result.total_edit_perform++;
-					string ref_str(FRAGMENT_LENGTH, 'A');
-					ref_str = (*ref).substr( coor_value - keys_input[k].key_number * KEY_LENGTH, FRAGMENT_LENGTH); 
-
+					string ref_str(fragment_length_, 'A');
+/*
+					cout << "--------------------------------" << endl;
+					cout << "Target coor     :" << coor_value - keys_input[k].key_number * KEY_LENGTH << endl;
+					cout << "coor_value      :" << coor_value <<endl;
+					cout << "k				 :" << k << endl;
+					cout << "key_number 	 :" << keys_input[k].key_number << endl;
+					cout << "KEY_LENGTH 	 :" << KEY_LENGTH << endl;
+					cout << "--------------------------------" << endl;
+					cout << "fragment_length_:" << fragment_length_ << endl;
+*/
+					if (coor_value - keys_input[k].key_number * KEY_LENGTH < 0) {
+						int tmp_num = coor_value - keys_input[k].key_number * KEY_LENGTH;
+						ref_str.clear();
+						for (int n = tmp_num; n < 0; n++){
+							ref_str += "N"; 
+						}
+						ref_str += (*ref).substr(0, fragment_length_+tmp_num); 
+					}
+					else {
+						ref_str = (*ref).substr( coor_value - keys_input[k].key_number * KEY_LENGTH, 
+												fragment_length_); 
+					}
 					/////////////////////Just For Testing
-					char test_char[READ_LENGTH + 1];
-					char ref_char[READ_LENGTH + 1];
+					char* test_char = (char*) malloc((fragment_length_ + 1)*sizeof(char));
+					char* ref_char  = (char*) malloc((fragment_length_ + 1)*sizeof(char));
 					strcpy(test_char, fragment.c_str());
 					strcpy(ref_char, ref_str.c_str());
 					////////////////////Testing END
 
 					ED_result edit_result = editDistanceCal(test_char, ref_char, keys_input[k].key_number);
-
+/*
 					// Checking ED_result
-					cout << "ref__read: " << ref_char << endl;
 					cout << "test_read: " << test_char << endl;
+					cout << "ref__read: " << ref_char << endl;
 					cout << "key_num__: " << keys_input[k].key_number << endl;
 					cout << "correct  : " << edit_result.correct << endl;
-
+*/
 					//---------------------------------------------------------------------------------
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
@@ -360,8 +386,8 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 								err_coor = edit_result.error[err_num].location + 1;
 							}
 						}
-						if (err_coor < FRAGMENT_LENGTH) {
-							(*output_file) << FRAGMENT_LENGTH - err_coor << "M	";
+						if (err_coor < fragment_length_) {
+							(*output_file) << fragment_length_ - err_coor << "M	";
 						}
 						(*output_file) << "*	0	0	"
 									<< test_char << "	"
@@ -387,8 +413,8 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 								err_coor = edit_result.error[err_num].location + 1;
 							}
 						} 
-						if (err_coor < FRAGMENT_LENGTH) {
-							(*output_file) << FRAGMENT_LENGTH - err_coor;
+						if (err_coor < fragment_length_) {
+							(*output_file) << fragment_length_ - err_coor;
 						}
 						(*output_file) << endl;
 					//---------------------------------------------------------------------------------
@@ -401,18 +427,23 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
+					free(test_char);
+					free(ref_char);
 				}
 			}
 		}
 	}
+	free(sort_input);
+	free(keys_input);
 	return return_result;
 }
 
 int binary_filtering_cost(string fragment) {
 	int result = 0;
 	int status = 0;
-	key_struct sort_input[KEY_NUMBER];
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	key_struct* keys_input = (key_struct*) malloc((max_diff_num+1)*sizeof(key_struct));
+	for (int i = 0; i < key_number_; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
 		int key_hash = hashVal(key);
 		int key_entry = hash_table[key_hash];
@@ -423,7 +454,6 @@ int binary_filtering_cost(string fragment) {
 		sort_input[i].key_entry_size = key_entry_size;
 	}
 
-	key_struct keys_input[max_diff_num + 1];
 	sortPrefilter(keys_input, sort_input);
 
 	if (select_cheapest == true)
@@ -439,13 +469,16 @@ int binary_filtering_cost(string fragment) {
 	for (int k = 0; k < max_diff_num + 1; k++) {
 		result += keys_input[k].key_entry_size;
 	}
+	free(sort_input);
+	free(keys_input);
 	return result;
 }
 
 GPU_data binary_filtering_GPU_cost(string fragment) {
 	GPU_data result = {0, 0};
-	key_struct sort_input[KEY_NUMBER];
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	key_struct* keys_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	for (int i = 0; i < key_number_; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
 		int key_hash = hashVal(key);
 		int key_entry = hash_table[key_hash];
@@ -456,7 +489,6 @@ GPU_data binary_filtering_GPU_cost(string fragment) {
 		sort_input[i].key_entry_size = key_entry_size;
 	}
 
-	key_struct keys_input[KEY_NUMBER];
 	sortPrefilter(keys_input, sort_input);
 	previous_result.size = 0;
 	final_result return_result;
@@ -472,8 +504,8 @@ GPU_data binary_filtering_GPU_cost(string fragment) {
 			if (!searchPrevious(coor_value, keys_input[k].key_number,
 					previous_result)) {
 				return_result.total_binary_search++;
-				for (int j = 0; j < KEY_NUMBER; j++) {
-					if (j - diff_num > KEY_NUMBER - max_diff_num)
+				for (int j = 0; j < key_number_; j++) {
+					if (j - diff_num > key_number_ - max_diff_num)
 						break;
 					if (!searchKey(coor_value + (keys_input[j].key_number
 							- keys_input[k].key_number) * KEY_LENGTH,
@@ -494,14 +526,16 @@ GPU_data binary_filtering_GPU_cost(string fragment) {
 	for (int k = 0; k < max_diff_num + 1; k++) {
 		result.AF_count += keys_input[k].key_entry_size;
 	}
-
+	free(sort_input);
+	free(keys_input);
 	return result;
 }
 
 list<match_result> noFilterSearch(string fragment) {
 	list<match_result> result;
-	key_struct sort_input[KEY_NUMBER];
-	for (int i = 0; i < KEY_NUMBER; i++) {
+	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
+	key_struct* keys_input = (key_struct*) malloc((max_diff_num+1)*sizeof(key_struct));
+	for (int i = 0; i < key_number_; i++) {
 		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
 		int key_hash = hashVal(key);
 		int key_entry = hash_table[key_hash];
@@ -512,7 +546,6 @@ list<match_result> noFilterSearch(string fragment) {
 		sort_input[i].key_entry_size = key_entry_size;
 	}
 
-	key_struct keys_input[max_diff_num + 1];
 	sortPrefilter(keys_input, sort_input);
 
 	for (int k = 0; k < max_diff_num + 1; k++) {
@@ -525,6 +558,8 @@ list<match_result> noFilterSearch(string fragment) {
 			result.push_back(temp);
 		}
 	}
+	free(sort_input);
+	free(keys_input);
 	return result;
 }
 
