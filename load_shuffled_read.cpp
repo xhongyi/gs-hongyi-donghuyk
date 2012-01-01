@@ -18,7 +18,7 @@ void loadTestRead(string test_file_name) {
 	input_file.open(test_file_name.c_str());
 	int size = 0;
 	char test_char;
-	string temp(FRAGMENT_LENGTH, 'A');
+	string temp(fragment_length_, 'A');
 	//fragment set before shuffle.
 	deque<string> unshuffled_set;
 
@@ -29,7 +29,7 @@ void loadTestRead(string test_file_name) {
 	while (test_char == 'N');
 
 	temp[0] = test_char;
-	for (int i = 1; i < FRAGMENT_LENGTH; i++) {
+	for (int i = 1; i < fragment_length_; i++) {
 		input_file >> test_char;
 		if (test_char == 'N') {
 			i = 0;
@@ -45,7 +45,7 @@ void loadTestRead(string test_file_name) {
 			break;
 		input_file >> test_char;
 		if (test_char == 'N') {
-			for (int i = 0; i < FRAGMENT_LENGTH; i++) {
+			for (int i = 0; i < fragment_length_; i++) {
 				input_file >> test_char;
 				if (test_char == 'N') {
 					i = 0;
@@ -58,7 +58,7 @@ void loadTestRead(string test_file_name) {
 					break;
 			}
 		} else {
-			temp = temp.substr(1, FRAGMENT_LENGTH - 1) + test_char;
+			temp = temp.substr(1, fragment_length_ - 1) + test_char;
 		}
 		size++;
 		unshuffled_set.push_back(temp);

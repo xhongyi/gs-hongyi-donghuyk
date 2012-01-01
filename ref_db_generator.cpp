@@ -2,7 +2,6 @@
 #include <iostream>
 #include "ref_db_generator.h"
 
-//void refGenerator(char * gen_file_name, char * ref_file, int REF_TABLE_SIZE) {
 void refGenerator(char * gen_file_name, char * ref_file) {
  	char * mystring  = (char*) malloc(REF_TABLE_SIZE);
  	char * newstring = (char*) malloc(REF_TABLE_SIZE+1);
@@ -117,9 +116,8 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 	free (newstring);
 }
 
-//string getRefSeq(int coordinate, int size, int REF_TABLE_SIZE,  string ref_filename) {
 string getRefSeq(int coordinate, int size,  string ref_filename) {
-	string result_string(READ_LENGTH, 'A');
+	string result_string(fragment_length_, 'A');
  	FILE * pFileS;
 	char * search_string;
 	int  size_opt;

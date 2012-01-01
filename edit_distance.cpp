@@ -71,7 +71,7 @@
  */
 
 struct ED_path {
-	int path_cost[READ_LENGTH + 1];
+	int path_cost[MAX_FRAGMENT_LENGTH + 1];
 	int front_idx;
 };
 
@@ -89,7 +89,7 @@ void allocatePath() {
 // initializePath only fills the path elements now.
 void initializePath() {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++) {
-		for (int j = 0; j <= READ_LENGTH; j++) {
+		for (int j = 0; j <= fragment_length_; j++) {
 			path[i].path_cost[j] = _UN_FILLED_;
 		}
 	}
@@ -235,12 +235,12 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 		while (!ED_finished) {
 			//cout << "lane_front_idx: " << path[cur_lane].front_idx << endl;
 			//Conservative test, speed up common case
-			if (path[cur_lane].front_idx >= READ_LENGTH - max_indel_num) {
+			if (path[cur_lane].front_idx >= fragment_length_ - max_indel_num) {
 				//Test if it's the last element
 				if ((cur_lane <= main_lane && path[cur_lane].front_idx
-						== READ_LENGTH) //Insertion lane
+						== fragment_length_) //Insertion lane
 						|| (cur_lane > main_lane && path[cur_lane].front_idx //Deletion Lane
-								== READ_LENGTH + main_lane - cur_lane)) {
+								== fragment_length_ + main_lane - cur_lane)) {
 					ED_finished = true;
 					result.correct = true;
 					break;
@@ -290,7 +290,7 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 	else { //If pass the test, trace back
 
 		char temp_result[30]; //Temp string. Used for appending.
-		int cur_idx = (cur_lane <= main_lane) ? READ_LENGTH : READ_LENGTH
+		int cur_idx = (cur_lane <= main_lane) ? fragment_length_ : fragment_length_
 				+ main_lane - cur_lane;
 
 		result.diff_num = path[cur_lane].path_cost[cur_idx];

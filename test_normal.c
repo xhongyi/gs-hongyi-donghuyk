@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
 		set_max_diff_num(3);
 		fprintf(stdout,"Max indel & diff : 3\n");
 	}
+	set_fragment_length(101);
+	set_key_number(fragment_length_/KEY_LENGTH);
 	char * file_ref	= (char*) malloc(sizeof(char)*50);	
 	char * file_input	= (char*) malloc(sizeof(char)*50);	
 	char * file_hash	= (char*) malloc(sizeof(char)*50);

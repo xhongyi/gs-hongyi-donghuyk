@@ -13,8 +13,8 @@
 using namespace std;
 
 int main() {
-	char test_read[READ_LENGTH + 1];
-	char ref_read[READ_LENGTH + 1];
+	char test_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
+	char ref_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
 	set_max_indel_num(3);
 	set_max_diff_num(3);
 	allocatePath();
@@ -51,5 +51,7 @@ int main() {
 	 cout << "Not correct" << endl;
 	 }
 	 */
+	free(test_read);
+	free(ref_read);
 	return 0;
 }

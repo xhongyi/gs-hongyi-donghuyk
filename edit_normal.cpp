@@ -20,8 +20,6 @@
 #include "edit_distribution.h"
 #include "fragment_match.h"
 
-#define FRAGMENT_LENGTH 108
-
 using namespace std;
 
 void edit_normal(string hash_file_name, string ref_file_name,
@@ -34,10 +32,10 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	ofstream output_file;
 
 	final_result filter_result;
-	string testee_name(FRAGMENT_LENGTH, 'A');
-	string testee_seq(FRAGMENT_LENGTH, 'A');
-	string testee_dummy(FRAGMENT_LENGTH, 'A');
-	string testee_qual(FRAGMENT_LENGTH, 'A');
+	string testee_name(fragment_length_, 'A');
+	string testee_seq(fragment_length_, 'A');
+	string testee_dummy(fragment_length_, 'A');
+	string testee_qual(fragment_length_, 'A');
 	int monitor_counter = 0; 		// for operation monitoring
 	int correct_counter = 0; 		// for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
@@ -61,7 +59,7 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	output_file.open(file_output);
 
 // get fragment from reference file
-	for (int j = 0 ; j < 1 ; j++) {
+	for (int j = MAX_CONTIG_FILE - 1 ; j < MAX_CONTIG_FILE ; j++) {
 //	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
 		map<int, int> binary_search;
 		map<int, int> distribution;

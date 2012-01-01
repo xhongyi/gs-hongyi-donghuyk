@@ -20,8 +20,6 @@
 #include "edit_distribution.h"
 #include "fragment_match.h"
 
-#define FRAGMENT_LENGTH 108
-
 using namespace std;
 
 void edit_distribution(string hash_file_name, string ref_file_name,
@@ -34,7 +32,7 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 	ofstream store_file;
 
 	final_result filter_result;
-	string testee(FRAGMENT_LENGTH, 'A');
+	string testee(fragment_length_, 'A');
 	int monitor_counter = 0; 	// for operation monitoring
 	int correct_counter = 0; 	// for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
