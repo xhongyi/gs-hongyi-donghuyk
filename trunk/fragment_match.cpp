@@ -207,10 +207,12 @@ final_result searchFragment(string fragment, string* ref) {
 
 					if (edit_result.correct) {
 						return_result.total_correct_num++;
-						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "ref_read      : " << ref_str << "  coordinate: "
+						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: correct " << endl;
 					} else {
-						//cout << "ref_read      : " << ref_str << "  coordinate: "<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
+						//cout << "ref_read      : " << ref_str << "  coordinate: "
+						// 		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
 						//cout << "  result: not correct" <<endl;
 					}
 					free(test_char);
@@ -362,13 +364,20 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 					cout << "correct  : " << edit_result.correct << endl;
 */
 					//---------------------------------------------------------------------------------
-					if (edit_result.correct) {
+					if (edit_result.correct && print_detail) {
+						//(*output_file) << "test_read: " << test_char << endl;
+						//(*output_file) << "ref__read: " << ref_char << endl;
 						return_result.total_correct_num++;
-						(*output_file) << fragment_name << "	"
-									<< 0 << "	"
-									<< contig_name << "	"
-									<< coor_value - keys_input[k].key_number * KEY_LENGTH << "	"
-									<< 255 << "	";
+						(*output_file) << fragment_name << "	";
+						if (reverse_mode == false) {
+							(*output_file)	<< 0 << "	";
+						}
+						else {
+							(*output_file)	<< 16 << "	";
+						}
+						(*output_file)	<< contig_name << "	";
+						(*output_file)	<< coor_value - keys_input[k].key_number * KEY_LENGTH + 1 << "	";
+						(*output_file)	<< 255 << "	";
 						int err_coor = 0;
 						for (int err_num = 0; err_num < edit_result.diff_num; err_num++){
 							if (edit_result.error[err_num].diff == INSERTION) {
@@ -418,6 +427,11 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 						}
 						(*output_file) << endl;
 					//---------------------------------------------------------------------------------
+						//for (int err_num = 0; err_num < edit_result.diff_num; err_num++){
+						//(*output_file) << "DEBUG: " << edit_result.error[err_num].diff << " " 
+						//							<< edit_result.error[err_num].location << " "
+						//							<< edit_result.error[err_num].diff_char << endl;
+						//}
 
 						//cout << "ref_read      : " << ref_str << "  coordinate: "
 						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;

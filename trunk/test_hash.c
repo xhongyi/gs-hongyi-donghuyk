@@ -19,12 +19,12 @@ int main(int argc, char* argv[]) {
 	
 	strcpy(ref_file,"human_g1k_v37.fasta");
 	strcpy(gen_file,"result_ref_");
-//	refGenerator(gen_file, ref_file);
+	refGenerator(gen_file, ref_file);
 	
 	char * file_ref	= (char*) malloc(sizeof(char)*50);
 	char * file_hash	= (char*) malloc(sizeof(char)*50);
 	
-	for (int i = MAX_CONTIG_FILE-1; i < MAX_CONTIG_FILE ; i++) {
+	for (int i = 0; i < MAX_CONTIG_FILE ; i++) {
 		sprintf(file_ref,  "%s%i", "result_ref_", i);
 		sprintf(file_hash, "%s%i", "result_hash_", i);
 		fprintf(stdout, "reference : %s\n", file_ref);

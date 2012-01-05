@@ -14,7 +14,8 @@
 #define RELEVENCE_NUM 5
 #define REF_TABLE_SIZE 	100	// # of reference seqnence within one line.
 #define MAX_CONTIG_NAME 400	// # of character to make contig name string.
-#define MAX_CONTIG_FILE	25	// # of contig.
+//#define MAX_CONTIG_FILE	25	// # of contig.
+#define MAX_CONTIG_FILE	84	// # of contig.
 #define MAX_FRAGMENT_LENGTH 200
 //#define FRAGMENT_LENGTH		108		// # of read lenght from machine
 //#define KEY_NUMBER		FRAGMENT_LENGTH/KEY_LENGTH
@@ -33,11 +34,17 @@ extern int max_diff_num;
 extern bool select_cheapest;
 extern int fragment_length_;
 extern int key_number_;
+extern bool reverse_mode;
+extern bool print_detail;
 
 void set_fragment_length(int num);
 void set_key_number(int num);
 
+void set_reverse_mode(bool reverse_mode);
+
 void set_select_cheapest(bool choose); 
+
+void set_print_detail(bool set_print_detail);
 
 /*
  * Function: 		Set maximum indel_num that should be tolerated.
@@ -70,4 +77,7 @@ struct GPU_data {
 	int AF_count;
 	int ED_count;
 };
+char reverseCompleteChar(char c);
+void reverseComplete (const char *seq, char *rcSeq , int length); 
+
 #endif /* COMMOM_H_ */
