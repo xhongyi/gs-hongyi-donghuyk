@@ -26,6 +26,9 @@ void refGenerator(char * gen_file_name, char * ref_file) {
 	sprintf(file_contig_name, "%s%s", gen_file_name, "name");
 	pFileW_name = fopen (file_contig_name, "w");
 
+	for (int flush_num = 0 ; flush_num < MAX_CONTIG_NAME ; flush_num++) {
+		contig_name[flush_num] = '\0';
+	}
 	while (flag_ref_end == 0) {
 		if (i == 0) {
 			for (int flush_num = 0 ; flush_num < size_ref_read ; flush_num++) {

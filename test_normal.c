@@ -12,15 +12,38 @@
 #include "edit_normal.h"
 
 int main(int argc, char* argv[]) {
-	if (argc >= 2) {
+	if (argc >= 3) {
 		char temp = *argv[1];
 		set_max_indel_num(atoi(&temp));
 		set_max_diff_num(atoi(&temp));
+		if (!strcmp(argv[2], "simple")){
+			set_print_detail(false);
+			fprintf(stdout,"Output Mode : simple\n");
+		} 
+		else if (!strcmp(argv[2], "detail")){
+			set_print_detail(true);
+			fprintf(stdout,"Output Mode : detail\n");
+		} 
+		else {
+			set_print_detail(true);
+			fprintf(stdout,"Output Mode : detail\n");
+		}
+		char print_detail = *argv[2];
 		fprintf(stdout,"Max indel & diff : %d\n", atoi(&temp));
 	} 
+	else if (argc == 2) {
+		char temp = *argv[1];
+		set_max_indel_num(atoi(&temp));
+		set_max_diff_num(atoi(&temp));
+		set_print_detail(true);
+		fprintf(stdout,"Output Mode : Detail\n");
+		fprintf(stdout,"Max indel & diff : %d\n", atoi(&temp));
+	}
 	else {
 		set_max_indel_num(3);
 		set_max_diff_num(3);
+		set_print_detail(true);
+		fprintf(stdout,"Output Mode : Detail\n");
 		fprintf(stdout,"Max indel & diff : 3\n");
 	}
 	set_fragment_length(101);

@@ -36,12 +36,14 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	string testee_seq(fragment_length_, 'A');
 	string testee_dummy(fragment_length_, 'A');
 	string testee_qual(fragment_length_, 'A');
-	int monitor_counter = 0; 		// for operation monitoring
+	int monitor_counter1 = 0; 		// for operation monitoring
 	int correct_counter = 0; 		// for operation monitoring
 	long long monitor_counter2 = 0; // for operation monitoring
 	int gen_coord = 0;
 	char test_char;
-	long long accumulate_time = 0;
+	long long acc_cal_time = 0;
+	long long acc_load_time = 0;
+	long long acc_total_time = 0;
 
 	char * file_contig = (char*) malloc(sizeof(char)*50);
 	char contig_name[MAX_CONTIG_FILE][100]; 
@@ -59,8 +61,11 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	output_file.open(file_output);
 
 // get fragment from reference file
-	for (int j = MAX_CONTIG_FILE - 1 ; j < MAX_CONTIG_FILE ; j++) {
-//	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
+//	for (int j = MAX_CONTIG_FILE - 1 ; j < MAX_CONTIG_FILE ; j++) {
+//	for (int j = 0 ; j < 4 ; j++) {
+	for (int j = 0 ; j < MAX_CONTIG_FILE ; j++) {
+		time_t start_load_time;
+		time(&start_load_time);
 		map<int, int> binary_search;
 		map<int, int> distribution;
 		map<int, int> correct_count;
@@ -73,6 +78,7 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		cout << "ref_file_name  :" << file_ref  << endl;
 		cout << "hash_file_name :" << file_hash << endl;
 		cout << "store_file_name:" << file_store << endl;
+
 		// store file 
 		store_file.open(file_store);
 
@@ -85,46 +91,69 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		loadHash(file_hash);
 		cout << "Status : End load hash table" << endl;
 		ref_file.open(file_ref);
-			if (!ref_file.is_open()) {
-					cout << " Error File Open : " << file_ref << endl;
-					break;
-			}
-		time_t start_time;
-		time(&start_time);
-		input_file.open(result_input_name.c_str());
-		char dummy;
-		input_file >> testee_name;
-		input_file >> testee_seq;
-		input_file >> testee_dummy;
-		input_file >> testee_qual;
-		do {
-			filter_result = searchFragment_fastq(testee_seq, &ref, &output_file, 
-												contig_name[j], testee_name.substr(1), testee_qual);
-			binary_search[filter_result.total_binary_search]++;
-			distribution[filter_result.total_edit_perform]++;
-			correct_count[filter_result.total_correct_num]++;
+		if (!ref_file.is_open()) {
+			cout << " Error File Open : " << file_ref << endl;
+				break;
+		}
+		time_t end_load_time;
+		time(&end_load_time);
 
-			monitor_counter = monitor_counter + 1;
-			monitor_counter2 = monitor_counter2 + 1;
-			if (monitor_counter >= 10000) {
-				fprintf(stdout, "hash distribution count: %lld \n", monitor_counter2);
-					monitor_counter = 0;
-				}
-			if (monitor_counter2 >= 1000000) {
-					monitor_counter2 = 0;
+		time_t start_cal_time;
+		time(&start_cal_time);
+		// Add reverse complement mode
+		for(int k = 0; k < 2; k ++) {
+			if (k == 0) {
+				cout << "Normal  Mode" << endl;
+				set_reverse_mode(false);
 			}
+			else if (k == 1) {
+				cout << "Reverse Mode" << endl;
+				set_reverse_mode(true);
+			}
+			input_file.open(result_input_name.c_str());
 			input_file >> testee_name;
 			input_file >> testee_seq;
 			input_file >> testee_dummy;
 			input_file >> testee_qual;
-		} while (input_file.good());
-		
-		time_t end_time;
-		time(&end_time);
-		cout << endl;
-		accumulate_time = accumulate_time + difftime(end_time, start_time);
-		ref_file.close();
+//				cout << "original:" << testee_seq << endl;
+			if (reverse_mode == true) {	
+				char * dummy = (char*) malloc(sizeof(char)*testee_seq.size());
+				reverseComplete (testee_seq.c_str(), dummy, testee_seq.size());
+				testee_seq = string(dummy);
+//				cout << "Reverse :" << testee_seq << endl;
+			}
+			do {
+				filter_result = searchFragment_fastq(testee_seq, &ref, &output_file, 
+													contig_name[j], testee_name.substr(1), testee_qual);
+				binary_search[filter_result.total_binary_search]++;
+				distribution[filter_result.total_edit_perform]++;
+				correct_count[filter_result.total_correct_num]++;
+	
+				monitor_counter1 = monitor_counter1 + 1;
+				monitor_counter2 = monitor_counter2 + 1;
+				if (monitor_counter1 >= 10000) {
+					fprintf(stdout, "hash distribution count: %lld \n", monitor_counter2);
+						monitor_counter1 = 0;
+					}
+				if (monitor_counter2 >= 1000000) {
+						monitor_counter2 = 0;
+				}
+				input_file >> testee_name;
+				input_file >> testee_seq;
+				input_file >> testee_dummy;
+				input_file >> testee_qual;
+			} while (input_file.good());
 		input_file.close();
+		}
+		cout << endl;
+		
+		time_t end_cal_time;
+		time(&end_cal_time);
+
+		acc_load_time = acc_load_time + difftime(end_load_time, start_load_time);
+		acc_cal_time = acc_cal_time + difftime(end_cal_time, start_cal_time);
+		acc_total_time = acc_total_time + difftime(end_cal_time, start_load_time);
+		ref_file.close();
 
 		store_file << "Number of Binary Search calculation" << endl;
 		long long subsum = 0;
@@ -172,33 +201,45 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		}
 		store_file << endl;
 		store_file << "---------------------------------------------" << endl;
-		store_file << "total_binary_num___: " << total_binary_num << endl;
-		store_file << "total_fragment_num_: " << total_fragment_num1 << endl;
-		store_file << "total_edit_num_____: " << total_edit_num << endl;
-		store_file << "total_pass_num_____: " << total_pass_num << endl;
-		store_file << "Start_time_________: " << ctime(&start_time);
-		store_file << "End_time___________: " << ctime(&end_time);
-		store_file << "TIme Diff__________: " << difftime(end_time,start_time) << endl;
-		store_file << "Accumulated Time___: " << accumulate_time << endl;
+		store_file << "total_binary_num____: " << total_binary_num << endl;
+		store_file << "total_fragment_num__: " << total_fragment_num1 << endl;
+		store_file << "total_edit_num______: " << total_edit_num << endl;
+		store_file << "total_pass_num______: " << total_pass_num << endl;
+		store_file << "---------------------------------------------" << endl;
+		store_file << "Time_load_hash______: " << difftime(end_load_time,start_load_time) << endl;
+		store_file << "TIme_Calulation_____: " << difftime(end_cal_time,start_cal_time) << endl;
+		store_file << "Time_Total__________: " << difftime(end_cal_time,start_load_time) << endl;
+		store_file << "---------------------------------------------" << endl;
+		store_file << "Acc_load__Time______: " << acc_load_time << endl;
+		store_file << "Acc_Cal___Time______: " << acc_cal_time << endl;
+		store_file << "Acc_Total_Time______: " << acc_total_time << endl;
 		store_file << "---------------------------------------------" << endl;
 
 		cout << "---------------------------------------------" << endl;
-		cout << "total_binary_num___: " << total_binary_num << endl;
-		cout << "total_fragment_num_: " << total_fragment_num1 << endl;
-		cout << "total_edit_num_____: " << total_edit_num << endl;
-		cout << "total_pass_num_____: " << total_pass_num << endl;
-		cout << "Start_time_________: " << ctime(&start_time);
-		cout << "End_time___________: " << ctime(&end_time);
-		cout << "TIme Diff__________: " << difftime(end_time,start_time) << endl;
-		cout << "Accumulated Time___: " << accumulate_time << endl;
+		cout << "total_binary_num____: " << total_binary_num << endl;
+		cout << "total_fragment_num__: " << total_fragment_num1 << endl;
+		cout << "total_edit_num______: " << total_edit_num << endl;
+		cout << "total_pass_num______: " << total_pass_num << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "Time_load_hash______: " << difftime(end_load_time,start_load_time) << endl;
+		cout << "TIme_Calulation_____: " << difftime(end_cal_time,start_cal_time) << endl;
+		cout << "Time_Total__________: " << difftime(end_cal_time,start_load_time) << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "Acc_load__Time______: " << acc_load_time << endl;
+		cout << "Acc_Cal___Time______: " << acc_cal_time << endl;
+		cout << "Acc_Total_Time______: " << acc_total_time << endl;
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
 		freeHash();
 		free(file_ref);
 		free(file_hash);
 		free(file_store);
+		monitor_counter1 = 0;
+		monitor_counter2 = 0;
 	}
-	cout << "Accumulated Time : " << accumulate_time << endl;
+	cout << "Acc_load__Time: " << acc_load_time << endl;
+	cout << "Acc_Cal___Time: " << acc_cal_time << endl;
+	cout << "Acc_Total_Time: " << acc_total_time << endl;
 	output_file.close();
 	free(file_contig);
 	free(file_output);

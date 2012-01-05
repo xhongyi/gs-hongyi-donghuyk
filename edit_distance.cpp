@@ -313,7 +313,8 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane - 1;
 				result.error[error_ptr].diff_char
-						= test_read[result.error[error_ptr].location];
+						= ref_read[result.error[error_ptr].location];
+//						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -343,7 +344,9 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].diff = DELETION;
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane - 1;
-				result.error[error_ptr].diff_char = ref_read[cur_idx];
+				//result.error[error_ptr].diff_char = ref_read[cur_idx];
+				result.error[error_ptr].diff_char
+						= ref_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -373,7 +376,8 @@ ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane - 1;
 				result.error[error_ptr].diff_char
-						= test_read[result.error[error_ptr].location];
+						= ref_read[result.error[error_ptr].location];
+//						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 //cout << "Here1" << endl;
@@ -562,7 +566,8 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
 				result.error[error_ptr].diff_char
-						= test_read[result.error[error_ptr].location];
+						= ref_read[result.error[error_ptr].location];
+//						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -592,7 +597,10 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].diff = DELETION;
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
-				result.error[error_ptr].diff_char = ref_read[cur_idx];
+//				result.error[error_ptr].diff_char = ref_read[cur_idx];
+				result.error[error_ptr].diff_char
+						= ref_read[result.error[error_ptr].location];
+//						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 if (same_count != 0) {
@@ -622,7 +630,8 @@ ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {
 				result.error[error_ptr].location = cur_idx + cur_lane
 						- main_lane;
 				result.error[error_ptr].diff_char
-						= test_read[result.error[error_ptr].location];
+						= ref_read[result.error[error_ptr].location];
+//						= test_read[result.error[error_ptr].location];
 				error_ptr++;
 				/*
 				 //cout << "Here1" << endl;
