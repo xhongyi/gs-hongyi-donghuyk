@@ -4,9 +4,9 @@
  *  Created on: Jan 15, 2012
  *      Author: mac
  */
-int mask_range;
-
 #include "bit_mask_generator.h"
+
+int mask_range;
 
 void clear_bit_mask() {
 	for (int i = 0; i < INDEX_NUM; i++)
