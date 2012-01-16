@@ -33,7 +33,7 @@ void generate_bit_mask(string hash_table_name) {
 		// Read coordinate
 		for (int j = 0; j < index; j++) {
 			hash_file >> coordinate;
-			bit_mask[i] |= 1 << (data / mask_range);
+			bit_mask[i] |= 1 << (coordinate / mask_range);
 		}
 	}
 	hash_file.close();
@@ -44,5 +44,5 @@ void write_bit_mask(string bit_mask_name) {
 	mask_file.open(bit_mask_name.c_str() );
 	mask_file << mask_range << endl;
 	for (int i = 0; i < INDEX_NUM; i++)
-		make_file << bit_mask[i] << " ";
+		mask_file << bit_mask[i] << " ";
 }
