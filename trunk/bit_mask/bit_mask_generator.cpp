@@ -39,7 +39,7 @@ void generate_bit_mask(string hash_table_name) {
 	hash_file.close();
 }
 
-void bit_mask_writer(string bit_mask_name) {
+void write_bit_mask(string bit_mask_name) {
 	ofstream mask_file;
 	mask_file.open(bit_mask_name.c_str() );
 	mask_file << mask_range << endl;
