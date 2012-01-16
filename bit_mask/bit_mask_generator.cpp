@@ -16,7 +16,8 @@ void clear_bit_mask() {
 void generate_bit_mask(string hash_table_name) {
 	int total_number;
 	ifstream hash_file;
-	if (!hash_file.open(hash_table_name.c_str(), fstream::in ) ) {
+	hash_file.open(hash_table_name.c_str() );
+	if (!hash_file.good()) {
 		cerr << "File " << hash_table_name << " does not exist" << endl;
 	}
 
