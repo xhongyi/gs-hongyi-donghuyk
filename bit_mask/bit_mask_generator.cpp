@@ -8,6 +8,8 @@
 
 int mask_range;
 
+int bit_mask[INDEX_NUM];
+
 void clear_bit_mask() {
 	for (int i = 0; i < INDEX_NUM; i++)
 		bit_mask[i] = 0;
