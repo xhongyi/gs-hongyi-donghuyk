@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int bit_mask[INDEX_NUM];
+extern int bit_mask[INDEX_NUM];
 
 /*
  * Fill zeros in to the array
