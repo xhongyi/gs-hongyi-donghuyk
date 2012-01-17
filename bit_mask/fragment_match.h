@@ -32,6 +32,7 @@ struct key_struct {
 	int key_entry;
 	int key_entry_size;
 	int key_number;
+	int hash_val;
 	int order;
 };
 
@@ -59,7 +60,7 @@ void getCoordinatePtr(int ** ptr);
  * Input:			hash_name is the name of the hash table of the chromosome.
  * Modification:	It will load all the hash_table into hash_table and coordinate.
  */
-void loadHash(string hash_name);
+void loadHash(string hash_name, string mask_name);
 
 /*
  * Function:		Search the possible locations and calculate their relevance.

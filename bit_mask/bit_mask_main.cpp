@@ -14,8 +14,8 @@ int main () {
 		hash_file_name = temp;
 		sprintf(temp, "result_mask_%d", i);
 		mask_file_name = temp;
-		clear_bit_mask();
-		generate_bit_mask(hash_file_name);
-		write_bit_mask(mask_file_name);
+		clearBitMask();
+		generateBitMask(hash_file_name);
+		writeBitMask(mask_file_name);
 	}
 }

@@ -4,7 +4,7 @@
 #include <fstream>
 
 void hashReconstructor(int ** index_db, int ** coordinate_db,
-			const char * hash_table_name) { 
+		const char * hash_table_name) {
 	int total_number;
 	int index;
 	int data;
@@ -37,6 +37,23 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	fclose(pFileR);
 }
 
+void maskLoader(int bit_mask[], int& mask_range, string bit_mask_name) {
+	ifstream bit_mask_file;
+	bit_mask_file.open(bit_mask_name.c_str());
+	if (!bit_mask_file.good()) {
+		cerr << "File: " << bit_mask_name << " does not exist" << endl;
+		exit(1);
+	}
+	bit_mask_file >> mask_range;
+	for (int i = 0; i < INDEX_NUM; i++) {
+		bit_mask_file >> bit_mask[i];
+		if (!bit_mask_file.good()) {
+			cerr << "bit mask file wrong. Not enough bit masks" << endl;
+			exit(1);
+		}
+	}
+}
+
 void hashDistribution(char * hash_table_name) {
 	int total_number;
 	int sum_number;
@@ -44,34 +61,35 @@ void hashDistribution(char * hash_table_name) {
 	int data;
 	int dummy;
 	int coordinate_index = 0;
-	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name)+20);
-	long int * index_num = (long int*) malloc(sizeof(long int)*INDEX_NUM*INDEX_NUM);
+	char * gen_distribution_file = (char*) malloc(sizeof(hash_table_name) + 20);
+	long int * index_num = (long int*) malloc(
+			sizeof(long int) * INDEX_NUM * INDEX_NUM);
 	FILE * pFileR;
 	FILE * pFileOut;
 
 	// Read total number of hash table
-	pFileR = fopen (hash_table_name, "r");
+	pFileR = fopen(hash_table_name, "r");
 	sprintf(gen_distribution_file, "%s%s\0", hash_table_name, "_distribution");
-	pFileOut = fopen (gen_distribution_file, "w");
+	pFileOut = fopen(gen_distribution_file, "w");
 	dummy = fscanf(pFileR, "%i", &total_number);
 	fprintf(pFileOut, "total_number : %i \n", total_number);
 
 	// Initialize index_num preser area
-	for (int l = 0 ; l < INDEX_NUM ; l++) {
+	for (int l = 0; l < INDEX_NUM; l++) {
 		index_num[l] = 0;
 	}
 	// Read index number & coordinate based on index number
-	for (int i = 0 ; i < INDEX_NUM ; i++) {
+	for (int i = 0; i < INDEX_NUM; i++) {
 		dummy = fscanf(pFileR, "%i", &index);
 		index_num[index] = index_num[index] + 1;
 		sum_number = sum_number + 1;
-	// Read coordinate      
-		for (int j = 0; j < index; j++){
+		// Read coordinate
+		for (int j = 0; j < index; j++) {
 			dummy = fscanf(pFileR, "%i", &data);
 			sum_number = sum_number + 1;
 		}
 	}
-	for (int k = 0 ; k < INDEX_NUM ; k++) {
+	for (int k = 0; k < INDEX_NUM; k++) {
 		if (index_num[k] != 0) {
 			fprintf(pFileOut, "%i : %li \n", k, index_num[k]);
 		}
@@ -90,8 +108,8 @@ void refLoader(string & ref_db, char * ref_name) {
 	string temp_read;
 	while (true) {
 		ref_file >> temp_read;
-		if (!ref_file.eof() )
-		ref_db += temp_read;
+		if (!ref_file.eof())
+			ref_db += temp_read;
 		else
 			break;
 	}

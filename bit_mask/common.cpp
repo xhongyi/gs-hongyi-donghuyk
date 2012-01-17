@@ -16,6 +16,7 @@ int key_number_ = 9;
 bool select_cheapest = true;
 bool reverse_mode = false;
 bool print_detail = true;
+bool bit_mask_on = false;
 
 int hashVal(string key) {
 	int bp_val = 0;
@@ -64,6 +65,10 @@ void set_max_diff_num(int num) {
 
 void set_select_cheapest(bool choose) {
 	select_cheapest = choose;
+}
+
+void set_bit_mask(bool choice) {
+	bit_mask_on = choice;
 }
 
 void set_fragment_length(int num) {

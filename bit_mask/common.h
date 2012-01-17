@@ -36,13 +36,16 @@ extern int fragment_length_;
 extern int key_number_;
 extern bool reverse_mode;
 extern bool print_detail;
+extern bool bit_mask_on;
 
 void set_fragment_length(int num);
 void set_key_number(int num);
 
 void set_reverse_mode(bool reverse_mode);
 
-void set_select_cheapest(bool choose); 
+void set_select_cheapest(bool choose);
+
+void set_bit_mask(bool choice);
 
 void set_print_detail(bool set_print_detail);
 

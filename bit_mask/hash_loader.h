@@ -13,6 +13,7 @@
 #include <string.h>
 #include <math.h>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -37,5 +38,6 @@ void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_
  */
 void refLoader(string & ref_db, char * ref_name);
 
+void maskLoader(int bit_mask [], int& mask_range, string bit_mask_name);
 
 #endif /* HASH_LOADER_H_ */
