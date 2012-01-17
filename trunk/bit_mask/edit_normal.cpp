@@ -22,7 +22,7 @@
 
 using namespace std;
 
-void edit_normal(string hash_file_name, string ref_file_name,
+void edit_normal(string hash_file_name, string mask_file_name, string ref_file_name,
 		string output_file_name, string result_input_name) {
 	allocatePath();
 	ifstream ref_file;
@@ -45,7 +45,7 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	long long acc_load_time = 0;
 	long long acc_total_time = 0;
 
-	char * file_contig = (char*) malloc(sizeof(char)*50);
+	char file_contig[50];
 	char contig_name[MAX_CONTIG_FILE][100]; 
 	sprintf(file_contig, "%s%s", (char*) ref_file_name.c_str(), "name");
 	contig_name_file.open(file_contig);
@@ -55,7 +55,7 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		//cout << "i:" << i << "   " << contig_name[i] << endl;
 	}
 
-	char * file_output= (char*) malloc(sizeof(char)*50);
+	char file_output[50];
 	sprintf(file_output, "%s%s", (char*) output_file_name.c_str(),"sam");
 	cout << "output_file_name:" << file_output << endl;
 	output_file.open(file_output);
@@ -69,15 +69,18 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		map<int, int> binary_search;
 		map<int, int> distribution;
 		map<int, int> correct_count;
-		char * file_ref	= (char*) malloc(sizeof(char)*50);
-		char * file_hash= (char*) malloc(sizeof(char)*50);
-		char * file_store= (char*) malloc(sizeof(char)*50);
+		char file_ref[50];
+		char file_hash[50];
+		char file_store[50];
+		char file_mask[50];
 		sprintf(file_ref,	 "%s%i", (char*) ref_file_name.c_str(), j);
 		sprintf(file_hash,	 "%s%i", (char*) hash_file_name.c_str(), j);
 		sprintf(file_store,	 "%s%i", (char*) output_file_name.c_str(), j);
+		sprintf(file_mask,	 "%s%i", (char*) mask_file_name.c_str(), j);
 		cout << "ref_file_name  :" << file_ref  << endl;
 		cout << "hash_file_name :" << file_hash << endl;
 		cout << "store_file_name:" << file_store << endl;
+		cout << "mask_file_name :" << file_mask << endl;
 
 		// store file 
 		store_file.open(file_store);
@@ -88,7 +91,7 @@ void edit_normal(string hash_file_name, string ref_file_name,
 
 		// hash table load 
 		cout << "Status : Start load hash table" << endl;
-		loadHash(file_hash);
+		loadHash(file_hash, file_mask);
 		cout << "Status : End load hash table" << endl;
 		ref_file.open(file_ref);
 		if (!ref_file.is_open()) {
@@ -231,9 +234,6 @@ void edit_normal(string hash_file_name, string ref_file_name,
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
 		freeHash();
-		free(file_ref);
-		free(file_hash);
-		free(file_store);
 		monitor_counter1 = 0;
 		monitor_counter2 = 0;
 	}
@@ -241,6 +241,4 @@ void edit_normal(string hash_file_name, string ref_file_name,
 	cout << "Acc_Cal___Time: " << acc_cal_time << endl;
 	cout << "Acc_Total_Time: " << acc_total_time << endl;
 	output_file.close();
-	free(file_contig);
-	free(file_output);
 }

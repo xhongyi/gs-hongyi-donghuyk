@@ -16,6 +16,6 @@
 
 using namespace std;
 
-void edit_normal(string hash_file_name, string ref_file_name, string output_file_name, string result_input); 
+void edit_normal(string hash_file_name, string mask_file_name, string ref_file_name, string output_file_name, string result_input);
 
 #endif /* EDIT_NORMAL_ */

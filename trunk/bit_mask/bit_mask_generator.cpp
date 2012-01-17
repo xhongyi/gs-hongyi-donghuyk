@@ -10,12 +10,12 @@ int mask_range;
 
 int bit_mask[INDEX_NUM];
 
-void clear_bit_mask() {
+void clearBitMask() {
 	for (int i = 0; i < INDEX_NUM; i++)
 		bit_mask[i] = 0;
 }
 
-void generate_bit_mask(string hash_table_name) {
+void generateBitMask(string hash_table_name) {
 	int total_number;
 	ifstream hash_file;
 	hash_file.open(hash_table_name.c_str() );
@@ -42,7 +42,7 @@ void generate_bit_mask(string hash_table_name) {
 	hash_file.close();
 }
 
-void write_bit_mask(string bit_mask_name) {
+void writeBitMask(string bit_mask_name) {
 	ofstream mask_file;
 	mask_file.open(bit_mask_name.c_str() );
 	mask_file << mask_range << endl;
