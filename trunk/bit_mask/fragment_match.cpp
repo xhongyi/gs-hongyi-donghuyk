@@ -29,7 +29,7 @@ void getCoordinatePtr(int ** ptr) {
 
 void loadHash(string hash_name, string mask_name) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
-	maskLoader(bit_mask, mask_range, bit_mask_name);
+	maskLoader(bit_mask, mask_range, mask_name);
 }
 
 void freeHash() {

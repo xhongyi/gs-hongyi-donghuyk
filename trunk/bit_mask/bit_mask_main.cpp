@@ -9,7 +9,7 @@ int main () {
 	string hash_file_name;
 	string mask_file_name;
 	char temp[50];
-	for (int i = 0; i <= 21; i++) {
+	for (int i = 0; i <= 83; i++) {
 		sprintf(temp, "result_hash_%d", i);
 		hash_file_name = temp;
 		sprintf(temp, "result_mask_%d", i);

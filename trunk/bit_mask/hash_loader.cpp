@@ -2,6 +2,7 @@
 #include "common.h"
 #include "hash_loader.h"
 #include <fstream>
+#include <iostream>
 
 void hashReconstructor(int ** index_db, int ** coordinate_db,
 		const char * hash_table_name) {
