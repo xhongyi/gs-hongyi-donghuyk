@@ -132,6 +132,7 @@ bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input,
 			sort_result[i].key_number = sort_input[i].key_number;
 			sort_result[i].key_entry = sort_input[i].key_entry;
 			sort_result[i].key_entry_size = sort_input[i].key_entry_size;
+			sort_result[i].hash_val = sort_input[i].hash_val;
 		}
 		return true;
 	}
@@ -150,6 +151,7 @@ bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input,
 				sort_result[loop_index].key_number = sort_input[j].key_number;
 				sort_result[loop_index].key_entry_size
 						= sort_input[j].key_entry_size;
+				sort_result[loop_index].hash_val = sort_input[j].hash_val;
 				sort_result[loop_index].order = sort_input[j].order;
 				loop_index = loop_index + 1;
 			}
