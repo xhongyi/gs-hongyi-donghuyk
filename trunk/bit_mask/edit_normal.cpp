@@ -56,7 +56,7 @@ void edit_normal(string hash_file_name, string mask_file_name, string ref_file_n
 	}
 
 	char file_output[50];
-	sprintf(file_output, "%s%s", (char*) output_file_name.c_str(),"sam");
+	sprintf(file_output, "%s%s.", (char*) output_file_name.c_str(),"sam");
 	cout << "output_file_name:" << file_output << endl;
 	output_file.open(file_output);
 
