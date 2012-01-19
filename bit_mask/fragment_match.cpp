@@ -204,11 +204,18 @@ final_result searchFragment(string fragment, string* ref) {
 										- keys_input[k].key_number)
 										* KEY_LENGTH, keys_input[j].key_entry,
 								keys_input[j].key_entry_size);
-					else
-						pass = test_mask(
+					else {
+						if (test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[k].hash_val);
+										* KEY_LENGTH, keys_input[k].hash_val) )
+							pass = searchKey(
+									coor_value + (keys_input[j].key_number
+											- keys_input[k].key_number)
+											* KEY_LENGTH, keys_input[j].key_entry,
+									keys_input[j].key_entry_size);
+						else
+							pass = false;
 					if (!pass) {
 						diff_num++;
 						if (diff_num > max_diff_num)
