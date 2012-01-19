@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 	sprintf(file_mask, "%s", "result_mask_");
 	set_select_cheapest(true);
 	fprintf(stdout,"Mode : Alignment\n");
-	sprintf(file_dist, "%s %s", "result_dist_cheap_", argv[3]);
+	sprintf(file_dist, "%s%s", "result_dist_cheap_", argv[3]);
 	edit_normal(file_hash, file_mask, file_ref, file_dist, file_input);
 	return 0;
 }
