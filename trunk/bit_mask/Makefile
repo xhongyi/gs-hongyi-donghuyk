@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS = -O3 -pg
+CFLAGS = -g -pg
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
