@@ -279,6 +279,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 			sort_input[available_key_num].key_number = i;
 			sort_input[available_key_num].key_entry = key_entry;
 			sort_input[available_key_num].key_entry_size = key_entry_size;
+			sort_input[available_key_num].hash_val = key_hash;
 			available_key_num++;
 		}
 	}
