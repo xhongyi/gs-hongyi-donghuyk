@@ -44,7 +44,7 @@ hash_generator: hash_generator.h hash_generator.cpp common.h ref_db_generator.h 
 	$(CC) $(CFLAGS) hash_generator.cpp common.cpp ref_db_generator.cpp hash_loader.cpp test_hash.c -o gen_hash
 
 test_normal:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_normal.h hash_loader.cpp edit_normal.cpp edit_distance.h edit_distance.cpp fragment_match.cpp 
-	$(CC) $(CFLAGS) edit_normal.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_normal.c -o test_align
+	$(CC) $(CFLAGS) edit_normal.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_normal.cpp -o test_align
 
 bm_generator: bit_mask_generator.h bit_mask_generator.cpp bit_mask_main.cpp
 	$(CC) $(CFLAGS) bit_mask_generator.cpp bit_mask_main.cpp -o bm_generator
