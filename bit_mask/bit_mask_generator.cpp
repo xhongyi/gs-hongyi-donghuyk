@@ -8,11 +8,14 @@
 
 int mask_range;
 
-int bit_mask[INDEX_NUM];
+int top_bit_mask[INDEX_NUM];
+int bot_bit_mask[INDEX_NUM];
 
 void clearBitMask() {
-	for (int i = 0; i < INDEX_NUM; i++)
-		bit_mask[i] = 0;
+	for (int i = 0; i < INDEX_NUM; i++) {
+		top_bit_mask[i] = 0;
+		bot_bit_mask[i] = 0;
+	}
 }
 
 void generateBitMask(string hash_table_name) {
@@ -36,16 +39,21 @@ void generateBitMask(string hash_table_name) {
 		// Read coordinate
 		for (int j = 0; j < index; j++) {
 			hash_file >> coordinate;
-			bit_mask[i] |= 1 << (coordinate / mask_range);
+			top_bit_mask[i] |= 1 << (coordinate / mask_range);
+			bot_bit_mask[i] |= 1 << ( (coordinate >> 4) % 32);
 		}
 	}
 	hash_file.close();
 }
 
-void writeBitMask(string bit_mask_name) {
-	ofstream mask_file;
-	mask_file.open(bit_mask_name.c_str() );
-	mask_file << mask_range << endl;
-	for (int i = 0; i < INDEX_NUM; i++)
-		mask_file << bit_mask[i] << " ";
+void writeBitMask(string top_bit_mask_name, string bot_bit_mask_name) {
+	ofstream top_mask_file;
+	ofstream bot_mask_file;
+	top_mask_file.open(top_bit_mask_name.c_str() );
+	bot_mask_file.open(bot_bit_mask_name.c_str() );
+	top_mask_file << mask_range << endl;
+	for (int i = 0; i < INDEX_NUM; i++) {
+		top_mask_file << top_bit_mask[i] << " ";
+		bot_mask_file << bot_bit_mask[i] << " ";
+	}
 }
