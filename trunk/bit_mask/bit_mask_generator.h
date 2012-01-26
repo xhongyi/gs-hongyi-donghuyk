@@ -30,5 +30,5 @@ void generateBitMask(string hash_table_name);
 /*
  * Write bit mask to a file so later it can be read in as well. The file name would be bit_mask_name
  */
-void writeBitMask(string bit_mask_name);
+void writeBitMask(string top_bit_mask_name, string bot_bit_mask_name);
 #endif /* BIT_MAP_GENERATOR_H_ */
