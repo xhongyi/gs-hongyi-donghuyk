@@ -18,4 +18,5 @@ int main () {
 		generateBitMask(hash_file_name);
 		writeBitMask(mask_file_name);
 	}
+	return 0;
 }
