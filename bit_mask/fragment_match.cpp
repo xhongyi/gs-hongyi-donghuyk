@@ -309,6 +309,8 @@ final_result searchFragment_fastq(string fragment, string* ref,
 	 */
 	previous_result.size = 0;
 	final_result return_result;
+	return_result.total_bit_mask_success = 0;
+	return_result.total_filtering = 0;
 	return_result.total_binary_search = 0;
 	return_result.total_edit_perform = 0;
 	return_result.total_correct_num = 0;
@@ -353,31 +355,37 @@ final_result searchFragment_fastq(string fragment, string* ref,
 			int diff_num = 0;
 			if (!searchPrevious(coor_value, keys_input[k].key_number,
 					previous_result)) {
-				return_result.total_binary_search++;
+				return_result.total_filtering++;
 
 				//-------------Binary Search---------------------------------------------------
 				for (int j = 0; j < available_key_num; j++) {
 					if (j - diff_num - n_num > key_number_ - max_diff_num)
 						break;
 					bool pass;
-					if (!bit_mask_on)
+					if (!bit_mask_on) {
 						pass = searchKey(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
 										* KEY_LENGTH, keys_input[j].key_entry,
 								keys_input[j].key_entry_size);
+						return_result.total_binary_search++;
+					}
 					else {
 						if (test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[k].hash_val) )
+										* KEY_LENGTH, keys_input[k].hash_val) ) {
 							pass = searchKey(
 									coor_value + (keys_input[j].key_number
 											- keys_input[k].key_number)
 											* KEY_LENGTH, keys_input[j].key_entry,
 									keys_input[j].key_entry_size);
-						else
+							return_result.total_binary_search++;
+						}
+						else {
 							pass = false;
+							return_result.total_bit_mask_success++;
+						}
 					}
 					if (!pass) {
 						diff_num++;
