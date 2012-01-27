@@ -3,7 +3,7 @@ CFLAGS = -O3 -pg
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = db_generator ref_db_generator
+EXECUTABLE = db_generator ref_db_generator bm_generator
 
 all: test_normal hash_generator bm_generator
  
