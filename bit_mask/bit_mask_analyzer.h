@@ -22,8 +22,8 @@ void unloadBitMask();
 void loadBitMask(string hash_table_name, string top_bm_name,
 		string bot_bm_name);
 
-void evaluateBitMask(int threshold, ofstream& outfile);
+void evaluateBitMask(int upper_threshold, int lower_threshold, ofstream& outfile);
 
-void evaluateBitMaskSingle(int hash_val, int threshold, ofstream& outfile);
+void evaluateBitMaskSingle(int hash_val, int upper_threshold, int lower_threshold, ofstream& outfile);
 
 #endif /* BIT_MASK_ANALYZER_H_ */
