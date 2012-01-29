@@ -32,6 +32,7 @@ void loadBitMask(string hash_table_name, string top_bm_name,
 	maskLoader(top_bit_mask, temp, top_bm_name);
 	cout << "bbb" << endl;
 	maskLoader(bot_bit_mask, temp, bot_bm_name);
+	cout << "ccc" << endl;
 }
 
 void evaluateBitMask(int upper_threshold, int lower_threshold, ofstream &outfile) {
