@@ -38,6 +38,8 @@ void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_
  */
 void refLoader(string & ref_db, char * ref_name);
 
+void maskReset(int bit_mask[]);
+
 void maskLoader(int bit_mask [], int& mask_range, string bit_mask_name);
 
 #endif /* HASH_LOADER_H_ */

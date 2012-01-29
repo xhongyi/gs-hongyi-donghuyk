@@ -38,6 +38,11 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	fclose(pFileR);
 }
 
+void maskReset (int bit_mask[]) {
+	for (int i = 0; i < INDEX_NUM; i++)
+		bit_mask[i] = 0;
+}
+
 void maskLoader(int bit_mask[], int& mask_range, string bit_mask_name) {
 	ifstream bit_mask_file;
 	bit_mask_file.open(bit_mask_name.c_str());

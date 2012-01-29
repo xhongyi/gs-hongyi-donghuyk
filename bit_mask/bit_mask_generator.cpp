@@ -52,6 +52,7 @@ void writeBitMask(string top_bit_mask_name, string bot_bit_mask_name) {
 	top_mask_file.open(top_bit_mask_name.c_str() );
 	bot_mask_file.open(bot_bit_mask_name.c_str() );
 	top_mask_file << mask_range << endl;
+	bot_mask_file << 0 << endl;
 	for (int i = 0; i < INDEX_NUM; i++) {
 		top_mask_file << top_bit_mask[i] << " ";
 		bot_mask_file << bot_bit_mask[i] << " ";

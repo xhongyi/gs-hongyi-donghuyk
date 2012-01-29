@@ -45,6 +45,7 @@ struct final_result {
 	long long total_bit_mask_success;
 	long long total_filtering;
 	long long total_binary_search;
+	long long total_binary_success;
 	long long total_edit_perform;
 	long long total_correct_num;
 };

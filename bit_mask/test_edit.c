@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 	char * file_dist	= (char*) malloc(sizeof(char)*50);
 	sprintf(file_ref,  "%s", "result_ref_");
 	sprintf(file_hash, "%s", "result_hash_");
-	sprintf(file_input, "%s", "result_input");
+	sprintf(file_input, "%s", "result_input_108");
 
 	if (argc < 2) {
 		fprintf(stdout,"Need parameter [frist/cheap/nofilter]\n");
