@@ -208,7 +208,7 @@ final_result searchFragment(string fragment, string* ref) {
 						if (test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[k].hash_val) )
+										* KEY_LENGTH, keys_input[j].hash_val) )
 							pass = searchKey(
 									coor_value + (keys_input[j].key_number
 											- keys_input[k].key_number)
@@ -310,6 +310,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 	previous_result.size = 0;
 	final_result return_result;
 	return_result.total_bit_mask_success = 0;
+	return_result.total_binary_success = 0;
 	return_result.total_filtering = 0;
 	return_result.total_binary_search = 0;
 	return_result.total_edit_perform = 0;
@@ -374,7 +375,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 						if (test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[k].hash_val) ) {
+										* KEY_LENGTH, keys_input[j].hash_val) ) {
 							pass = searchKey(
 									coor_value + (keys_input[j].key_number
 											- keys_input[k].key_number)
@@ -383,6 +384,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 							return_result.total_binary_search++;
 						}
 						else {
+							//cout << "asdfasdfasdf" << endl;
 							pass = false;
 							return_result.total_bit_mask_success++;
 						}
@@ -392,6 +394,8 @@ final_result searchFragment_fastq(string fragment, string* ref,
 						if (diff_num + n_num > max_diff_num)
 							break;
 					}
+					else
+						return_result.total_binary_success++;
 				}
 				//-----------------------------------------------------------------------------
 

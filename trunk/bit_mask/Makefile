@@ -3,9 +3,9 @@ CFLAGS = -O3 -pg
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
-EXECUTABLE = db_generator ref_db_generator bm_generator
+EXECUTABLE = db_generator ref_db_generator bm_generator bm_analyzer
 
-all: test_normal hash_generator bm_generator
+all: test_normal hash_generator bm_generator bm_analyzer
  
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -48,3 +48,6 @@ test_normal:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_gener
 
 bm_generator: bit_mask_generator.h bit_mask_generator.cpp bit_mask_main.cpp
 	$(CC) $(CFLAGS) bit_mask_generator.cpp bit_mask_main.cpp -o bm_generator
+
+bm_analyzer: bm_analyzer_main.cpp bit_mask_analyzer.h bit_mask_analyzer.cpp hash_loader.h hash_loader.cpp
+	 $(CC) $(CFLAGS) hash_loader.cpp bm_analyzer_main.cpp bit_mask_analyzer.cpp -o bm_analyzer

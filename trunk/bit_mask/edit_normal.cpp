@@ -64,10 +64,11 @@ void edit_normal(string hash_file_name, string mask_file_name,
 // get fragment from reference file
 //	for (int j = MAX_CONTIG_FILE - 1 ; j < MAX_CONTIG_FILE ; j++) {
 //	for (int j = 0 ; j < 4 ; j++) {
-	for (int j = 0; j < MAX_CONTIG_FILE; j++) {
+	for (int j = 0; j < 1/*MAX_CONTIG_FILE*/; j++) {
 		time_t start_load_time;
 		time(&start_load_time);
 		map<int, int> binary_search;
+		map<int, int> binary_success;
 		map<int, int> distribution;
 		map<int, int> correct_count;
 		map<int, int> bit_mask_success;
@@ -134,6 +135,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 				bit_mask_success[filter_result.total_bit_mask_success]++;
 				filtering[filter_result.total_filtering]++;
 				binary_search[filter_result.total_binary_search]++;
+				binary_success[filter_result.total_binary_success]++;
 				distribution[filter_result.total_edit_perform]++;
 				correct_count[filter_result.total_correct_num]++;
 
@@ -169,8 +171,6 @@ void edit_normal(string hash_file_name, string mask_file_name,
 		long long subsum = 0;
 		int normal = 1;
 
-		cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-
 		store_file << "Number of Filtering" << endl;
 		for (map<int, int>::iterator iter = filtering.begin();
 				iter != filtering.end(); iter++) {
@@ -194,7 +194,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 				p != filtering.end(); p++) {
 			store_file << "index :" << p->first << "		num :" << p->second
 					<< endl;
-			total_filtering += +p->first * p->second;
+			total_filtering += p->first * p->second;
 		}
 
 		long long total_bit_mask_success = 0;
@@ -203,7 +203,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 				p != bit_mask_success.end(); p++) {
 			store_file << "index :" << p->first << "		num :" << p->second
 					<< endl;
-			total_bit_mask_success += +p->first * p->second;
+			total_bit_mask_success += p->first * p->second;
 		}
 
 		store_file << "Number of Binary Search calculation" << endl;
@@ -235,6 +235,35 @@ void edit_normal(string hash_file_name, string mask_file_name,
 			total_binary_num = total_binary_num + p->first * p->second;
 		}
 
+		store_file << "Number of Binary Search success" << endl;
+		subsum = 0;
+		normal = 1;
+		for (map<int, int>::iterator p = binary_success.begin();
+				p != binary_success.end(); p++) {
+			//store_file << "index :" << p->first << "	num :" << p->second << endl;
+			long long tmp = p->first / normal;
+			if (tmp < 10) {
+				subsum = subsum + p->second;
+			} else if (tmp >= 10) {
+				store_file << "index :" << p->first << "	num: " << subsum
+						<< endl;
+				subsum = 0;
+				normal = normal * 10;
+			} else {
+				store_file << "ERROR" << endl;
+			}
+		}
+		store_file << "index: last	num: " << subsum << endl;
+
+		long long total_binary_success = 0;
+		store_file << "Number of Binary Search success" << endl;
+		for (map<int, int>::iterator p = binary_success.begin();
+				p != binary_success.end(); p++) {
+			store_file << "index: " << p->first << "		num: " << p->second
+					<< endl;
+			total_binary_success += p->first * p->second;
+		}
+
 		long long total_fragment_num = 0;
 		long long total_edit_num = 0;
 		store_file << endl << "Number of Edit distance calculation" << endl;
@@ -258,7 +287,9 @@ void edit_normal(string hash_file_name, string mask_file_name,
 		store_file << "---------------------------------------------" << endl;
 		store_file << "total_filtering_____: " << total_filtering << endl;
 		store_file << "total_binary_num____: " << total_binary_num << endl;
-		store_file << "total_bit_mask_sucess:" << total_bit_mask_success << endl;
+		store_file << "total_binary_success: " << total_binary_success << endl;
+		store_file << "total_bit_mask_sucess:" << total_bit_mask_success
+				<< endl;
 		store_file << "total_fragment_num__: " << total_fragment_num << endl;
 		store_file << "total_edit_num______: " << total_edit_num << endl;
 		store_file << "total_pass_num______: " << total_pass_num << endl;
