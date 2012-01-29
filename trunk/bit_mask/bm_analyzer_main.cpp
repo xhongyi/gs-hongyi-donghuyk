@@ -32,7 +32,7 @@ int main () {
 
 		ofstream outfile;
 		outfile.open(file_store);
-		evaluateBitMask(10000, outfile);
+		evaluateBitMask(1000, 100, outfile);
 		outfile.close();
 
 		unloadBitMask();
