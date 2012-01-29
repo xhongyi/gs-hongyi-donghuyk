@@ -40,7 +40,7 @@ void generateBitMask(string hash_table_name) {
 		for (int j = 0; j < index; j++) {
 			hash_file >> coordinate;
 			top_bit_mask[i] |= 1 << (coordinate / mask_range);
-			bot_bit_mask[i] |= 1 << ( (coordinate >> 4) % 32);
+			bot_bit_mask[i] |= 1 << ( (coordinate >> 8) % 32);
 		}
 	}
 	hash_file.close();
