@@ -5,7 +5,7 @@ SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator bm_generator bm_analyzer
 
-all: test_normal hash_generator bm_generator bm_analyzer
+all: test_normal hash_generator hash_analyzer#bm_generator hash_analyzer
  
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -50,4 +50,7 @@ bm_generator: bit_mask_generator.h bit_mask_generator.cpp bit_mask_main.cpp
 	$(CC) $(CFLAGS) bit_mask_generator.cpp bit_mask_main.cpp -o bm_generator
 
 bm_analyzer: bm_analyzer_main.cpp bit_mask_analyzer.h bit_mask_analyzer.cpp hash_loader.h hash_loader.cpp
-	 $(CC) $(CFLAGS) hash_loader.cpp bm_analyzer_main.cpp bit_mask_analyzer.cpp -o bm_analyzer
+	$(CC) $(CFLAGS) hash_loader.cpp bm_analyzer_main.cpp bit_mask_analyzer.cpp -o bm_analyzer
+	 
+hash_analyzer: hash_analyzer_main.cpp hash_analyzer.h hash_analyzer.cpp common.h hash_loader.h hash_loader.cpp
+	$(CC) $(CFLAGS) hash_loader.cpp hash_analyzer_main.cpp hash_analyzer.cpp -o hash_analyzer
