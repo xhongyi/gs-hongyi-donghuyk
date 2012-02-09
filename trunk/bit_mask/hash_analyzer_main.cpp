@@ -6,6 +6,7 @@
  */
 
 #include "hash_analyzer.h"
+#include "common.h"
 #include <fstream>
 
 using namespace std;
@@ -14,7 +15,7 @@ int main() {
 	ofstream outfile;
 	outfile.open("hash_analysis");
 	outfile << "****Numbers of entries has coordinates over the threshold of: ****" << endl << endl;
-	for (int i = 0; i < 1/*MAX_CONTIG_FILE*/; i++) {
+	for (int i = 0; i < MAX_CONTIG_FILE; i++) {
 		char file_hash[50];
 
 		sprintf(file_hash, "%s%i", "result_hash_", i);

@@ -75,12 +75,11 @@ int hashVal(string key);
  * Return: 			hash_index
  */
 //int hashIdx(string key);
-
 struct GPU_data {
 	int AF_count;
 	int ED_count;
 };
 char reverseCompleteChar(char c);
-void reverseComplete (const char *seq, char *rcSeq , int length); 
+void reverseComplete(const char *seq, char *rcSeq, int length);
 
 #endif /* COMMOM_H_ */

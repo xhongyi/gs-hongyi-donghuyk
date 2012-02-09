@@ -1,11 +1,11 @@
 CC=g++
-CFLAGS = -O3 -pg
+CFLAGS = -O3
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator bm_generator bm_analyzer
 
-all: test_normal hash_generator hash_analyzer#bm_generator hash_analyzer
+all: test_normal hash_generator hash_analyzer#bm_generator bm_analyzer
  
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@

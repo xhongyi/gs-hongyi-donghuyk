@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 		fprintf(stdout, "Bit mask: off\n");
 		fprintf(stdout,"Max indel & diff : 3\n");
 	}
-	set_fragment_length(101);
+	set_fragment_length(108);
 	set_key_number(fragment_length_/KEY_LENGTH);
 	char file_ref [50];
 	char file_input [50];
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 	sprintf(file_mask, "%s", "result_mask_");
 	set_select_cheapest(true);
 	fprintf(stdout,"Mode : Alignment\n");
-	sprintf(file_dist, "%s%s", "result_dist_cheap_", argv[3]);
+	sprintf(file_dist, "result_dist_cheap_%c_%s_", *argv[1], argv[3]);
 	edit_normal(file_hash, file_mask, file_ref, file_dist, file_input);
 	return 0;
 }
