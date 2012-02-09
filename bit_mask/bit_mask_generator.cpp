@@ -5,11 +5,17 @@
  *      Author: mac
  */
 #include "bit_mask_generator.h"
+#include "bit_mask.h"
+#include <set>
 
-int mask_range;
+int bot_range;
 
-int top_bit_mask[INDEX_NUM];
-int bot_bit_mask[INDEX_NUM];
+int* top_bit_mask;
+int* mid_bit_mask;
+int* bot_bit_mask;
+
+enum entry_type {NONE, CHEAP, MEDIUM, EXPENSIVE};
+entry_type entry_category[INDEX_NUM];
 
 void clearBitMask() {
 	for (int i = 0; i < INDEX_NUM; i++) {
