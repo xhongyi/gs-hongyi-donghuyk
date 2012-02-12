@@ -8,6 +8,13 @@
 #ifndef BITMASK_H_
 #define BITMASK_H_
 
+enum bm_level {FIRST = 1, SECOND, THIRD, FORTH, FIFTH};
+
+struct bm_info {
+	bm_level level;
+	int index;
+};
+
 struct first_mask {
 	char mask;
 };
