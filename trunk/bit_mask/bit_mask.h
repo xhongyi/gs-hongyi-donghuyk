@@ -8,31 +8,31 @@
 #ifndef BITMASK_H_
 #define BITMASK_H_
 
-enum bm_level {FIRST = 1, SECOND, THIRD, FORTH, FIFTH};
+enum bm_level {FIRST = 1, SECOND = 2, THIRD = 3, FORTH = 4, FIFTH = 5};
 
 struct bm_info {
 	bm_level level;
-	int index;
+	unsigned int index;
 };
 
 struct first_mask {
-	char mask;
+	unsigned char mask;
 };
 
 struct second_mask {
-	char mask[16];
+	unsigned char mask[16];
 };
 
 struct third_mask {
-	char mask[128];
+	unsigned char mask[128];
 };
 
 struct forth_mask {
-	char mask[2048];
+	unsigned char mask[2048];
 };
 
 struct fifth_mask {
-	char mask[16384];
+	unsigned char mask[16384];
 };
 /*
 class bot_bitmask {

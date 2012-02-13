@@ -19,7 +19,7 @@ int main() {
 		bot_mask_file_name = temp;
 		clearBitMask();
 		generateBitMask(hash_file_name);
-		writeBitMask(top_mask_file_name, bot_mask_file_name);
+		writeBitMask(i);
 	}
 	return 0;
 }
