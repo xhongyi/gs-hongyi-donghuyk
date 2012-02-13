@@ -7,6 +7,8 @@
 #include "bit_mask_generator.h"
 #include "bit_mask.h"
 #include <queue>
+#include <string>
+#include <cstdio>
 
 int bot_range;
 
@@ -47,7 +49,6 @@ void generateBitMask(string hash_table_name) {
 
 	hash_file >> total_number;
 	//This will return the range of the 1 bit in the bit_mask
-	mask_range = total_number / 32 + 1;
 
 	int coor_num;
 	int coordinate;
@@ -61,15 +62,16 @@ void generateBitMask(string hash_table_name) {
 		int temp_coor_num = coor_num;
 		entry_bm[i].level = FIRST;
 		temp_coor_num /= 10;
-		while (temp_coor_num >= 0) {
-			entry_bm[i].level++;
+		while (temp_coor_num > 0) {
+			entry_bm[i].level = (bm_level) ( (int)entry_bm[i].level + 1);
 			temp_coor_num /= 10;
 		}
 
 		// Read coordinate
 		switch (entry_bm[i].level) {
 		case FIRST:
-			first_mask mask1 = 0;
+			first_mask mask1;
+			mask1.mask = 0;
 			for (int j = 0; j < coor_num; j++) {
 				hash_file >> coordinate;
 				mask1.mask |= 1 << ((coordinate >> 1) % 8);
@@ -132,15 +134,75 @@ void generateBitMask(string hash_table_name) {
 	hash_file.close();
 }
 
-void writeBitMask(string top_bit_mask_name, string bot_bit_mask_name) {
-	ofstream top_mask_file;
-	ofstream bot_mask_file;
-	top_mask_file.open(top_bit_mask_name.c_str());
-	bot_mask_file.open(bot_bit_mask_name.c_str());
-	top_mask_file << mask_range << endl;
-	bot_mask_file << 0 << endl;
+void writeBitMask(int hash_table_num) {
+	char filename[30];
+	ofstream entry_bm_file;
+	sprintf(filename, "entry_bm_%d", hash_table_num);
+	entry_bm_file.open(filename);
 	for (int i = 0; i < INDEX_NUM; i++) {
-		top_mask_file << top_bit_mask[i] << " ";
-		bot_mask_file << bot_bit_mask[i] << " ";
+		entry_bm_file << entry_bm[i].level << endl;
+		entry_bm_file << entry_bm[i].index << endl;
 	}
+
+	ofstream bm_1_file;
+	sprintf(filename, "first_bm_%d", hash_table_num);
+	bm_1_file.open(filename);
+	bm_1_file << first_bm.size() << endl;
+	while (!first_bm.empty()) {
+		bm_1_file << (int) first_bm.front().mask << endl;
+		first_bm.pop();
+	}
+
+	ofstream bm_2_file;
+	sprintf(filename, "second_bm_%d", hash_table_num);
+	bm_2_file.open(filename);
+	bm_2_file << second_bm.size() << endl;
+	while (!second_bm.empty()) {
+		second_mask temp = second_bm.front();
+		for (int i = 0; i < 16; i++) {
+			bm_2_file << (int) temp.mask[i] << " ";
+		}
+		bm_2_file << endl;
+		second_bm.pop();
+	}
+
+	ofstream bm_3_file;
+	sprintf(filename, "thrid_bm_%d", hash_table_num);
+	bm_3_file.open(filename);
+	bm_3_file << third_bm.size() << endl;
+	while (!third_bm.empty()) {
+		third_mask temp = third_bm.front();
+		for (int i = 0; i < 128; i++) {
+			bm_3_file << (int) temp.mask[i] << " ";
+		}
+		bm_3_file << endl;
+		third_bm.pop();
+	}
+
+	ofstream bm_4_file;
+	sprintf(filename, "forth_bm_%d", hash_table_num);
+	bm_4_file.open(filename);
+	bm_4_file << first_bm.size() << endl;
+	while (!forth_bm.empty()) {
+		forth_mask temp = forth_bm.front();
+		for (int i = 0; i < 2048; i++) {
+			bm_4_file << (int) temp.mask[i] << " ";
+		}
+		bm_4_file << endl;
+		forth_bm.pop();
+	}
+
+	ofstream bm_5_file;
+	sprintf(filename, "fifth_bm_%d", hash_table_num);
+	bm_5_file.open(filename);
+	bm_5_file << fifth_bm.size() << endl;
+	while (!fifth_bm.empty()) {
+		fifth_mask temp = fifth_bm.front();
+		for (int i = 0; i < 16384; i++) {
+			bm_5_file << (int) temp.mask[i] << " ";
+		}
+		bm_5_file << endl;
+		fifth_bm.pop();
+	}
+
 }
