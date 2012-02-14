@@ -9,6 +9,7 @@
 #include <queue>
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 
 int bot_range;
 
@@ -17,6 +18,8 @@ queue<second_mask> second_bm;
 queue<third_mask> third_bm;
 queue<forth_mask> forth_bm;
 queue<fifth_mask> fifth_bm;
+queue<sixth_mask> sixth_bm;
+queue<seventh_mask> seventh_bm;
 
 bm_info entry_bm[INDEX_NUM];
 
@@ -60,15 +63,22 @@ void generateBitMask(string hash_table_name) {
 
 		//Determine the bm level
 		int temp_coor_num = coor_num;
-		entry_bm[i].level = FIRST;
-		temp_coor_num /= 10;
+		entry_bm[i].level = ZERO;
 		while (temp_coor_num > 0) {
-			entry_bm[i].level = (bm_level) ( (int)entry_bm[i].level + 1);
+			entry_bm[i].level = (bm_level) ((int) entry_bm[i].level + 1);
 			temp_coor_num /= 10;
+			if ((int) entry_bm[i].level > 7) {
+				cout << "Opps here there is an outlier with coor_num: "
+						<< coor_num << endl;
+				cout << "i = " << i << endl;
+				exit(1);
+			}
 		}
 
 		// Read coordinate
 		switch (entry_bm[i].level) {
+		case ZERO:
+			break;
 		case FIRST:
 			first_mask mask1;
 			mask1.mask = 0;
@@ -128,6 +138,30 @@ void generateBitMask(string hash_table_name) {
 			}
 			entry_bm[i].index = fifth_bm.size();
 			fifth_bm.push(mask5);
+			break;
+		case SIXTH:
+			sixth_mask mask6;
+			for (int j = 0; j < 131072; j++)
+				mask6.mask[j] = 0;
+			for (int j = 0; j < coor_num; j++) {
+				hash_file >> coordinate;
+				bm_idx = ((coordinate >> 1) % 1048576) / 8;
+				mask6.mask[bm_idx] |= 1 << ((coordinate >> 1) % 8);
+			}
+			entry_bm[i].index = sixth_bm.size();
+			sixth_bm.push(mask6);
+			break;
+		case SEVENTH:
+			seventh_mask mask7;
+			for (int j = 0; j < 1048576; j++)
+				mask7.mask[j] = 0;
+			for (int j = 0; j < coor_num; j++) {
+				hash_file >> coordinate;
+				bm_idx = ((coordinate >> 1) % 8388608) / 8;
+				mask7.mask[bm_idx] |= 1 << ((coordinate >> 1) % 8);
+			}
+			entry_bm[i].index = seventh_bm.size();
+			seventh_bm.push(mask7);
 			break;
 		}
 	}
@@ -203,6 +237,32 @@ void writeBitMask(int hash_table_num) {
 		}
 		bm_5_file << endl;
 		fifth_bm.pop();
+	}
+
+	ofstream bm_6_file;
+	sprintf(filename, "sixth_bm_%d", hash_table_num);
+	bm_6_file.open(filename);
+	bm_6_file << sixth_bm.size() << endl;
+	while (!sixth_bm.empty()) {
+		sixth_mask temp = sixth_bm.front();
+		for (int i = 0; i < 131072; i++) {
+			bm_6_file << (int) temp.mask[i] << " ";
+		}
+		bm_6_file << endl;
+		sixth_bm.pop();
+	}
+
+	ofstream bm_7_file;
+	sprintf(filename, "seventh_bm_%d", hash_table_num);
+	bm_7_file.open(filename);
+	bm_7_file << seventh_bm.size() << endl;
+	while (!seventh_bm.empty()) {
+		seventh_mask temp = seventh_bm.front();
+		for (int i = 0; i < 1048576; i++) {
+			bm_7_file << (int) temp.mask[i] << " ";
+		}
+		bm_7_file << endl;
+		seventh_bm.pop();
 	}
 
 }
