@@ -35,16 +35,19 @@ void loadBitMask(string hash_table_name, string top_bm_name,
 	cout << "ccc" << endl;
 }
 
-void evaluateBitMask(int upper_threshold, int lower_threshold, ofstream &outfile) {
+void evaluateBitMask(int upper_threshold, int lower_threshold,
+		ofstream &outfile) {
 	for (int i = 0; i < INDEX_NUM; i++) {
 		evaluateBitMaskSingle(i, upper_threshold, lower_threshold, outfile);
 	}
 }
 
-void evaluateBitMaskSingle(int hash_val, int upper_threshold, int lower_threshold, ofstream& outfile) {
+void evaluateBitMaskSingle(int hash_val, int upper_threshold,
+		int lower_threshold, ofstream& outfile) {
 	//Test coordinate size. If the coordinate size is too small, it is not
 	//interested
-	if (coordinate[hash_table[hash_val]] >= lower_threshold && coordinate[hash_table[hash_val]] <= upper_threshold) {
+	if (coordinate[hash_table[hash_val]] >= lower_threshold
+			&& coordinate[hash_table[hash_val]] <= upper_threshold) {
 		outfile << "Hash Val: " << hash_val << endl;
 		outfile << "coordinate size: " << coordinate[hash_table[hash_val]]
 				<< endl;
