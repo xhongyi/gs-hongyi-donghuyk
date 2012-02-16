@@ -37,7 +37,7 @@ void hashReconstructor(int ** index_db, int ** coordinate_db,
 	}
 	fclose(pFileR);
 }
-
+/*
 void maskReset (int bit_mask[]) {
 	for (int i = 0; i < INDEX_NUM; i++)
 		bit_mask[i] = 0;
@@ -59,7 +59,7 @@ void maskLoader(int bit_mask[], int& mask_range, string bit_mask_name) {
 		}
 	}
 }
-
+*/
 void hashDistribution(char * hash_table_name) {
 	int total_number;
 	int sum_number;

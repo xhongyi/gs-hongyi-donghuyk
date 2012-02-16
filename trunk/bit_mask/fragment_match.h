@@ -12,9 +12,12 @@
 #include "hash_loader.h"
 #include "common.h"
 #include "ref_db_generator.h"
+#include "bit_mask.h"
 
 #define MAX_UPPER_BOUND 10
 #define MIN_LOWER_BOUND 2
+
+extern bitmask bm;
 
 using namespace std;
 
@@ -63,7 +66,7 @@ void getCoordinatePtr(int ** ptr);
  * Input:			hash_name is the name of the hash table of the chromosome.
  * Modification:	It will load all the hash_table into hash_table and coordinate.
  */
-void loadHash(string hash_name, string mask_name);
+void loadHash(string hash_name, int hash_table_num);
 
 /*
  * Function:		Search the possible locations and calculate their relevance.

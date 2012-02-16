@@ -15,9 +15,10 @@
 
 int* hash_table;
 int* coordinate;
-int mask_range;
-int bit_mask[INDEX_NUM];
+//int mask_range;
+//int bit_mask[INDEX_NUM];
 previous_coor previous_result;
+bitmask bm;
 
 void getHashTablePtr(int ** ptr) {
 	*ptr = hash_table;
@@ -27,14 +28,15 @@ void getCoordinatePtr(int ** ptr) {
 	*ptr = coordinate;
 }
 
-void loadHash(string hash_name, string mask_name) {
+void loadHash(string hash_name, int hash_file_num) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
-	maskLoader(bit_mask, mask_range, mask_name);
+	bm.load_mask(hash_file_num);
 }
 
 void freeHash() {
 	free(hash_table);
 	free(coordinate);
+	bm.free_mask();
 }
 
 bool searchKey(int target_coor, int entry_coor, int entry_size) {
@@ -59,7 +61,7 @@ bool searchKey(int target_coor, int entry_coor, int entry_size) {
 	} else
 		return false;
 }
-
+/*
 bool test_mask(int target_coor, int hash_val) {
 	int lower_bound = target_coor - max_indel_num;
 	int upper_bound = target_coor + max_indel_num;
@@ -74,7 +76,7 @@ bool test_mask(int target_coor, int hash_val) {
 	else
 		return false;
 }
-
+*/
 bool searchPrevious(int coor_value, int start_key_entry,
 		previous_coor previous_result) {
 	if (previous_result.size == 0) {
@@ -205,7 +207,7 @@ final_result searchFragment(string fragment, string* ref) {
 										* KEY_LENGTH, keys_input[j].key_entry,
 								keys_input[j].key_entry_size);
 					else {
-						if (test_mask(
+						if (bm.test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
 										* KEY_LENGTH, keys_input[j].hash_val) )
@@ -372,7 +374,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 						return_result.total_binary_search++;
 					}
 					else {
-						if (test_mask(
+						if (/*!bm.over_fifth(keys_input[j].hash_val) || */bm.test_mask(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
 										* KEY_LENGTH, keys_input[j].hash_val) ) {
@@ -448,11 +450,14 @@ final_result searchFragment_fastq(string fragment, string* ref,
 					 cout << "key_num__: " << keys_input[k].key_number << endl;
 					 cout << "correct  : " << edit_result.correct << endl;
 					 */
+
+					if (edit_result.correct)
+						return_result.total_correct_num++;
+
 					//---------------------------------------------------------------------------------
 					if (edit_result.correct && print_detail) {
 						//(*output_file) << "test_read: " << test_char << endl;
 						//(*output_file) << "ref__read: " << ref_char << endl;
-						return_result.total_correct_num++;
 						(*output_file) << fragment_name << "	";
 						if (reverse_mode == false) {
 							(*output_file) << 0 << "	";

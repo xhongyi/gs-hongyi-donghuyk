@@ -95,7 +95,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 
 		// hash table load 
 		cout << "Status : Start load hash table" << endl;
-		loadHash(file_hash, file_mask);
+		loadHash(file_hash, j);
 		cout << "Status : End load hash table" << endl;
 		ref_file.open(file_ref);
 		if (!ref_file.is_open()) {
@@ -323,6 +323,13 @@ void edit_normal(string hash_file_name, string mask_file_name,
 		cout << "Acc_Cal___Time______: " << acc_cal_time << endl;
 		cout << "Acc_Total_Time______: " << acc_total_time << endl;
 		cout << "---------------------------------------------" << endl;
+
+		for (int i = 0; i < 7; i++) {
+			store_file << i + 1 << " level bit mask success: " << "\t" <<
+					bm.get_eval_data(true, i) << endl;
+			store_file << i + 1 << " level bit mask fail: " << "\t\t" <<
+					bm.get_eval_data(false, i) << endl;
+		}
 		store_file.close();
 		freeHash();
 		monitor_counter1 = 0;
