@@ -8,7 +8,7 @@
 #ifndef BITMASK_H_
 #define BITMASK_H_
 
-enum bm_level {ZERO = 0, FIRST = 1, SECOND, THIRD, FORTH, FIFTH, SIXTH, SEVENTH};
+enum bm_level {ZERO = 0, FIRST = 1, SECOND, THIRD, FORTH, FIFTH, SIXTH};
 
 struct bm_info {
 	bm_level level;
@@ -16,30 +16,26 @@ struct bm_info {
 };
 
 struct first_mask {
-	unsigned char mask;
-};
-
-struct second_mask {
 	unsigned char mask[16];
 };
 
-struct third_mask {
+struct second_mask {
 	unsigned char mask[128];
 };
 
-struct forth_mask {
+struct third_mask {
 	unsigned char mask[2048];
 };
 
-struct fifth_mask {
+struct forth_mask {
 	unsigned char mask[16384];
 };
 
-struct sixth_mask {
+struct fifth_mask {
 	unsigned char mask[131072];
 };
 
-struct seventh_mask {
+struct sixth_mask {
 	unsigned char mask[1048576];
 };
 
@@ -50,6 +46,8 @@ public:
 	void load_mask(int hash_table_num);
 	void free_mask();
 	bool test_mask(int target_coor, int hash_val);
+	bool over_fifth(int hash_val);
+	long long int get_eval_data(bool is_success, int idx);
 private:
 	bm_info entry_bm[INDEX_NUM];
 	first_mask * first_bm;
@@ -58,11 +56,9 @@ private:
 	forth_mask* forth_bm;
 	fifth_mask* fifth_bm;
 	sixth_mask* sixth_bm;
-	seventh_mask * seventh_bm;
+
+	long long int success[7];
+	long long int fail[7];
 };
-
-
-
-
 
 #endif /* BITMASK_H_ */
