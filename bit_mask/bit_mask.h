@@ -20,7 +20,7 @@ struct first_mask {
 };
 
 struct second_mask {
-	unsigned char mask[128];
+	unsigned char mask[64];
 };
 
 struct third_mask {

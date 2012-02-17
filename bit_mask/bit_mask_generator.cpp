@@ -93,11 +93,11 @@ void generateBitMask(string hash_table_name) {
 
 		case SECOND:
 			second_mask mask2;
-			for (int j = 0; j < 128; j++)
+			for (int j = 0; j < 64; j++)
 				mask2.mask[j] = 0;
 			for (int j = 0; j < coor_num; j++) {
 				hash_file >> coordinate;
-				bm_idx = ((coordinate >> 1) % 1024) / 8;
+				bm_idx = ((coordinate >> 1) % 512) / 8;
 				mask2.mask[bm_idx] |= 1 << ((coordinate >> 1) % 8);
 			}
 			entry_bm[i].index = second_bm.size();
@@ -186,7 +186,7 @@ void writeBitMask(int hash_table_num) {
 	bm_2_file << second_bm.size() << endl;
 	while (!second_bm.empty()) {
 		second_mask temp = second_bm.front();
-		for (int i = 0; i < 128; i++) {
+		for (int i = 0; i < 64; i++) {
 			bm_2_file << (int) temp.mask[i] << " ";
 		}
 		bm_2_file << endl;
@@ -194,7 +194,7 @@ void writeBitMask(int hash_table_num) {
 	}
 
 	ofstream bm_3_file;
-	sprintf(filename, "thrid_bm_%d", hash_table_num);
+	sprintf(filename, "third_bm_%d", hash_table_num);
 	bm_3_file.open(filename);
 	bm_3_file << third_bm.size() << endl;
 	while (!third_bm.empty()) {

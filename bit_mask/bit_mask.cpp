@@ -61,7 +61,7 @@ void bitmask::load_mask(int hash_table_num) {
 	data_file >> bm_size;
 	second_bm = new second_mask[bm_size];
 	for (int i = 0; i < bm_size; i++) {
-		for (int j = 0; j < 128; j++) {
+		for (int j = 0; j < 64; j++) {
 			data_file >> raw_data;
 			second_bm[i].mask[j] = (unsigned char) raw_data;
 		}
@@ -148,9 +148,9 @@ bool bitmask::test_mask(int target_coor, int hash_val) {
 			break;
 		case SECOND:
 			lower_cover = (1 << ((lower_bound >> 1) % 8))
-					&& second_bm[index].mask[((lower_bound >> 1) % 1024) / 8];
+					&& second_bm[index].mask[((lower_bound >> 1) % 512) / 8];
 			upper_cover = (1 << ((upper_bound >> 1) % 8))
-					&& second_bm[index].mask[((upper_bound >> 1) % 1024) / 8];
+					&& second_bm[index].mask[((upper_bound >> 1) % 512) / 8];
 			break;
 		case THIRD:
 			lower_cover = (1 << ((lower_bound >> 1) % 8))
