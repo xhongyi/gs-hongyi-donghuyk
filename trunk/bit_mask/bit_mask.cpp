@@ -44,6 +44,8 @@ void bitmask::load_mask(int hash_table_num) {
 	}
 	data_file.close();
 
+	//skip the first 2 levels of bm
+	/*
 	sprintf(filename, "first_bm_%d", hash_table_num);
 	data_file.open(filename);
 	data_file >> bm_size;
@@ -67,6 +69,7 @@ void bitmask::load_mask(int hash_table_num) {
 		}
 	}
 	data_file.close();
+	*/
 
 	sprintf(filename, "third_bm_%d", hash_table_num);
 	data_file.open(filename);
@@ -118,8 +121,8 @@ void bitmask::load_mask(int hash_table_num) {
 }
 
 void bitmask::free_mask() {
-	delete[] first_bm;
-	delete[] second_bm;
+	//delete[] first_bm;
+	//delete[] second_bm;
 	delete[] third_bm;
 	delete[] forth_bm;
 	delete[] fifth_bm;
@@ -178,7 +181,6 @@ bool bitmask::test_mask(int target_coor, int hash_val) {
 			break;
 		}
 		if (lower_cover || upper_cover) {
-			fail[entry_bm[hash_val].level - 1]++;
 			return true;
 		} else {
 			success[entry_bm[hash_val].level - 1]++;
@@ -199,4 +201,8 @@ bool bitmask::over_fifth(int hash_val) {
 		return true;
 	else
 		return false;
+}
+
+void bitmask::record_fail(int hash_val) {
+	fail[entry_bm[hash_val].level - 1]++;
 }
