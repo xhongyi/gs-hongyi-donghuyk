@@ -365,7 +365,7 @@ final_result searchFragment_fastq(string fragment, string* ref,
 					if (j - diff_num - n_num > key_number_ - max_diff_num)
 						break;
 					bool pass;
-					if (!bit_mask_on) {
+					if (keys_input[j].key_entry_size < 100 || !bit_mask_on) {
 						pass = searchKey(
 								coor_value + (keys_input[j].key_number
 										- keys_input[k].key_number)
@@ -384,6 +384,8 @@ final_result searchFragment_fastq(string fragment, string* ref,
 											* KEY_LENGTH, keys_input[j].key_entry,
 									keys_input[j].key_entry_size);
 							return_result.total_binary_search++;
+							if (!pass)
+								bm.record_fail(keys_input[j].hash_val);
 						}
 						else {
 							//cout << "asdfasdfasdf" << endl;
