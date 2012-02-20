@@ -28,7 +28,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 	allocatePath();
 	ifstream ref_file;
 	ifstream input_file;
-	ifstream contig_name_file;
+	//ifstream contig_name_file;
 	ofstream store_file;
 	ofstream output_file;
 
@@ -49,12 +49,13 @@ void edit_normal(string hash_file_name, string mask_file_name,
 	char file_contig[50];
 	char contig_name[MAX_CONTIG_FILE][100];
 	sprintf(file_contig, "%s%s", (char*) ref_file_name.c_str(), "name");
-	contig_name_file.open(file_contig);
-
+	//contig_name_file.open(file_contig);
+	/*
 	for (int i = 0; i < MAX_CONTIG_FILE; i++) {
 		contig_name_file.getline(contig_name[i], 100);
 		//cout << "i:" << i << "   " << contig_name[i] << endl;
 	}
+	*/
 
 	char file_output[50];
 	sprintf(file_output, "%s%s", (char*) output_file_name.c_str(), "sam");
@@ -126,6 +127,7 @@ void edit_normal(string hash_file_name, string mask_file_name,
 				char * dummy = (char*) malloc(sizeof(char) * testee_seq.size());
 				reverseComplete(testee_seq.c_str(), dummy, testee_seq.size());
 				testee_seq = string(dummy);
+				free(dummy);
 //				cout << "Reverse :" << testee_seq << endl;
 			}
 			do {
@@ -339,4 +341,5 @@ void edit_normal(string hash_file_name, string mask_file_name,
 	cout << "Acc_Cal___Time: " << acc_cal_time << endl;
 	cout << "Acc_Total_Time: " << acc_total_time << endl;
 	output_file.close();
+	deallocatePath();
 }

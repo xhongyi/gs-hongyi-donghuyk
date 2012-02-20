@@ -169,6 +169,9 @@ void edit_distribution(string hash_file_name, string ref_file_name,
 		cout << "Accumulated Time   : " << accumulate_time << endl;
 		cout << "---------------------------------------------" << endl;
 		store_file.close();
+		free(file_ref);
+		free(file_hash);
+		free(file_store);
 	}
 	cout << "Accumulated Time : " << accumulate_time << endl;
 }

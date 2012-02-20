@@ -30,13 +30,15 @@ void getCoordinatePtr(int ** ptr) {
 
 void loadHash(string hash_name, int hash_file_num) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
-	bm.load_mask(hash_file_num);
+	if (bit_mask_on)
+		bm.load_mask(hash_file_num);
 }
 
 void freeHash() {
 	free(hash_table);
 	free(coordinate);
-	bm.free_mask();
+	if (bit_mask_on)
+		bm.free_mask();
 }
 
 bool searchKey(int target_coor, int entry_coor, int entry_size) {
