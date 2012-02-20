@@ -82,8 +82,8 @@ void edit_distribution_nofilter(string hash_file_name, string ref_file_name,
 		time(&start_time);
 		input_file.open(result_input_name.c_str());
 		input_file >> testee;
+		key_struct * keys_input = (key_struct*) malloc(key_number_*sizeof(keys_input));
 		do {
-			key_struct * keys_input = (key_struct*) malloc(key_number_*sizeof(keys_input));
 			for (int i = 0; i < max_diff_num + 1; i++) {
 				string key = testee.substr(KEY_LENGTH * i, KEY_LENGTH);
 				int key_hash = hashVal(key);

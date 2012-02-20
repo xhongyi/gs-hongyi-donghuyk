@@ -86,6 +86,10 @@ void allocatePath() {
 	main_lane = max_indel_num + 1;
 }
 
+void deallocatePath() {
+	delete [] path;
+}
+
 // initializePath only fills the path elements now.
 void initializePath() {
 	for (int i = 0; i < max_indel_num * 2 + 3; i++) {

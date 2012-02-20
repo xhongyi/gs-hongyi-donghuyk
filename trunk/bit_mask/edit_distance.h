@@ -37,6 +37,8 @@ struct ED_result {
  */
 void allocatePath();
 
+void deallocatePath();
+
 /*
  * Function: Erase old data and fill the matrix with max_diff_num + 1
  */
