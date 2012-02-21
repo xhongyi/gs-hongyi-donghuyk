@@ -30,14 +30,12 @@ void getCoordinatePtr(int ** ptr) {
 
 void loadHash(string hash_name, int hash_file_num) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
-	if (bit_mask_on)
 		bm.load_mask(hash_file_num);
 }
 
 void freeHash() {
 	free(hash_table);
 	free(coordinate);
-	if (bit_mask_on)
 		bm.free_mask();
 }
 
@@ -166,115 +164,6 @@ bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input,
 	return true;//false;
 }
 
-final_result searchFragment(string fragment, string* ref) {
-	key_struct* sort_input = (key_struct*) malloc(
-			key_number_ * sizeof(key_struct));
-	key_struct* keys_input = (key_struct*) malloc(
-			key_number_ * sizeof(key_struct));
-	for (int i = 0; i < key_number_; i++) {
-		string key = fragment.substr(KEY_LENGTH * i, KEY_LENGTH);
-		int key_hash = hashVal(key);
-		int key_entry = hash_table[key_hash];
-		int key_entry_size = coordinate[key_entry];
-		sort_input[i].order = 0;
-		sort_input[i].key_number = i;
-		sort_input[i].key_entry = key_entry;
-		sort_input[i].key_entry_size = key_entry_size;
-		sort_input[i].hash_val = key_hash;
-	}
-
-	sortPrefilter(keys_input, sort_input);
-	previous_result.size = 0;
-	final_result return_result;
-	return_result.total_binary_search = 0;
-	return_result.total_edit_perform = 0;
-	return_result.total_correct_num = 0;
-
-	for (int k = 0; k < max_diff_num + 1; k++) {
-		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
-				+ keys_input[k].key_entry_size; i++) {
-			int coor_value = coordinate[i];
-			int diff_num = 0;
-			if (!searchPrevious(coor_value, keys_input[k].key_number,
-					previous_result)) {
-				return_result.total_binary_search++;
-				for (int j = 0; j < key_number_; j++) {
-					if (j - diff_num > key_number_ - max_diff_num)
-						break;
-					bool pass;
-					if (!bit_mask_on)
-						pass = searchKey(
-								coor_value + (keys_input[j].key_number
-										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[j].key_entry,
-								keys_input[j].key_entry_size);
-					else {
-						if (bm.test_mask(
-								coor_value + (keys_input[j].key_number
-										- keys_input[k].key_number)
-										* KEY_LENGTH, keys_input[j].hash_val) )
-							pass = searchKey(
-									coor_value + (keys_input[j].key_number
-											- keys_input[k].key_number)
-											* KEY_LENGTH, keys_input[j].key_entry,
-									keys_input[j].key_entry_size);
-						else
-							pass = false;
-					}
-					if (!pass) {
-						diff_num++;
-						if (diff_num > max_diff_num)
-							break;
-					}
-				}
-				if (diff_num <= max_diff_num) {
-					if (previous_result.size <= PREFILTER_SIZE) {
-						previous_result.coor[previous_result.size] = coor_value
-								- keys_input[k].key_number * KEY_LENGTH; //start_coor;
-						previous_result.size++;
-					}
-					return_result.total_edit_perform++;
-					string ref_str(fragment_length_, 'A');
-					ref_str = (*ref).substr(
-							coor_value - keys_input[k].key_number * KEY_LENGTH,
-							fragment_length_); //start_coor;
-
-					/////////////////////Just For Testing
-					char* test_char = (char*) malloc(
-							(fragment_length_ + 1) * sizeof(char));
-					char* ref_char = (char*) malloc(
-							(fragment_length_ + 1) * sizeof(char));
-					strcpy(test_char, fragment.c_str());
-					strcpy(ref_char, ref_str.c_str());
-					/*////////////////////Testing END
-					 cout << "ref__read: " << ref_char << endl;
-					 cout << "test_read: " << test_char << endl;
-					 cout << "key_num__: " << keys_input[k].key_number << endl;
-					 */
-					ED_result edit_result = editDistanceCal(test_char,
-							ref_char, keys_input[k].key_number);
-
-					if (edit_result.correct) {
-						return_result.total_correct_num++;
-						//cout << "ref_read      : " << ref_str << "  coordinate: "
-						//		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-						//cout << "  result: correct " << endl;
-					} else {
-						//cout << "ref_read      : " << ref_str << "  coordinate: "
-						// 		<< (*it_result).coordinate << "  Key_number: "<< (*it_result).key_number;
-						//cout << "  result: not correct" <<endl;
-					}
-					free(test_char);
-					free(ref_char);
-				}
-			}
-		}
-	}
-	free(sort_input);
-	free(keys_input);
-	return return_result;
-}
-
 final_result searchFragment_fastq(string fragment, string* ref,
 		ofstream * output_file, char* contig_name, string fragment_name,
 		string fragment_qual) {
@@ -319,6 +208,8 @@ final_result searchFragment_fastq(string fragment, string* ref,
 	return_result.total_binary_search = 0;
 	return_result.total_edit_perform = 0;
 	return_result.total_correct_num = 0;
+	for (int i = 0; i < 7; i++)
+			return_result.search_key_level[i] = 0;
 
 	if (n_num > max_diff_num) {
 		return return_result;
@@ -354,6 +245,9 @@ final_result searchFragment_fastq(string fragment, string* ref,
 	 cout << "key_number   : " << key_number_ << endl;
 	 */
 	for (int k = 0; k < operating_key_num; k++) {
+
+		return_result.search_key_level[bm.get_level(keys_input[k].hash_val)]++;
+
 		for (int i = keys_input[k].key_entry + 1; i <= keys_input[k].key_entry
 				+ keys_input[k].key_entry_size; i++) {
 			int coor_value = coordinate[i];

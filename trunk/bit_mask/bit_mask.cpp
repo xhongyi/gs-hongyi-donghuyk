@@ -203,6 +203,10 @@ bool bitmask::over_fifth(int hash_val) {
 		return false;
 }
 
+int bitmask::get_level(int hash_val) {
+	return (int) entry_bm[hash_val].level;
+}
+
 void bitmask::record_fail(int hash_val) {
 	fail[entry_bm[hash_val].level - 1]++;
 }

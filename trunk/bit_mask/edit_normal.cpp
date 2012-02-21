@@ -51,11 +51,11 @@ void edit_normal(string hash_file_name, string mask_file_name,
 	sprintf(file_contig, "%s%s", (char*) ref_file_name.c_str(), "name");
 	//contig_name_file.open(file_contig);
 	/*
-	for (int i = 0; i < MAX_CONTIG_FILE; i++) {
-		contig_name_file.getline(contig_name[i], 100);
-		//cout << "i:" << i << "   " << contig_name[i] << endl;
-	}
-	*/
+	 for (int i = 0; i < MAX_CONTIG_FILE; i++) {
+	 contig_name_file.getline(contig_name[i], 100);
+	 //cout << "i:" << i << "   " << contig_name[i] << endl;
+	 }
+	 */
 
 	char file_output[50];
 	sprintf(file_output, "%s%s", (char*) output_file_name.c_str(), "sam");
@@ -74,6 +74,11 @@ void edit_normal(string hash_file_name, string mask_file_name,
 		map<int, int> correct_count;
 		map<int, int> bit_mask_success;
 		map<int, int> filtering;
+
+		int search_key_level[7];
+		for (int i = 0; i < 7; i++)
+			search_key_level[i] = 0;
+
 		char file_ref[50];
 		char file_hash[50];
 		char file_store[50];
@@ -140,6 +145,10 @@ void edit_normal(string hash_file_name, string mask_file_name,
 				binary_success[filter_result.total_binary_success]++;
 				distribution[filter_result.total_edit_perform]++;
 				correct_count[filter_result.total_correct_num]++;
+
+				for (int i = 0; i < 7; i++) {
+					search_key_level[i] += filter_result.search_key_level[i];
+				}
 
 				monitor_counter1 = monitor_counter1 + 1;
 				monitor_counter2 = monitor_counter2 + 1;
@@ -285,6 +294,12 @@ void edit_normal(string hash_file_name, string mask_file_name,
 					<< endl;
 			total_pass_num = total_pass_num + p->first * p->second;
 		}
+
+		cout << "---------------------------------------------" << endl;
+		for (int i = 0; i < 7; i++)
+			store_file << "search_key_level: " << i << "\t"
+					<< search_key_level[i] << endl;
+
 		store_file << endl;
 		store_file << "---------------------------------------------" << endl;
 		store_file << "total_filtering_____: " << total_filtering << endl;
@@ -327,10 +342,10 @@ void edit_normal(string hash_file_name, string mask_file_name,
 		cout << "---------------------------------------------" << endl;
 
 		for (int i = 0; i < 7; i++) {
-			store_file << i + 1 << " level bit mask success: " << "\t" <<
-					bm.get_eval_data(true, i) << endl;
-			store_file << i + 1 << " level bit mask fail: " << "\t\t" <<
-					bm.get_eval_data(false, i) << endl;
+			store_file << i + 1 << " level bit mask success: " << "\t"
+					<< bm.get_eval_data(true, i) << endl;
+			store_file << i + 1 << " level bit mask fail: " << "\t\t"
+					<< bm.get_eval_data(false, i) << endl;
 		}
 		store_file.close();
 		freeHash();
