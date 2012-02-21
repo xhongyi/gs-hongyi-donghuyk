@@ -43,12 +43,13 @@ class bitmask {
 public:
 	bitmask();
 	~bitmask();
-	void load_mask(int hash_table_num);
-	void free_mask();
-	bool test_mask(int target_coor, int hash_val);
-	bool over_fifth(int hash_val);
-	void record_fail(int hash_val);
-	long long int get_eval_data(bool is_success, int idx);
+	void	load_mask(int hash_table_num);
+	void	free_mask();
+	bool	test_mask(int target_coor, int hash_val);
+	bool	over_fifth(int hash_val);
+	void	record_fail(int hash_val);
+	int		get_level(int hash_val);
+	long long int	get_eval_data(bool is_success, int idx);
 private:
 	bm_info entry_bm[INDEX_NUM];
 	first_mask * first_bm;

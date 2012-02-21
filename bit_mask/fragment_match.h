@@ -51,6 +51,8 @@ struct final_result {
 	long long total_binary_success;
 	long long total_edit_perform;
 	long long total_correct_num;
+
+	int search_key_level[7];
 };
 
 void getHashTablePtr(int ** ptr);
@@ -67,14 +69,6 @@ void getCoordinatePtr(int ** ptr);
  * Modification:	It will load all the hash_table into hash_table and coordinate.
  */
 void loadHash(string hash_name, int hash_table_num);
-
-/*
- * Function:		Search the possible locations and calculate their relevance.
- * Input:			fragment is the target gene sequence need to be mapped.
- * Modification:	result will be the top RETURN_RESULT_NUM of results that could possibly
- * 					be the mapping location.
- */
-final_result searchFragment (string fragment, string* ref);
 
 /*
  * Function:        Search the possible locations and calculate their relevance.
