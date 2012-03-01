@@ -24,8 +24,8 @@ using namespace std;
 
 void edit_distribution(string hash_file_name, string ref_file_name,
 		string output_file_name, string result_input_name) {
-	set_max_indel_num(3);
-	set_max_diff_num(3);
+	set_max_indel_num(7);
+	set_max_diff_num(7);
 	allocatePath();
 	ifstream ref_file;
 	ifstream input_file;

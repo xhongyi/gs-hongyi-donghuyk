@@ -104,8 +104,10 @@ void writeFriendHash(char store_file_name[]) {
 		unsigned char mask[2];
 		for (int j = 0; j < INDEX_NUM; j++) {
 			for (int k = 0; k < MAX_SEGMENT_NUM; k++) {
-
+				mask[k / 8] |= (int) (friend_hash[j][k][i]) << (k % 8);
 			}
+			friend_file << (int) mask[0] << " " << mask[1] << endl;
 		}
+		friend_file.close();
 	}
 }
