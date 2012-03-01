@@ -1,11 +1,11 @@
 CC=g++
-CFLAGS = -O3
+CFLAGS = -g #-mcmodel=medium
 LDFLAGS = -lz -lm 
 SOURCES = ref_db_generator.c
 OBJECTS = $(SOURCES:.c=.o)
 EXECUTABLE = db_generator ref_db_generator bm_generator bm_analyzer
 
-all: test_normal hash_generator hash_analyzer bm_generator# bm_analyzer
+all: friend_hash_generator#test_normal hash_generator hash_analyzer bm_generator# bm_analyzer
  
 .c.o:
 	$(CC) $(CFLAGS) $< -o $@
@@ -54,3 +54,6 @@ bm_analyzer: bm_analyzer_main.cpp bit_mask_analyzer.h bit_mask_analyzer.cpp hash
 	 
 hash_analyzer: hash_analyzer_main.cpp hash_analyzer.h hash_analyzer.cpp common.h hash_loader.h hash_loader.cpp
 	$(CC) $(CFLAGS) hash_loader.cpp hash_analyzer_main.cpp hash_analyzer.cpp -o hash_analyzer
+	
+friend_hash_generator: friend_hash_generator.h friend_hash_generator.cpp friend_hash_generator_main.cpp common.h common.cpp;
+	$(CC) $(CFLAGS) friend_hash_generator.cpp friend_hash_generator_main.cpp common.cpp -o friend_hash_generator

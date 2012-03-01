@@ -7,12 +7,15 @@
 
 #ifndef FRIEND_HASH_GENERATOR_H_
 #define FRIEND_HASH_GENERATOR_H_
-#define MAX_SEGMENT_NUM	16
-#define MAX_INDEL_NUM	10
+#define MAX_SEGMENT_NUM_	16
+#define MAX_INDEL_NUM_		10
 
 #include "common.h"
 
-void analyze_fragment(string fragment);
+void initializeFriendHash();
 
+void analyzeContig(char fragment[]);
+
+void writeFriendHash(char store_file_name[]);
 
 #endif /* FRIEND_HASH_GENERATOR_H_ */
