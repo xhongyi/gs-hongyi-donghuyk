@@ -51,16 +51,9 @@
 #define MAX_CIGAR_SIZE 100
 
 // DHL: Cheap key selection
-typedef struct 
-{
-    unsigned int* key_entry;
-    int key_entry_size;
-    int key_number;
-    int order;
-} key_struct;
-
-void sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input, int available_key_num);
+void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num);
 int searchKey(int target_coor, unsigned int* entry_coor, int entry_size);
+//int CheapKeySelection();
 
 // Pair is used to pre-processing and making the read index table
 typedef struct
@@ -163,9 +156,8 @@ void finalizeBestSingleMapping();
 void finalizeBestConcordantDiscordant();
 void finalizeOEAReads(char *);
 
-
-int mapAllSingleEndSeq();
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);
+//int mapAllSingleEndSeq(int flag_first);
+void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);
 void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction);
 
 void mapPairedEndSeq();

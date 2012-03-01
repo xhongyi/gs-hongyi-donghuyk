@@ -43,6 +43,14 @@
 
 #ifndef __READ__
 #define __READ__
+typedef struct
+{
+    unsigned int* key_entry;
+    int key_entry_size;
+    int key_number;
+	int hash_val;
+    int order;
+} key_struct;
 
 typedef struct
 {
@@ -53,11 +61,15 @@ typedef struct
 	char *hits;
 	int readNumber;
 	short *hashValue;
-        short *rhashValue;
+	short *rhashValue;
 	int *hashValSampleSize;
+//	key_struct keys_input[10];
+//	key_struct keys_input_r[10];
+//	int available_key_num;
+//	int available_key_num_r;
 } Read;
 
-int readAllReads(char *fileName1, char *fileName2, int compressed, unsigned char *fastq, unsigned char pe, Read **seqList, unsigned int *seqListSize);
+int  readAllReads(char *fileName1, char *fileName2, int compressed, unsigned char *fastq, unsigned char pe, Read **seqList, unsigned int *seqListSize);
 void loadSamplingLocations(int **samplingLocs, int *samplingLocsSize);
 void finalizeReads(char *fileName);
 void adjustQual(Read *list, int seqCnt);
