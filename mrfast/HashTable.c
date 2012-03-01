@@ -63,10 +63,8 @@ int hashVal(char *seq)
 	int i=0;
 	int val=0, numericVal=0;
 
-	while(i<WINDOW_SIZE)
-	{
-		switch (seq[i])
-		{
+	while(i < WINDOW_SIZE) {
+		switch (seq[i]) {
 			case 'A':
 				numericVal = 0;
 				break;
@@ -81,7 +79,18 @@ int hashVal(char *seq)
 				break;
 			default:
 				return -1;
+/*
+				val = 1;
+				int j;
+				for(j = i+1; j < WINDOW_SIZE; j++) {
+					if(seq[j] == 'N') {
+						val++;
+					}
+				}
+			//	printf("TEST: %d\n", val*(-1));
+				return val*(-1);
 				break;
+*/	
 		}
 		val = (val << 2)|numericVal;
 		i++;
@@ -144,7 +153,7 @@ void saveIHashTable(IHashTable *hashTable,  unsigned int size, unsigned int maxS
 
 	int i=0,j=0;
 	unsigned char cnt=0;
-	for (i = 0; i < maxSize; i++)
+	for (i=0; i<maxSize; i++)
 	{
 		if (hashTable[i].locs != NULL)
 		{
@@ -344,6 +353,10 @@ int  loadIHashTable(double *loadTime, int errThreshould)
 		_ih_hashTable[hv].locs = getMem( sizeof(unsigned int)* (tmpSize+1) );
 		_ih_hashTable[hv].locs[0] = tmpSize;
 
+/*		for (j=1; j<=tmpSize; j++) 
+			tmp = fread(&(_ih_hashTable[hv].locs[j]), sizeof(_ih_hashTable[hv].locs[j]), 1, _ih_fp);
+*/	
+		
 		if(tmpSize != 0)
 		{
 			tmp = fread(&(_ih_hashTable[hv].locs[index]), sizeof(_ih_hashTable[hv].locs[index]), 1, _ih_fp);
@@ -364,7 +377,6 @@ int  loadIHashTable(double *loadTime, int errThreshould)
 	*loadTime = getTime()-startTime;
 	return 1;
 }
-
 /**********************************************/
 unsigned int *getIHashTableCandidates(int hv)
 {
@@ -373,7 +385,8 @@ unsigned int *getIHashTableCandidates(int hv)
 	else 
 		return NULL;
 }
-
+/**********************************************/
+/**********************************************/
 /**********************************************/
 void configHashTable()
 {

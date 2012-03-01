@@ -77,8 +77,8 @@ int 					maxDiscordantOutput=10000;
 unsigned char			errThreshold=2;
 unsigned char			maxHits=0;
 unsigned char			WINDOW_SIZE = 12;
-unsigned long int			CONTIG_SIZE;
-unsigned long int			CONTIG_MAX_SIZE;
+unsigned long int		CONTIG_SIZE;
+unsigned long int		CONTIG_MAX_SIZE;
 
 void printHelp();
 
@@ -201,8 +201,8 @@ int parseCommandLine (int argc, char *argv[])
 
 	if ( indexingMode )
 	{
-		CONTIG_SIZE		= 15000000*10;
-		CONTIG_MAX_SIZE	= 40000000*10;
+		CONTIG_SIZE		= 15000000*20;
+		CONTIG_MAX_SIZE	= 40000000*20;
 
 		if (batchMode)
 		{
@@ -227,8 +227,8 @@ int parseCommandLine (int argc, char *argv[])
 
 	if ( searchingMode )
 	{
-		CONTIG_SIZE		= 300000000*10;
-		CONTIG_MAX_SIZE	= 300000000*10;
+		CONTIG_SIZE		= 300000000;
+		CONTIG_MAX_SIZE	= 300000000;
 
 
 		if (batchMode)
