@@ -10,8 +10,43 @@
 #include <fstream>
 #include <cstdlib>
 #include <iostream>
+#include <cassert>
+#include "common.h"
 
 bool friend_hash[INDEX_NUM][MAX_SEGMENT_NUM_][MAX_INDEL_NUM_ + 1];
+
+int hashVal(string key) {
+	int bp_val = 0;
+	int hash_val = 0;
+
+	assert(key.length() == KEY_LENGTH);
+
+	for (int i = 0; i < KEY_LENGTH; i++) {
+		switch (key[i]) {
+		case 'A':
+			bp_val = 0;
+			break;
+		case 'C':
+			bp_val = 1;
+			break;
+		case 'G':
+			bp_val = 2;
+			break;
+		case 'T':
+			bp_val = 3;
+			break;
+		case 'N':
+			return -1;
+		default:
+			cerr << "Wrong bp: " << key[i];
+			exit(1);
+		}
+
+		hash_val = (hash_val << 2) | bp_val;
+	}
+
+	return hash_val;
+}
 
 void initializeFriendHash() {
 	for (int i = 0; i < INDEX_NUM; i++) {
@@ -82,12 +117,20 @@ void analyzeContig(char ref_name[]) {
 
 	analyzeFragment(temp_fragment);
 
+	int counter = 0;
+
 	while (ref_file.good()) {
+
+		if (counter % 100000 == 0) {
+			cout << "counter: " << counter / 100000 << endl;
+		}
+
 		ref_file >> temp_char;
 		temp_fragment = temp_fragment.substr(1,
 				KEY_LENGTH * (MAX_SEGMENT_NUM_ + 1) + MAX_INDEL_NUM_ - 1)
 				+ temp_char;
 		analyzeFragment(temp_fragment);
+		counter++;
 	}
 
 	for (int i = 0; i < KEY_LENGTH * (MAX_SEGMENT_NUM_ + 1) + MAX_INDEL_NUM_;

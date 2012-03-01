@@ -10,7 +10,11 @@
 #define MAX_SEGMENT_NUM_	16
 #define MAX_INDEL_NUM_		10
 
-#include "common.h"
+#include <string>
+
+using namespace std;
+
+int hashVal(string key);
 
 void initializeFriendHash();
 
