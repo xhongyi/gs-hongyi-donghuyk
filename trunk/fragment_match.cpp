@@ -226,7 +226,7 @@ final_result searchFragment(string fragment, string* ref) {
 	return return_result;
 }
 
-final_result searchFragment_fastq(string fragment, string* ref, ofstream * output_file, 
+final_result searchFragment_fastq(string fragment, string* ref, ofstream * output_file,
 							char* contig_name, string fragment_name, string fragment_qual) {
 	key_struct* sort_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
 	key_struct* keys_input = (key_struct*) malloc(key_number_*sizeof(key_struct));
@@ -242,18 +242,18 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 			sort_input[available_key_num].key_entry = key_entry;
 			sort_input[available_key_num].key_entry_size = key_entry_size;
 			available_key_num++;
-		}									
+		}
 	}
-	int n_num = key_number_ - available_key_num; 
+	int n_num = key_number_ - available_key_num;
 /*
 	// Checking sorting input with N
 	cout << "number of N  : " << n_num << endl;
 	cout << "available key: " << available_key_num << endl;
 	for (int i=0; i < available_key_num; i++) {
-		cout 	<< "pre    key  " << i 
-				<< "	" << sort_input[i].key_entry 
-				<< "	" << sort_input[i].key_entry_size 
-				<< "	" << sort_input[i].order 
+		cout 	<< "pre    key  " << i
+				<< "	" << sort_input[i].key_entry
+				<< "	" << sort_input[i].key_entry_size
+				<< "	" << sort_input[i].order
 				<< endl;
 	}
 	cout << endl;
@@ -275,10 +275,10 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 	cout << "number of N  : " << n_num << endl;
 	cout << "available key: " << available_key_num << endl;
 	for (int i=0; i < available_key_num; i++) {
-		cout 	<< "Sorted key  " << i 
-				<< "	" << keys_input[i].key_entry 
-				<< "	" << keys_input[i].key_entry_size 
-				<< "	" << keys_input[i].order 
+		cout 	<< "Sorted key  " << i
+				<< "	" << keys_input[i].key_entry
+				<< "	" << keys_input[i].key_entry_size
+				<< "	" << keys_input[i].order
 				<< endl;
 	}
 	cout << endl;
@@ -340,13 +340,13 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 						int tmp_num = coor_value - keys_input[k].key_number * KEY_LENGTH;
 						ref_str.clear();
 						for (int n = tmp_num; n < 0; n++){
-							ref_str += "N"; 
+							ref_str += "N";
 						}
-						ref_str += (*ref).substr(0, fragment_length_+tmp_num); 
+						ref_str += (*ref).substr(0, fragment_length_+tmp_num);
 					}
 					else {
-						ref_str = (*ref).substr( coor_value - keys_input[k].key_number * KEY_LENGTH, 
-												fragment_length_); 
+						ref_str = (*ref).substr( coor_value - keys_input[k].key_number * KEY_LENGTH,
+												fragment_length_);
 					}
 					/////////////////////Just For Testing
 					char* test_char = (char*) malloc((fragment_length_ + 1)*sizeof(char));
@@ -411,7 +411,7 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 								}
 								(*output_file) << edit_result.error[err_num].diff_char;
 								err_coor = edit_result.error[err_num].location + 1;
-								
+
 							}
 							else if (edit_result.error[err_num].diff == DELETION) {
 								if(edit_result.error[err_num].location - err_coor > 0) {
@@ -421,7 +421,7 @@ final_result searchFragment_fastq(string fragment, string* ref, ofstream * outpu
 								(*output_file) << edit_result.error[err_num].diff_char;
 								err_coor = edit_result.error[err_num].location + 1;
 							}
-						} 
+						}
 						if (err_coor < fragment_length_) {
 							(*output_file) << fragment_length_ - err_coor;
 						}

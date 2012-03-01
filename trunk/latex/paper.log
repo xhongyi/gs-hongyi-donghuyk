@@ -434,7 +434,7 @@ driver: pdftex
 \@twocolumntrue 
 (1in=72.27pt, 1cm=28.45pt)
 -----------------------
-(/usr/share/texmf/tex/context/base/supp-pdf.mkii
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count148
 \scratchdimen=\dimen151
