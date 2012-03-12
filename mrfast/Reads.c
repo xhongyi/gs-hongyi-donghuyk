@@ -121,6 +121,7 @@ int readAllReads(char *fileName1,
 
 	int clipped = 0;
 
+
 	if (!compressed)
 	{
 		_r_fp1 = fileOpen( fileName1, "r");
@@ -321,7 +322,7 @@ int readAllReads(char *fileName1,
 			}
 
 			if (clipped == 1 || clipped == 2){
-			  fprintf(stdout, "[PE mode warning] Sequence lengths are different,  read #%d is clipped to match.\n", clipped);
+			  fprintf(stdout, "[PE mode Warning] Sequence lengths are different,  read #%d is clipped to match.\n", clipped);
 			  clipped = 3;
 			}
 			
@@ -711,6 +712,30 @@ void finalizeReads(char *fileName)
 
 void adjustQual(Read *list, int seqCnt){
   /* This function will automatically determine the phred_offset and readjust quality values if needed */
+  int i,j,q, offset=64;
+  int len = strlen(list[0].qual);
+  
+  for (i=0; i<10000 && i<seqCnt; i++){
+    for (j=0;j<len;j++){
+      q = (int) list[i].qual[j] - offset;
+      if (q < 0){
+	offset = 33;
+	break;
+      }
+    }
+    if (offset == 33)
+      break;
+  }
+  
+  if (offset == 64){
+    fprintf(stdout, "[Quality Warning] Phred offset is 64. Readjusting to 33.\n");
+    fflush(stdout);
+    for (i=0;i<seqCnt;i++){
+      for (j=0;j<len;j++){
+	list[i].qual[j] -= 31;
+      }
+    }
+  }
 }
 
 

@@ -72,13 +72,13 @@ char					*mappingOutputPath = "";
 char					*unmappedOutput = "unmapped";
 char					fileName[1000][2][FILE_NAME_LENGTH];
 int						fileCnt;
-int 					maxOEAOutput=1000;
-int 					maxDiscordantOutput=10000;
+int 					maxOEAOutput=100;
+int 					maxDiscordantOutput=300;
 unsigned char			errThreshold=2;
 unsigned char			maxHits=0;
 unsigned char			WINDOW_SIZE = 12;
-unsigned long int		CONTIG_SIZE;
-unsigned long int		CONTIG_MAX_SIZE;
+unsigned int			CONTIG_SIZE;
+unsigned int			CONTIG_MAX_SIZE;
 
 void printHelp();
 
@@ -124,9 +124,13 @@ int parseCommandLine (int argc, char *argv[])
 		{
 			case 'a':
 				maxOEAOutput = atoi(optarg);
+				if (maxOEAOutput == 0)
+				  maxOEAOutput = 100000;
 				break;
 			case 'd':
 				maxDiscordantOutput = atoi(optarg);
+				if (maxDiscordantOutput == 0)
+				  maxDiscordantOutput = 100000;
 				break;
 			case 'i':
 				indexingMode = 1;
@@ -201,8 +205,8 @@ int parseCommandLine (int argc, char *argv[])
 
 	if ( indexingMode )
 	{
-		CONTIG_SIZE		= 15000000*20;
-		CONTIG_MAX_SIZE	= 40000000*20;
+		CONTIG_SIZE		= 15000000*20;	// fastHASH
+		CONTIG_MAX_SIZE	= 40000000*20;	// fastHASH
 
 		if (batchMode)
 		{
@@ -218,7 +222,7 @@ int parseCommandLine (int argc, char *argv[])
 
 		if (pairedEndDiscordantMode)
 		{
-			fprintf(stdout, "ERROR: --discordant cannot be used in indexing mode. \n");
+			fprintf(stdout, "ERROR: --discordant-vh cannot be used in indexing mode. \n");
 			return 0;
 		}
 
@@ -279,6 +283,9 @@ int parseCommandLine (int argc, char *argv[])
 			fprintf(stdout, "ERROR: --profile should be used with --pe");
 			return 0;
 		}
+
+		if (pairedEndMode)
+		        pairedEndDiscordantMode = 1;
 	}
 
 	int i = 0;

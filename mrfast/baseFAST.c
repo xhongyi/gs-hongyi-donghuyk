@@ -39,6 +39,10 @@
       calkan AT uw DOT edu
 */
 
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,19 +53,12 @@
 #include "Output.h"
 #include "HashTable.h"
 #include "MrFAST.h"
-#include "bit_mask.h"
 
 char 				*versionNumber = "2.1";			// Current Version
 unsigned char		seqFastq;
 
 int main(int argc, char *argv[])
 {
-	int search_key_level[7];
-	int it;
-	for (it = 0; it < 7; it++) {
-		search_key_level[it] = 0;
-	}
-
 	if (!parseCommandLine(argc, argv))
 		return 1;
 
@@ -99,7 +96,6 @@ int main(int argc, char *argv[])
 		double lstartTime;
 		double ppTime = 0.0;
 		double tmpTime;;
-		double BitMaskTime;;
 		char *prevGen = getMem(CONTIG_NAME_SIZE);
 		prevGen[0]='\0';
 		char *curGen;
@@ -173,15 +169,11 @@ int main(int argc, char *argv[])
 					loadingTime = 0;
 					prevGen[0] = '\0';
 					flag = 1;
-					int hash_file_num = 0;
+
 					do
 					{
-						flag = loadHashTable(&tmpTime, errThreshold);  			// Reading a fragment
+						flag = loadHashTable ( &tmpTime, errThreshold);  			// Reading a fragment
 						curGen = getRefGenomeName();
-						if (flag) {
-							load_mask(hash_file_num, &BitMaskTime);								// DHL bit mask
-							hash_file_num = hash_file_num + 1;
-						}
 
 						// First Time
 						if (flag && prevGen[0]== '\0')
@@ -194,25 +186,7 @@ int main(int argc, char *argv[])
 
 							fprintf(stdout, "| %15s | %15.2f | %15.2f | %15.2f | %15lld %15lld |\n",
 									prevGen,loadingTime, mappingTime, maxMem, mappingCnt , mappedSeqCnt);
-							int iq;
-							for (iq = 0; iq < 7; iq++) {
-								fprintf(stdout, "%d level bit mask success: %lld \n",
-										iq+1, get_eval_data(1, iq));
-								fprintf(stdout, "%d level bit mask fail   : %lld \n",
-										iq+1, get_eval_data(0, iq));
-							}
-							fprintf(stdout,"---------------------------------------------\n");
-							fprintf(stdout,"Total Filtering       : %lld \n", total_filtering);
-							fprintf(stdout,"Total Binary num	  : %lld \n", total_binary_num);
-							fprintf(stdout,"Total binary success  : %lld \n", total_binary_success);
-							fprintf(stdout,"Total bit_mask success: %lld \n", total_bit_mask_success);
-							fprintf(stdout,"Total edit num		  : %lld \n", total_edit_num);
-							fprintf(stdout,"Total pass num		  : %lld \n", total_pass_num);
-							fprintf(stdout,"---------------------------------------------\n");
-							bitmask_init();
-
 							fflush(stdout);
-							
 
 							totalMappingTime += mappingTime;
 							totalLoadingTime += loadingTime;
@@ -230,46 +204,27 @@ int main(int argc, char *argv[])
 						{
 							fprintf(stdout, "| %15s | %15.2f | %15.2f | %15.2f | %15lld %15lld |\n",
 									prevGen,loadingTime, mappingTime, maxMem, mappingCnt , mappedSeqCnt);
-							int iq;
-							for (iq = 0; iq < 7; iq++) {
-								fprintf(stdout, "%d level bit mask success: %lld \n",
-										iq+1, get_eval_data(1, iq));
-								fprintf(stdout, "%d level bit mask fail   : %lld \n",
-										iq+1, get_eval_data(0, iq));
-							}
-							fprintf(stdout,"---------------------------------------------\n");
-							fprintf(stdout,"Total Filtering       : %lld \n", total_filtering);
-							fprintf(stdout,"Total Binary num	  : %lld \n", total_binary_num);
-							fprintf(stdout,"Total binary success  : %lld \n", total_binary_success);
-							fprintf(stdout,"Total bit_mask success: %lld \n", total_bit_mask_success);
-							fprintf(stdout,"Total edit num		  : %lld \n", total_edit_num);
-							fprintf(stdout,"Total pass num		  : %lld \n", total_pass_num);
-							fprintf(stdout,"---------------------------------------------\n");
-							bitmask_init();
-
 							fflush(stdout);
 						}
 
 						sprintf(prevGen, "%s", curGen);
 
 						loadingTime += tmpTime;
-						loadingTime += BitMaskTime;
 //						lstartTime = getTime();
 
 						initFAST(seqList, seqListSize, samplingLocs, samplingLocsSize, fileName[fc][0]);
 
 						lstartTime = getTime();
 
-						mapAllSingleEndSeq(); // DHL
-						//mapAllSingleEndSeq(flag_first); // DHL
+								
+						mapAllSingleEndSeq();
+
+		
 						
 						mappingTime += getTime() - lstartTime;
 						if (maxMem < getMemUsage())
 						{
 							maxMem = getMemUsage();					 
-						}
-						if (flag) {
-							free_mask();
 						}
 					} while (flag);
 
@@ -378,7 +333,7 @@ int main(int argc, char *argv[])
 				finalizeFAST();
 			} //else
 
-		finalizeOutput();
+			finalizeOutput();
 
 		fprintf(stdout, "-----------------------------------------------------------------------------------------------------------\n");
 		fprintf(stdout, "%19s%16.2f%18.2f\n\n", "Total:",totalLoadingTime, totalMappingTime);

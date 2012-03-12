@@ -36,7 +36,7 @@ Authors:
 Emails: 
 	farhadh AT uw DOT edu
 	fhach AT cs DOT sfu DOT ca
-		calkan AT uw DOT edu
+        calkan AT uw DOT edu
 */
 
 #include <stdio.h>
@@ -55,7 +55,7 @@ Emails:
 #include "Output.h"
 #include "MrFAST.h"
 #include "RefGenome.h"
-#include "bit_mask.h"
+
 
 #define min(a,b) ((a)>(b)?(b):(a))
 #define min3(a,b,c) ((a)>(b)?(b>c?c:b):(a>c?c:a))
@@ -63,12 +63,10 @@ Emails:
 
 #define MAX_REF_SIZE	18
 
-int local_search_key_level[7];
-
 										
 float calculateScore(int index, char *seq, char *qual, char *md);
 unsigned char		mrFAST = 1;
-char				*versionNumberF="0.3";
+char				*versionNumberF="0.5";
 
 long long			verificationCnt = 0;
 long long 			mappingCnt = 0;
@@ -107,7 +105,6 @@ OPT_FIELDS			*_msf_optionalFields;
 char				*_msf_op;
 
 int				*_msf_verifiedLocs = NULL;
-int				*_msf_verifiedLocsP = NULL;
 
 char				_msf_numbers[200][3];
 char				_msf_cigar[5];
@@ -150,57 +147,57 @@ int 			lookUpTable[15625][15625];
 /**************************************************Methods***************************************************/
 int smallEditDistanceF(char *a, int lena, char *b, int lenb)
 {
-		int matrix[20][20];
-		int i = 0;
-		int j = 0;
+        int matrix[20][20];
+        int i = 0;
+        int j = 0;
 
-		for(i = 0; i <= lena; i++)
-		{
-				matrix[0][i] = i;
-		}
+        for(i = 0; i <= lena; i++)
+        {
+                matrix[0][i] = i;
+        }
 
-		for(i = 0; i <= lenb; i++)
-		{
-				matrix[i][0] = i;
-		}
+        for(i = 0; i <= lenb; i++)
+        {
+                matrix[i][0] = i;
+        }
 
 
-		for(i = 1; i <= lenb; i++)
-		{
-				for(j = 1; j <= lena; j++)
-				{
-						matrix[i][j] = min3(matrix[i-1][j-1]+ (a[j-1] != b[i-1]),matrix[i][j-1]+1 ,matrix[i-1][j]+1);
-				}
-		}
-		return (matrix[lenb][lena]>errThreshold?-1:matrix[lenb][lena]);
+        for(i = 1; i <= lenb; i++)
+        {
+                for(j = 1; j <= lena; j++)
+                {
+                        matrix[i][j] = min3(matrix[i-1][j-1]+ (a[j-1] != b[i-1]),matrix[i][j-1]+1 ,matrix[i-1][j]+1);
+                }
+        }
+        return (matrix[lenb][lena]>errThreshold?-1:matrix[lenb][lena]);
 }
 
 int smallEditDistanceB(char *a, int lena, char *b, int lenb)
 {
-		int matrix[20][20];
-		int i = 0;
-		int j = 0;
+        int matrix[20][20];
+        int i = 0;
+        int j = 0;
 	
-		for(i = 0; i <= lena; i++)
-		{
-				matrix[0][i] = i;
-		}
+        for(i = 0; i <= lena; i++)
+        {
+                matrix[0][i] = i;
+        }
 
-		for(i = 0; i <= lenb; i++)
-		{
-				matrix[i][0] = i;
-		}
+        for(i = 0; i <= lenb; i++)
+        {
+                matrix[i][0] = i;
+        }
 
 
-		for(i = 1; i <= lenb; i++)
-		{
-				for(j = 1; j <= lena; j++)
-				{
-						matrix[i][j] = min3(matrix[i-1][j-1]+ (*(a-j+1) != *(b-i+1)),matrix[i][j-1]+1 ,matrix[i-1][j]+1);
-				}
-		}
+        for(i = 1; i <= lenb; i++)
+        {
+                for(j = 1; j <= lena; j++)
+                {
+                        matrix[i][j] = min3(matrix[i-1][j-1]+ (*(a-j+1) != *(b-i+1)),matrix[i][j-1]+1 ,matrix[i-1][j]+1);
+                }
+        }
 
-		return (matrix[lenb][lena]>errThreshold?-1:matrix[lenb][lena]);
+        return (matrix[lenb][lena]>errThreshold?-1:matrix[lenb][lena]);
 }
 
 char fastEditDistance(int per1, int per2)
@@ -300,11 +297,8 @@ void initLookUpTable()
 
 int backwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
 {
-//	printf("back Edit lenb:%d lena:%d \n", lenb, lena);
-	if(lenb == 0 || lena == 0) {
-		//return 0;
-		return -1;
-	}
+	if(lenb == 0 || lena == 0)
+		return 0;
 
 	int i = 0;
 	int j = 0;
@@ -338,7 +332,6 @@ int backwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
 
 	if(lenb <= e) 
 	{
-//		printf ("smallEditDistanceB:%d", smallEditDistanceB(a,lena,b,lenb));
 		return smallEditDistanceB(a,lena,b,lenb);
 	}
 
@@ -485,8 +478,23 @@ int backwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
 				Diag = _mm_insert_epi16(Diag, *(b-((i+1)/2+j-1)) != *(a-((i)/2-j-1)),0);
 			}
 
+			//	printf("@%d %d %d %d\n", _mm_extract_epi16(Diag,0), _mm_extract_epi16(Diag,1), _mm_extract_epi16(Diag,2),
+			//              _mm_extract_epi16(Diag,3));
+
 			R1 = _mm_min_epi16(R0+Side2, R1+Diag);
+
+			//	printf("#~%d %d %d %d\n", _mm_extract_epi16(R1,0), _mm_extract_epi16(R1,1), _mm_extract_epi16(R1,2),
+			//              _mm_extract_epi16(R1,3));
+
 			R1 = _mm_min_epi16(R1,  _mm_slli_si128(R0,2)+Down2);
+
+			//	printf("$%d %d %d %d\n", _mm_extract_epi16(Side2,0), _mm_extract_epi16(Side2,1), _mm_extract_epi16(Side2,2),
+			//              _mm_extract_epi16(Side2,3));
+
+			//	printf("#%d %d %d %d\n", _mm_extract_epi16(R1,0), _mm_extract_epi16(R1,1), _mm_extract_epi16(R1,2),
+			//		_mm_extract_epi16(R1,3));    
+
+
 
 			if(i >= 2*lenb-e)
 			{
@@ -558,14 +566,13 @@ int backwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
 
 int backwardEditDistanceSSE2G(char *a, int lena, char *b,int lenb)
 {
-//	printf("back Edit lenb:%d lena:%d \n", lenb, lena);
-	if(lenb == 0 || lena == 0) {
-		return -1;
-		//return 0;
-	}
+	if(lenb == 0 || lena == 0)
+		return 0;
+
 	int i = 0;
 	int j = 0;
 	int k = 0;
+
 
 	int e = errThreshold;
 
@@ -840,7 +847,7 @@ int backwardEditDistanceSSE2G(char *a, int lena, char *b,int lenb)
 	if(minError > e)
 		return -1;
 	return minError;
-} 
+}
 
 inline int backwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb)
 {
@@ -1551,10 +1558,10 @@ inline int forwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb)
 		}
 	}
 
-		j=0;
-		int tmpE = e;
-		for(;j<2*(e-2)+1;j++)
-		{
+        j=0;
+        int tmpE = e;
+        for(;j<2*(e-2)+1;j++)
+        {
 
 			Diag = _mm_xor_si128(Diag, Diag);
 			//set the first element
@@ -1616,34 +1623,34 @@ inline int forwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb)
 		}
 		//Diag  
 
-		Diag = _mm_xor_si128(Diag,Diag);
-		Diag = _mm_insert_epi16(Diag, minError, 0);
-		Diag = _mm_insert_epi16(Diag, a[lenb+e-2] != b[lenb-1], 1);
+        Diag = _mm_xor_si128(Diag,Diag);
+        Diag = _mm_insert_epi16(Diag, minError, 0);
+        Diag = _mm_insert_epi16(Diag, a[lenb+e-2] != b[lenb-1], 1);
 
-		Side1 = _mm_insert_epi16(Side1,1,0);
-		Side1 = _mm_insert_epi16(Side1,1,1);
+        Side1 = _mm_insert_epi16(Side1,1,0);
+        Side1 = _mm_insert_epi16(Side1,1,1);
 
-		Down1 = _mm_insert_epi16(Down1, minError, 0);
-		Down1 = _mm_insert_epi16(Down1, 1, 1);
+        Down1 = _mm_insert_epi16(Down1, minError, 0);
+        Down1 = _mm_insert_epi16(Down1, 1, 1);
 
-		R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
-		R1 = _mm_min_epi16(R1, _mm_slli_si128(R0,2)+Down1);
+        R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
+        R1 = _mm_min_epi16(R1, _mm_slli_si128(R0,2)+Down1);
 
-		minError = min(minError, _mm_extract_epi16(R1,1));
+        minError = min(minError, _mm_extract_epi16(R1,1));
 
-		Diag = _mm_insert_epi16(Diag, a[lenb+e-1] != b[lenb-1], 0);
-		Down1 = _mm_insert_epi16(Down1, 1, 0);
+        Diag = _mm_insert_epi16(Diag, a[lenb+e-1] != b[lenb-1], 0);
+        Down1 = _mm_insert_epi16(Down1, 1, 0);
 
-		R0 = _mm_min_epi16(R1+Down1,R0+Diag);
-		R0 = _mm_min_epi16(R0,_mm_srli_si128(R1,2)+Side1);
-
-
-		minError = min(minError, _mm_extract_epi16(R0,0));
+        R0 = _mm_min_epi16(R1+Down1,R0+Diag);
+        R0 = _mm_min_epi16(R0,_mm_srli_si128(R1,2)+Side1);
 
 
-		if(minError > mismatch)
-				return -1;
-		return minError;
+        minError = min(minError, _mm_extract_epi16(R0,0));
+
+
+        if(minError > mismatch)
+                return -1;
+        return minError;
 }
 
 
@@ -1651,37 +1658,37 @@ inline int forwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb)
 int forwardEditDistance4SSE2(char *a, int lena, char *b,int lenb)
 {
 	if(lenb == 0 || lena == 0)
-				return 0;
+                return 0;
 
-		int i = 0;
-		int j = 0;
-		int k = 0;
+        int i = 0;
+        int j = 0;
+        int k = 0;
 
-		int i0=0;
+        int i0=0;
 	int i1=0;
 	int i2=0;
 	int i4=0;
 	int i5=0;
 
-		int e = errThreshold;
+        int e = errThreshold;
 
-		int minError = 2*e;
+        int minError = 2*e;
 	int index = 0;
 	int tmpValue = 0;
 
 	if(lenb <= e)
-		{
-				return smallEditDistanceF(a,lena,b,lenb);
-		}
+        {
+                return smallEditDistanceF(a,lena,b,lenb);
+        }
 
 
-		register __m128i R0, R1;
-		__m128i Diag;
-		__m128i Side1, Side2;
-		__m128i Down1, Down2;
-		__m128i tmp;
+        register __m128i R0, R1;
+        __m128i Diag;
+        __m128i Side1, Side2;
+        __m128i Down1, Down2;
+        __m128i tmp;
 	register __m128i SeqA, SeqB;
-		__m128i Result;
+        __m128i Result;
 
 	__m128i tmpSeqA;
 	__m128i tmpSeqB;
@@ -1699,11 +1706,11 @@ int forwardEditDistance4SSE2(char *a, int lena, char *b,int lenb)
 	Result = _mm_setzero_si128 ();
 	/* end initialize */
 
-		R1 = _mm_xor_si128(R1, R1);
-		R0 = _mm_xor_si128(R0, R0);
+        R1 = _mm_xor_si128(R1, R1);
+        R0 = _mm_xor_si128(R0, R0);
 
-		Diag = _mm_xor_si128(Diag, Diag);
-		Diag = _mm_insert_epi16(Diag,2*e,0);
+        Diag = _mm_xor_si128(Diag, Diag);
+        Diag = _mm_insert_epi16(Diag,2*e,0);
 
 	i0 = (a[0] != b[0]);
 	i1 = min(i0, (a[1]!=b[0]))+1;
@@ -1714,8 +1721,8 @@ int forwardEditDistance4SSE2(char *a, int lena, char *b,int lenb)
 	i5 = min(i2, (a[0]!=b[2])+1)+1;
 
 	R1 = _mm_insert_epi16(R1, 3, 0);
-		R1 = _mm_insert_epi16(R1, i1, 1);
-		R1 = _mm_insert_epi16(R1, i2, 2);
+        R1 = _mm_insert_epi16(R1, i1, 1);
+        R1 = _mm_insert_epi16(R1, i2, 2);
 	R1 = _mm_insert_epi16(R1, 3, 3);
 
 	R0 = _mm_insert_epi16(R0, 4, 0);
@@ -1724,193 +1731,193 @@ int forwardEditDistance4SSE2(char *a, int lena, char *b,int lenb)
 	R0 = _mm_insert_epi16(R0, i5, 3);
 	R0 = _mm_insert_epi16(R0, 4, 4);
 
-		Side2 = _mm_xor_si128(Side2, Side2);
-		Down2 = _mm_xor_si128(Down2, Down2);
-		Down1 = _mm_xor_si128(Down1, Down1);
+        Side2 = _mm_xor_si128(Side2, Side2);
+        Down2 = _mm_xor_si128(Down2, Down2);
+        Down1 = _mm_xor_si128(Down1, Down1);
 	Side1 = _mm_xor_si128(Side1, Side1);
 
-		Side2 = _mm_insert_epi16(Side2,2*e,0);
-		Down1 = _mm_insert_epi16(Down1,2*e,0);
+        Side2 = _mm_insert_epi16(Side2,2*e,0);
+        Down1 = _mm_insert_epi16(Down1,2*e,0);
 		
 	Side1 = _mm_insert_epi16(Side1,1,0);
 	
 	index = 0;
 	for(j=0; j < e; j++)
-		{
-				Side2 = _mm_slli_si128(Side2, 2);
-				Side2 = _mm_insert_epi16(Side2,1,0);
+        {
+                Side2 = _mm_slli_si128(Side2, 2);
+                Side2 = _mm_insert_epi16(Side2,1,0);
 
-				Down1 = _mm_slli_si128(Down1, 2);
-				Down1 = _mm_insert_epi16(Down1,1,0);
+                Down1 = _mm_slli_si128(Down1, 2);
+                Down1 = _mm_insert_epi16(Down1,1,0);
 
-				Down2 = _mm_slli_si128(Down2, 2);
-				Down2 = _mm_insert_epi16(Down2,1,0);
+                Down2 = _mm_slli_si128(Down2, 2);
+                Down2 = _mm_insert_epi16(Down2,1,0);
 	
 		Side1 = _mm_slli_si128(Side1, 2);
-			Side1 = _mm_insert_epi16(Side1,1,0);
+	        Side1 = _mm_insert_epi16(Side1,1,0);
 
 		SeqA = _mm_slli_si128(SeqA, 2);
-				SeqB = _mm_slli_si128(SeqB, 2);
-				SeqA = _mm_insert_epi16(SeqA,a[index],0);
-				SeqB = _mm_insert_epi16(SeqB,b[index],0);
-				index++;
-		}
+                SeqB = _mm_slli_si128(SeqB, 2);
+                SeqA = _mm_insert_epi16(SeqA,a[index],0);
+                SeqB = _mm_insert_epi16(SeqB,b[index],0);
+                index++;
+        }
 
-		Down2= _mm_slli_si128(Down2, 2);
-		Down2 = _mm_insert_epi16(Down2,2*e,0);
+        Down2= _mm_slli_si128(Down2, 2);
+        Down2 = _mm_insert_epi16(Down2,2*e,0);
 
 	index = 4;
 	i = 5;
 
 	int loopEnd = 2*lenb-(e-1);
-		for(; i <= loopEnd ;i++)
-		{
-				//Diag = _mm_xor_si128(Diag, Diag);
-				if( i%2 == 0)
-				{
+        for(; i <= loopEnd ;i++)
+        {
+                //Diag = _mm_xor_si128(Diag, Diag);
+                if( i%2 == 0)
+                {
 			tmpSeqA = _mm_slli_si128(SeqA, 2);
-						tmpSeqB = _mm_slli_si128(SeqB, 2);
-						SeqA = _mm_insert_epi16(tmpSeqA,a[index],0);
-						SeqB = _mm_insert_epi16(tmpSeqB,b[index],0);
+                        tmpSeqB = _mm_slli_si128(SeqB, 2);
+                        SeqA = _mm_insert_epi16(tmpSeqA,a[index],0);
+                        SeqB = _mm_insert_epi16(tmpSeqB,b[index],0);
 
-						index++;
+                        index++;
 			
 			tmp = _mm_shufflelo_epi16(SeqB,27);
 			tmp = _mm_slli_si128(tmp, 2); 
 			tmpValue = _mm_extract_epi16(tmp, 5);
 			tmp = _mm_insert_epi16(tmp, tmpValue, 0);
 
-						Result = _mm_cmpeq_epi16(SeqA, tmp);
-						Diag =  _mm_andnot_si128(Result, MASK);
+                        Result = _mm_cmpeq_epi16(SeqA, tmp);
+                        Diag =  _mm_andnot_si128(Result, MASK);
 
-						R0 = _mm_min_epi16(R1+Side2, R0+Diag);
-						R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
+                        R0 = _mm_min_epi16(R1+Side2, R0+Diag);
+                        R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
 
-						if(_mm_extract_epi16(R0, 0) > e && _mm_extract_epi16(R0, 1) > e && _mm_extract_epi16(R0, 2) > e 
+                        if(_mm_extract_epi16(R0, 0) > e && _mm_extract_epi16(R0, 1) > e && _mm_extract_epi16(R0, 2) > e 
 				&& _mm_extract_epi16(R0, 3) > e && _mm_extract_epi16(R0, 4) > e && _mm_extract_epi16(R1, 0) > e && 
 				  _mm_extract_epi16(R1, 1) > e && _mm_extract_epi16(R1, 2) > e && _mm_extract_epi16(R1, 3) > e)
-								return -1;
+                                return -1;
 
-				   if(i == 2*lenb-e)
-						{
-								tmp = _mm_srli_si128(R0,2);
-								for(k=0; k < e-1;k++)
-										tmp = _mm_srli_si128(tmp,2);
-								minError = _mm_extract_epi16(tmp,0);
-						}
+	               if(i == 2*lenb-e)
+                        {
+                                tmp = _mm_srli_si128(R0,2);
+                                for(k=0; k < e-1;k++)
+                                        tmp = _mm_srli_si128(tmp,2);
+                                minError = _mm_extract_epi16(tmp,0);
+                        }
 
-				}
+                }
 
-				else
-				{
-						Result = _mm_cmpeq_epi16(SeqA, _mm_shufflelo_epi16(SeqB,27));
-						Diag =  _mm_andnot_si128(Result, MASK);
+                else
+                {
+                        Result = _mm_cmpeq_epi16(SeqA, _mm_shufflelo_epi16(SeqB,27));
+                        Diag =  _mm_andnot_si128(Result, MASK);
 
-						R1 = _mm_min_epi16(_mm_srli_si128(R0,2)+Side1, R1+Diag);
-						R1 = _mm_min_epi16(R1, R0+Down1);
+                        R1 = _mm_min_epi16(_mm_srli_si128(R0,2)+Side1, R1+Diag);
+                        R1 = _mm_min_epi16(R1, R0+Down1);
 
-						if(i >= 2*lenb-e)
-						{
-								tmp = _mm_srli_si128(R1,2);
-								for(k=0; k < e-2;k++)
-										tmp = _mm_srli_si128(tmp,2);
-								minError = min(minError, _mm_extract_epi16(tmp,0));
-						}
-				}
+                        if(i >= 2*lenb-e)
+                        {
+                                tmp = _mm_srli_si128(R1,2);
+                                for(k=0; k < e-2;k++)
+                                        tmp = _mm_srli_si128(tmp,2);
+                                minError = min(minError, _mm_extract_epi16(tmp,0));
+                        }
+                }
 
 
 	}
-		j=0;
-		int tmpE = e;
-		for(;j<2*(e-2)+1;j++)
-		{
+        j=0;
+        int tmpE = e;
+        for(;j<2*(e-2)+1;j++)
+        {
 
-				Diag = _mm_xor_si128(Diag, Diag);
-				//set the first element
-				if(j==0)
-				{
-						for( k=0;k<=e-1;k++  )
-						{
-								Diag = _mm_slli_si128(Diag, 2);
-								Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
-						}
+                Diag = _mm_xor_si128(Diag, Diag);
+                //set the first element
+                if(j==0)
+                {
+                        for( k=0;k<=e-1;k++  )
+                        {
+                                Diag = _mm_slli_si128(Diag, 2);
+                                Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
+                        }
 
-						R0 = _mm_min_epi16(R1+Side2, R0+Diag);
-						R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
+                        R0 = _mm_min_epi16(R1+Side2, R0+Diag);
+                        R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
 
-						tmpE--;
+                        tmpE--;
 
-						tmp = _mm_srli_si128(R0,2);
-						for(k=0; k < e-2;k++)
-								tmp = _mm_srli_si128(tmp,2);
-						minError = min(minError, _mm_extract_epi16(tmp,0));
-				}
+                        tmp = _mm_srli_si128(R0,2);
+                        for(k=0; k < e-2;k++)
+                                tmp = _mm_srli_si128(tmp,2);
+                        minError = min(minError, _mm_extract_epi16(tmp,0));
+                }
 		else if(j%2 == 0)
-				{
-						for(k=0;k<tmpE;k++)
-						{
-								Diag = _mm_slli_si128(Diag, 2);
-								Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
-						}
+                {
+                        for(k=0;k<tmpE;k++)
+                        {
+                                Diag = _mm_slli_si128(Diag, 2);
+                                Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
+                        }
 
-						R0 = _mm_min_epi16(R1+Side2, R0+Diag);
-						R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
+                        R0 = _mm_min_epi16(R1+Side2, R0+Diag);
+                        R0 = _mm_min_epi16(R0, _mm_slli_si128(R1,2)+Down2);
 
-						tmpE--;
+                        tmpE--;
 
-						tmp = _mm_srli_si128(R0,2);
-						for(k=0; k < tmpE-1;k++)
-								tmp = _mm_srli_si128(tmp,2);
-						minError = min(minError, _mm_extract_epi16(tmp,0));
-				}
+                        tmp = _mm_srli_si128(R0,2);
+                        for(k=0; k < tmpE-1;k++)
+                                tmp = _mm_srli_si128(tmp,2);
+                        minError = min(minError, _mm_extract_epi16(tmp,0));
+                }
 
 
 		else
-				{
-						for(k=0;k<tmpE;k++)
-						{
-								Diag = _mm_slli_si128(Diag, 2);
-								Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
-						}
+                {
+                        for(k=0;k<tmpE;k++)
+                        {
+                                Diag = _mm_slli_si128(Diag, 2);
+                                Diag = _mm_insert_epi16(Diag, b[lenb-1-k] != a[(i-lenb)-1+k],0);
+                        }
 
-						R1 = _mm_min_epi16(_mm_srli_si128(R0,2)+Side1, R1+Diag);
-						R1 = _mm_min_epi16(R1, R0+Down1);
+                        R1 = _mm_min_epi16(_mm_srli_si128(R0,2)+Side1, R1+Diag);
+                        R1 = _mm_min_epi16(R1, R0+Down1);
 
-						tmp = _mm_srli_si128(R1,2);
-						for(k=0; k < tmpE-2;k++)
-								tmp = _mm_srli_si128(tmp,2);
-						minError = min(minError, _mm_extract_epi16(tmp,0));
-				}
-				i++;
-		}
+                        tmp = _mm_srli_si128(R1,2);
+                        for(k=0; k < tmpE-2;k++)
+                                tmp = _mm_srli_si128(tmp,2);
+                        minError = min(minError, _mm_extract_epi16(tmp,0));
+                }
+                i++;
+        }
  	//Diag  
 
-		Diag = _mm_xor_si128(Diag,Diag);
-		Diag = _mm_insert_epi16(Diag, 2*e, 0);
-		Diag = _mm_insert_epi16(Diag, a[lenb+e-2] != b[lenb-1], 1);
+        Diag = _mm_xor_si128(Diag,Diag);
+        Diag = _mm_insert_epi16(Diag, 2*e, 0);
+        Diag = _mm_insert_epi16(Diag, a[lenb+e-2] != b[lenb-1], 1);
 
-		Side1 = _mm_insert_epi16(Side1,1,0);
-		Side1 = _mm_insert_epi16(Side1,1,1);
+        Side1 = _mm_insert_epi16(Side1,1,0);
+        Side1 = _mm_insert_epi16(Side1,1,1);
 
-		Down1 = _mm_insert_epi16(Down1, 2*e, 0);
-		Down1 = _mm_insert_epi16(Down1, 1, 1);
+        Down1 = _mm_insert_epi16(Down1, 2*e, 0);
+        Down1 = _mm_insert_epi16(Down1, 1, 1);
 
-		R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
-		R1 = _mm_min_epi16(R1, _mm_slli_si128(R0,2)+Down1);
+        R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
+        R1 = _mm_min_epi16(R1, _mm_slli_si128(R0,2)+Down1);
 
-		minError = min(minError, _mm_extract_epi16(R1,1));
+        minError = min(minError, _mm_extract_epi16(R1,1));
 
-		Diag = _mm_insert_epi16(Diag, a[lenb+e-1] != b[lenb-1], 0);
-		Down1 = _mm_insert_epi16(Down1, 1, 0);
+        Diag = _mm_insert_epi16(Diag, a[lenb+e-1] != b[lenb-1], 0);
+        Down1 = _mm_insert_epi16(Down1, 1, 0);
 
-		R0 = _mm_min_epi16(R1+Down1,R0+Diag);
-		R0 = _mm_min_epi16(R0,_mm_srli_si128(R1,2)+Side1);
+        R0 = _mm_min_epi16(R1+Down1,R0+Diag);
+        R0 = _mm_min_epi16(R0,_mm_srli_si128(R1,2)+Side1);
 
-		minError = min(minError, _mm_extract_epi16(R0,0));
+        minError = min(minError, _mm_extract_epi16(R0,0));
 
-		if(minError > e)
-				return -1;
-		return minError;
+        if(minError > e)
+                return -1;
+        return minError;
 }
 
 int forwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
@@ -2104,7 +2111,7 @@ int forwardEditDistanceSSE2Odd(char *a, int lena, char *b,int lenb)
 			R1 = _mm_min_epi16(R1,  _mm_slli_si128(R0,2)+Down2);
 
 			//printf("#%d %d %d %d\n", _mm_extract_epi16(R1,0), _mm_extract_epi16(R1,1), _mm_extract_epi16(R1,2),
-			//	_mm_extract_epi16(R1,3));	
+			//	_mm_extract_epi16(R1,3));    
 
 			if(i >= 2*lenb-e)
 			{
@@ -2469,30 +2476,30 @@ int forwardEditDistanceSSE2G(char *a, int lena, char *b,int lenb)
 int forwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 {
 	if(lenb == 0 || lena == 0)
-				return 0;
+                return 0;
 	
 		
 
-		int i0 = 0;
-		int i1 = 0;
+        int i0 = 0;
+        int i1 = 0;
 
 
-		int error;					  //0: if the two character are equal 1: if not
+        int error;                      //0: if the two character are equal 1: if not
 
-		int i = 0;					  //loop index
+        int i = 0;                      //loop index
 
-		int e = 2;					  //error bound
+        int e = 2;                      //error bound
 
 	int totalError = 0;
 
-		__m128i R0;
-		__m128i R1;
+        __m128i R0;
+        __m128i R1;
 
-		__m128i Side1, Side2,Side;					//side matrix
-		__m128i Down1, Down2,Down;					//down matrix
-		__m128i Diag; 
+        __m128i Side1, Side2,Side;                    //side matrix
+        __m128i Down1, Down2,Down;                    //down matrix
+        __m128i Diag; 
 
-		__m128i tmp;
+        __m128i tmp;
 	__m128i ERROR_REACH;
 
 	/* initialize */
@@ -2504,25 +2511,25 @@ int forwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 	Down1 = _mm_setzero_si128 ();
 	Down2 = _mm_setzero_si128 ();
 	Side = _mm_setzero_si128 ();
-		Down = _mm_setzero_si128 ();
+        Down = _mm_setzero_si128 ();
 	tmp = _mm_setzero_si128 ();
-		ERROR_REACH = _mm_setzero_si128 ();
+        ERROR_REACH = _mm_setzero_si128 ();
 	/* end initialize */
 
 
 	if(lenb <= e)
-		{
-				return smallEditDistanceF(a,lena,b,lenb);
-		}
+        {
+                return smallEditDistanceF(a,lena,b,lenb);
+        }
 	
 	ERROR_REACH = _mm_set_epi16(0,0,0,0,0,e,e,e);
 
 	R0 = _mm_insert_epi16(R0,0,0);
 
-		R1 = _mm_insert_epi16(R1,1,0);
-		R1 = _mm_insert_epi16(R1,1,1);
+        R1 = _mm_insert_epi16(R1,1,0);
+        R1 = _mm_insert_epi16(R1,1,1);
 
-//		error = ((a[0]) != (b[0]));
+//        error = ((a[0]) != (b[0]));
 
 	Diag  = _mm_set_epi16(0,0,0,0,0,2*e,((a[0]) != (b[0])),2*e);
 	Side1 = _mm_set_epi16(0,0,0,0,0,2*e,1,1);
@@ -2530,72 +2537,72 @@ int forwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 	Down1 = _mm_set_epi16(0,0,0,0,0,2*e,1,1);
 	Down2 = _mm_set_epi16(0,0,0,0,0,1,1,2*e);
 
-		tmp = _mm_slli_si128(R1,2);
+        tmp = _mm_slli_si128(R1,2);
 
-		R0 = _mm_min_epi16(R1+Side1, R0+Diag);
-		R0 = _mm_min_epi16(R0,tmp+Down2);
+        R0 = _mm_min_epi16(R1+Side1, R0+Diag);
+        R0 = _mm_min_epi16(R0,tmp+Down2);
 
 	for (i = 3; i  < 2*lena; i++)
-		{
-				if(i % 2 ==1)
-				{
-						
+        {
+                if(i % 2 ==1)
+                {
+                        
 			Diag = _mm_xor_si128(Diag, Diag);
-						error = ((a[(i+1)/2-1]) != (b[(i-1)/2-1]));
-						Diag = _mm_insert_epi16(Diag,error,0);
-						error = ((a[(i-1)/2-1]) != (b[(i+1)/2-1]));
-						Diag = _mm_insert_epi16(Diag,error,1);
-//				Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 0, ((a[(i-1)/2-1]) != (b[(i+1)/2-1])) ,((a[(i+1)/2-1]) != (b[(i-1)/2-1])));
+                        error = ((a[(i+1)/2-1]) != (b[(i-1)/2-1]));
+                        Diag = _mm_insert_epi16(Diag,error,0);
+                        error = ((a[(i-1)/2-1]) != (b[(i+1)/2-1]));
+                        Diag = _mm_insert_epi16(Diag,error,1);
+//		        Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 0, ((a[(i-1)/2-1]) != (b[(i+1)/2-1])) ,((a[(i+1)/2-1]) != (b[(i-1)/2-1])));
 
 
-						tmp = _mm_srli_si128(R0,2);
+                        tmp = _mm_srli_si128(R0,2);
 
-						R1 = _mm_min_epi16(tmp+Side1, R1+Diag);
-						R1 = _mm_min_epi16(R1,R0+Down1);		   
+                        R1 = _mm_min_epi16(tmp+Side1, R1+Diag);
+                        R1 = _mm_min_epi16(R1,R0+Down1);           
 
-						if(i > 2 * lenb - 2)
+                        if(i > 2 * lenb - 2)
 			{
-							i1 = _mm_extract_epi16(R1, 1);
-								totalError = min(totalError, i1);						  
+	                        i1 = _mm_extract_epi16(R1, 1);
+                                totalError = min(totalError, i1);                          
 			}
-				}
+                }
 
 		else if(i % 2 == 0)
-				{
-						error = ((a[i/2]) != (b[i/2-2]));
-						Diag = _mm_insert_epi16(Diag,error,0);
-						error = ((a[i/2-1]) != (b[i/2-1]));
-						Diag = _mm_insert_epi16(Diag,error,1);
-						error = ((a[i/2-2]) != (b[i/2]));
-						Diag = _mm_insert_epi16(Diag,error,2);
+                {
+                        error = ((a[i/2]) != (b[i/2-2]));
+                        Diag = _mm_insert_epi16(Diag,error,0);
+                        error = ((a[i/2-1]) != (b[i/2-1]));
+                        Diag = _mm_insert_epi16(Diag,error,1);
+                        error = ((a[i/2-2]) != (b[i/2]));
+                        Diag = _mm_insert_epi16(Diag,error,2);
 
-		//				Diag  = _mm_set_epi16(0, 0, 0, 0, 0, ((a[i/2-2]) != (b[i/2])) , ((a[i/2-1]) != (b[i/2-1]))  , ((a[i/2]) != (b[i/2-2])) );
+        //                Diag  = _mm_set_epi16(0, 0, 0, 0, 0, ((a[i/2-2]) != (b[i/2])) , ((a[i/2-1]) != (b[i/2-1]))  , ((a[i/2]) != (b[i/2-2])) );
 		
-						tmp = _mm_slli_si128(R1,2);
+                        tmp = _mm_slli_si128(R1,2);
 
-						R0 = _mm_min_epi16(R1+Side1, R0+Diag);
-						R0 = _mm_min_epi16(R0,tmp+Down2);
+                        R0 = _mm_min_epi16(R1+Side1, R0+Diag);
+                        R0 = _mm_min_epi16(R0,tmp+Down2);
 
 			tmp = _mm_sub_epi16(ERROR_REACH, R0);
-						i0 = _mm_movemask_epi8(tmp);
+                        i0 = _mm_movemask_epi8(tmp);
 
-						if(i0 == 63 &&  _mm_extract_epi16(R1,0) > errThreshold  && _mm_extract_epi16(R1,1) > errThreshold && i < 2 * lenb - 2)
-								return -1;
-						if(i == 2 * lenb - 2) {
-				totalError = _mm_extract_epi16(R0, 2);					   
+                        if(i0 == 63 &&  _mm_extract_epi16(R1,0) > errThreshold  && _mm_extract_epi16(R1,1) > errThreshold && i < 2 * lenb - 2)
+                                return -1;
+                        if(i == 2 * lenb - 2) {
+				totalError = _mm_extract_epi16(R0, 2);                       
 			}
-				}
-		}
+                }
+        }
 	
-		Down1 = _mm_insert_epi16(Down1,2*e,0);
+        Down1 = _mm_insert_epi16(Down1,2*e,0);
 
 	//fill the first part of the error
 	error = ((a[i/2]) != (b[i/2-2]));
-		Diag = _mm_insert_epi16(Diag,error,0);
+        Diag = _mm_insert_epi16(Diag,error,0);
 	error = ((a[i/2-1]) != (b[i/2-1]));
 	Diag = _mm_insert_epi16(Diag,error,1);
 	Diag = _mm_insert_epi16(Diag,2*e,2);
-//		Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 2*e , ((a[i/2-1]) != (b[i/2-1]))  , ((a[i/2]) != (b[i/2-2])) );
+//        Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 2*e , ((a[i/2-1]) != (b[i/2-1]))  , ((a[i/2]) != (b[i/2-2])) );
 
 	R0 = _mm_min_epi16(R1+Side1, R0+Diag);
 	R0 = _mm_min_epi16(R0,_mm_slli_si128(R1,2)+Down1);
@@ -2611,44 +2618,44 @@ int forwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 	Diag = _mm_xor_si128(Diag, Diag);
 	Diag = _mm_insert_epi16(Diag,2*e,0);
 	error = ((a[i/2]) != (b[lenb-1]));
-		Diag = _mm_insert_epi16(Diag,error,1);
+        Diag = _mm_insert_epi16(Diag,error,1);
 	Diag = _mm_insert_epi16(Diag,2*e,2);
-//		Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 2*e , ((a[i/2]) != (b[lenb-1]))  , 2*e );
+//        Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 2*e , ((a[i/2]) != (b[lenb-1]))  , 2*e );
 
 
 	R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
-		R1 = _mm_min_epi16(R1,_mm_slli_si128(R0,2)+Down1);
+        R1 = _mm_min_epi16(R1,_mm_slli_si128(R0,2)+Down1);
 
-//		i0 = _mm_extract_epi16(R1, 0);
-		i1 = _mm_extract_epi16(R1, 1);
+//        i0 = _mm_extract_epi16(R1, 0);
+        i1 = _mm_extract_epi16(R1, 1);
 
-		totalError = min(totalError, i1);
+        totalError = min(totalError, i1);
 	//fill the last the last element of the matrix
 	i++;
 
 	Diag = _mm_xor_si128(Diag, Diag);
 	error = ((a[i/2]) != (b[lenb-1]));
-		Diag = _mm_insert_epi16(Diag,error,0);
+        Diag = _mm_insert_epi16(Diag,error,0);
 
-//		Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 0 , 0  , ((a[i/2]) != (b[lenb-1])) );
+//        Diag  = _mm_set_epi16(0, 0, 0, 0, 0, 0 , 0  , ((a[i/2]) != (b[lenb-1])) );
 
 
-		Down = _mm_insert_epi16(Down,1,0);
+        Down = _mm_insert_epi16(Down,1,0);
 
-		Side = _mm_insert_epi16(Side,1,0);
+        Side = _mm_insert_epi16(Side,1,0);
 
-		tmp = _mm_srli_si128(R1,2);
+        tmp = _mm_srli_si128(R1,2);
 
-		R0 = _mm_min_epi16(R1+Down, _mm_srli_si128(R0,2)+Diag);
-		R0 = _mm_min_epi16(R0,tmp+Side);
+        R0 = _mm_min_epi16(R1+Down, _mm_srli_si128(R0,2)+Diag);
+        R0 = _mm_min_epi16(R0,tmp+Side);
 
-		i0 = _mm_extract_epi16(R0, 0);
+        i0 = _mm_extract_epi16(R0, 0);
 
-		totalError = min(totalError, i0);
+        totalError = min(totalError, i0);
 
 	if(totalError > e)
 		return -1;
-		
+        
 	return totalError;
 
 }
@@ -2656,27 +2663,27 @@ int forwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 int backwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 {
 	if(lenb == 0 || lena == 0)
-				return 0;
+                return 0;
 
-		int i0 = 0;
-		int i1 = 0;
+        int i0 = 0;
+        int i1 = 0;
 
-		int error;					  //0: if the two character are equal 1: if not
+        int error;                      //0: if the two character are equal 1: if not
 
-		int i = 0;					  //loop index
+        int i = 0;                      //loop index
 
-		int e = 2;					  //error bound
+        int e = 2;                      //error bound
 
 	int totalError = 0;
 
-		__m128i R0;
-		__m128i R1;
+        __m128i R0;
+        __m128i R1;
 
-		__m128i Side1, Side2,Side;					//side matrix
-		__m128i Down1, Down2,Down;					//down matrix
-		__m128i Diag;				   		  //diag matrix
+        __m128i Side1, Side2,Side;                    //side matrix
+        __m128i Down1, Down2,Down;                    //down matrix
+        __m128i Diag;                   	      //diag matrix
 
-		__m128i tmp;
+        __m128i tmp;
 	__m128i ERROR_REACH;
 
 	/* initialize */
@@ -2694,98 +2701,98 @@ int backwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 	/* end initialize */
 
 	if(lenb <= e) 
-		{
-				return smallEditDistanceB(a,lena,b,lenb);
-		}
+        {
+                return smallEditDistanceB(a,lena,b,lenb);
+        }
 
 
 	ERROR_REACH = _mm_set_epi16(0,0,0,0,0,e,e,e);
 
 	R0 = _mm_insert_epi16(R0,0,0);
 
-		R1 = _mm_insert_epi16(R1,1,0);
-		R1 = _mm_insert_epi16(R1,1,1);
+        R1 = _mm_insert_epi16(R1,1,0);
+        R1 = _mm_insert_epi16(R1,1,1);
 
-		error = ((a[0]) != (b[0]));
+        error = ((a[0]) != (b[0]));
 
-		Diag = _mm_insert_epi16(Diag,2*e,0);
-		Diag = _mm_insert_epi16(Diag,error,1);
-		Diag = _mm_insert_epi16(Diag,2*e,2);
+        Diag = _mm_insert_epi16(Diag,2*e,0);
+        Diag = _mm_insert_epi16(Diag,error,1);
+        Diag = _mm_insert_epi16(Diag,2*e,2);
 
-		Side1 = _mm_insert_epi16(Side1,1,0);
-		Side1 = _mm_insert_epi16(Side1,1,1);
-		Side1 = _mm_insert_epi16(Side1,2*e,2);
+        Side1 = _mm_insert_epi16(Side1,1,0);
+        Side1 = _mm_insert_epi16(Side1,1,1);
+        Side1 = _mm_insert_epi16(Side1,2*e,2);
 
-		Side2 = _mm_insert_epi16(Side2,2*e,0);
-		Side2 = _mm_insert_epi16(Side2,1,1);
-		Side2 = _mm_insert_epi16(Side2,1,2);
+        Side2 = _mm_insert_epi16(Side2,2*e,0);
+        Side2 = _mm_insert_epi16(Side2,1,1);
+        Side2 = _mm_insert_epi16(Side2,1,2);
 
 	Down1 = _mm_insert_epi16(Down1,1,0);
-		Down1 = _mm_insert_epi16(Down1,1,1);
-		Down1 = _mm_insert_epi16(Down1,2*e,2);
+        Down1 = _mm_insert_epi16(Down1,1,1);
+        Down1 = _mm_insert_epi16(Down1,2*e,2);
 
-		Down2 = _mm_insert_epi16(Down2,2*e,0);
-		Down2 = _mm_insert_epi16(Down2,1,1);
-		Down2 = _mm_insert_epi16(Down2,1,2);
+        Down2 = _mm_insert_epi16(Down2,2*e,0);
+        Down2 = _mm_insert_epi16(Down2,1,1);
+        Down2 = _mm_insert_epi16(Down2,1,2);
 
-		tmp = _mm_slli_si128(R1,2);
+        tmp = _mm_slli_si128(R1,2);
 
-		R0 = _mm_min_epi16(R1+Side1, R0+Diag);
-		R0 = _mm_min_epi16(R0,tmp+Down2);
+        R0 = _mm_min_epi16(R1+Side1, R0+Diag);
+        R0 = _mm_min_epi16(R0,tmp+Down2);
 
-//		printf("%d %d %d\n", _mm_extract_epi16(R0,0), _mm_extract_epi16(R0,1), _mm_extract_epi16(R0,2));	
+//        printf("%d %d %d\n", _mm_extract_epi16(R0,0), _mm_extract_epi16(R0,1), _mm_extract_epi16(R0,2));	
 	for (i = 3; i  < 2*lena; i++)
-		{
-				if(i % 2 ==1)
-				{
-						Diag = _mm_sub_epi8(Diag, Diag);
-						error = ( *(a-((i+1)/2-1)) != *(b-((i-1)/2-1)) );
-						Diag = _mm_insert_epi16(Diag,error,0);
-						error = ( *(a-((i-1)/2-1)) != *(b-((i+1)/2-1)) );
-						Diag = _mm_insert_epi16(Diag,error,1);
+        {
+                if(i % 2 ==1)
+                {
+                        Diag = _mm_sub_epi8(Diag, Diag);
+                        error = ( *(a-((i+1)/2-1)) != *(b-((i-1)/2-1)) );
+                        Diag = _mm_insert_epi16(Diag,error,0);
+                        error = ( *(a-((i-1)/2-1)) != *(b-((i+1)/2-1)) );
+                        Diag = _mm_insert_epi16(Diag,error,1);
 			//printf("#%d #%d\n", _mm_extract_epi16(Diag,0), _mm_extract_epi16(Diag,1));
-						tmp = _mm_srli_si128(R0,2);
+                        tmp = _mm_srli_si128(R0,2);
 
-						R1 = _mm_min_epi16(tmp+Side1, R1+Diag);
-						R1 = _mm_min_epi16(R1,R0+Down1);
-			 
-						if(i > 2 * lenb - 2) {			
-							i1 = _mm_extract_epi16(R1, 1);
-								totalError = min(totalError, i1);						  
+                        R1 = _mm_min_epi16(tmp+Side1, R1+Diag);
+                        R1 = _mm_min_epi16(R1,R0+Down1);
+             
+                        if(i > 2 * lenb - 2) {			
+	                        i1 = _mm_extract_epi16(R1, 1);
+                                totalError = min(totalError, i1);                          
 			}
 //			printf("%d %d\n", _mm_extract_epi16(R1,0), _mm_extract_epi16(R1,1));
-				}
+                }
 
 		else if(i % 2 == 0)
-				{
-						error = ( *(a-(i/2))   != *(b-(i/2-2)) );
-						Diag = _mm_insert_epi16(Diag,error,0);
-						error = ( *(a-(i/2-1)) != *(b-(i/2-1)) );
-						Diag = _mm_insert_epi16(Diag,error,1);
-						error = ( *(a-(i/2-2))	!= *(b-(i/2)));
-						Diag = _mm_insert_epi16(Diag,error,2);
+                {
+                        error = ( *(a-(i/2))   != *(b-(i/2-2)) );
+                        Diag = _mm_insert_epi16(Diag,error,0);
+                        error = ( *(a-(i/2-1)) != *(b-(i/2-1)) );
+                        Diag = _mm_insert_epi16(Diag,error,1);
+                        error = ( *(a-(i/2-2))    != *(b-(i/2)));
+                        Diag = _mm_insert_epi16(Diag,error,2);
 
-						tmp = _mm_slli_si128(R1,2);
+                        tmp = _mm_slli_si128(R1,2);
 
-						R0 = _mm_min_epi16(R1+Side1, R0+Diag);
-						R0 = _mm_min_epi16(R0,tmp+Down2);
+                        R0 = _mm_min_epi16(R1+Side1, R0+Diag);
+                        R0 = _mm_min_epi16(R0,tmp+Down2);
 
 			tmp = _mm_sub_epi16(ERROR_REACH, R0);
 			i0 = _mm_movemask_epi8(tmp);
 
-						if(i0 == 63 && _mm_extract_epi16(R1,0) > errThreshold && _mm_extract_epi16(R1,1) > errThreshold && i < 2 * lenb - 2)
-								return -1;
+                        if(i0 == 63 && _mm_extract_epi16(R1,0) > errThreshold && _mm_extract_epi16(R1,1) > errThreshold && i < 2 * lenb - 2)
+                                return -1;
 
-						if(i == 2 * lenb - 2) {
+                        if(i == 2 * lenb - 2) {
 				totalError = _mm_extract_epi16(R0, 2);
-			}					   
-				}
-		}
-		Down1 = _mm_insert_epi16(Down1,2*e,0);
+			}                       
+                }
+        }
+        Down1 = _mm_insert_epi16(Down1,2*e,0);
 
 	//fill the first part of the error
 	error = ( *(a-(i/2))  != *(b-(i/2-2)) );
-		Diag = _mm_insert_epi16(Diag,error,0);
+        Diag = _mm_insert_epi16(Diag,error,0);
 	error = ( *(a-(i/2-1)) != *(b-(i/2-1)) );
 	Diag = _mm_insert_epi16(Diag,error,1);
 	Diag = _mm_insert_epi16(Diag,2*e,2);
@@ -2803,39 +2810,39 @@ int backwardEditDistance2SSE2(char *a, int lena, char *b,int lenb)
 	Diag = _mm_sub_epi8(Diag, Diag);
 	Diag = _mm_insert_epi16(Diag,2*e,0);
 	error = ( *(a-(i/2)) != *(b-(lenb-1)) );
-		Diag = _mm_insert_epi16(Diag,error,1);
+        Diag = _mm_insert_epi16(Diag,error,1);
 	Diag = _mm_insert_epi16(Diag,2*e,2);
 
 	R1 = _mm_min_epi16(R0+Side1, _mm_slli_si128(R1,2)+Diag);
-		R1 = _mm_min_epi16(R1,_mm_slli_si128(R0,2)+Down1);
+        R1 = _mm_min_epi16(R1,_mm_slli_si128(R0,2)+Down1);
 
-		i0 = _mm_extract_epi16(R1, 0);
-		i1 = _mm_extract_epi16(R1, 1);
+        i0 = _mm_extract_epi16(R1, 0);
+        i1 = _mm_extract_epi16(R1, 1);
 
-		totalError = min(totalError, i1);
+        totalError = min(totalError, i1);
 
 	//fill the last the last element of the matrix
 	i++;
 	Diag = _mm_sub_epi8(Diag, Diag);
 	error = ( *(a-(i/2)) != *(b-(lenb-1)) );
-		Diag = _mm_insert_epi16(Diag,error,0);
+        Diag = _mm_insert_epi16(Diag,error,0);
 
-		Down = _mm_insert_epi16(Down,1,0);
+        Down = _mm_insert_epi16(Down,1,0);
 
-		Side = _mm_insert_epi16(Side,1,0);
+        Side = _mm_insert_epi16(Side,1,0);
 
-		tmp = _mm_srli_si128(R1,2);
+        tmp = _mm_srli_si128(R1,2);
 
-		R0 = _mm_min_epi16(R1+Down, _mm_srli_si128(R0,2)+Diag);
-		R0 = _mm_min_epi16(R0,tmp+Side);
+        R0 = _mm_min_epi16(R1+Down, _mm_srli_si128(R0,2)+Diag);
+        R0 = _mm_min_epi16(R0,tmp+Side);
 
-		i0 = _mm_extract_epi16(R0, 0);
+        i0 = _mm_extract_epi16(R0, 0);
 
-		totalError = min(totalError, i0);
+        totalError = min(totalError, i0);
 
 	if(totalError > e || totalError == 0)
 		return -1;
-		return totalError;
+        return totalError;
 }
 
 void initBestMapping(int totalReadNumber)
@@ -2872,22 +2879,22 @@ void finalizeBestSingleMapping()
 			}
 
 
-			_msf_output.QNAME			   = _msf_seqList[i].name;
-			_msf_output.FLAG				= 16 * bestHitMappingInfo[i].dir;
-			_msf_output.RNAME			   = bestHitMappingInfo[i].chr;
+			_msf_output.QNAME               = _msf_seqList[i].name;
+			_msf_output.FLAG                = 16 * bestHitMappingInfo[i].dir;
+			_msf_output.RNAME               = bestHitMappingInfo[i].chr;
 
-			_msf_output.POS				 = bestHitMappingInfo[i].loc;
-			_msf_output.MAPQ				= 255;
-			_msf_output.CIGAR			   = bestHitMappingInfo[i].cigar ;
-			_msf_output.MRNAME			  = "*";
-			_msf_output.MPOS				= 0;
-			_msf_output.ISIZE			   = 0;
+			_msf_output.POS                 = bestHitMappingInfo[i].loc;
+			_msf_output.MAPQ                = 255;
+			_msf_output.CIGAR               = bestHitMappingInfo[i].cigar ;
+			_msf_output.MRNAME              = "*";
+			_msf_output.MPOS                = 0;
+			_msf_output.ISIZE               = 0;
 
 
-			_msf_output.SEQ				 = _tmpSeq;
-			_msf_output.QUAL				= _tmpQual;
+			_msf_output.SEQ                 = _tmpSeq;
+			_msf_output.QUAL                = _tmpQual;
 
-			_msf_output.optSize			 = 2;
+			_msf_output.optSize             = 2;
 			_msf_output.optFields   = _msf_optionalFields;
 
 			_msf_optionalFields[0].tag = "NM";
@@ -2944,7 +2951,7 @@ void preProcessReads()
 
 	/*
 	for(i = 0; i < _msf_seqListSize; i++)
-		{
+        {
 		//printf("%s\n", _msf_sort_seqList[i].hv);
 	}
 	*/
@@ -3042,7 +3049,7 @@ void initFAST(Read *seqList, int seqListSize, int *samplingLocs, int samplingLoc
 		_msf_samplingLocs = samplingLocs;
 		_msf_samplingLocsSize = samplingLocsSize;
 
-		_msf_samplingLocsEnds = malloc(sizeof(int)*_msf_samplingLocsSize);
+		_msf_samplingLocsEnds = getMem(sizeof(int)*_msf_samplingLocsSize);
 		for (i=0; i<_msf_samplingLocsSize; i++)
 		{
 			_msf_samplingLocsEnds[i]=_msf_samplingLocs[i]+WINDOW_SIZE-1;
@@ -3083,23 +3090,12 @@ void initFAST(Read *seqList, int seqListSize, int *samplingLocs, int samplingLoc
 		freeMem(_msf_verifiedLocs, sizeof(int) * (_msf_refGenLength+1));
 	}
 
-	if (_msf_verifiedLocsP != NULL ){
-		freeMem(_msf_verifiedLocsP, sizeof(int) * (_msf_refGenLength+1));
-	}
-
 	_msf_verifiedLocs = (int *) getMem(sizeof(int)*(_msf_refGenLength+1));
 
 	for (i=0; i<=_msf_refGenLength; i++)
 		_msf_verifiedLocs[i] = _msf_seqListSize*10+1;
 
-	if(pairedEndMode)
-	{
- 			_msf_verifiedLocsP = (int *) getMem(sizeof(int)*(_msf_refGenLength+1));
-				for (i=0; i<=_msf_refGenLength; i++)
-						_msf_verifiedLocsP[i] = _msf_seqListSize*10;
-	}
-
-	  
+      
 	
 	if (pairedEndMode && _msf_seqHits == NULL)
 	{
@@ -3164,8 +3160,8 @@ void finalizeFAST()
 }
 
 /*
-		Will apply the Levenshtein Dynamic programming.
-		Different from verifySingleEndEditDistance fucntion
+        Will apply the Levenshtein Dynamic programming.
+        Different from verifySingleEndEditDistance fucntion
 	as in this fucntion only one dynamic table is made while
 	in verifySingleEndEditDistance two dynamic table is made
 	for each right and left string
@@ -3176,7 +3172,7 @@ int editDistance(int refIndex, char *seq, int seqLength, char *matrix)
 	int size = 0;
 	int error = 0;
 	int rIndex = 0;
-		int directionIndex = 0;
+        int directionIndex = 0;
 
 	int min = 0;
 	int minIndex =0;	
@@ -3187,12 +3183,12 @@ int editDistance(int refIndex, char *seq, int seqLength, char *matrix)
 	char *ref;
 
 	int errorString = 0;
-		/*
-				1: Up
-				2: Side
-				3: Diagnoal Match
-				4: Diagnoal Mismatch
-		*/
+        /*
+                1: Up
+                2: Side
+                3: Diagnoal Match
+                4: Diagnoal Mismatch
+        */
 
 	int upValue;
 	int diagValue;
@@ -3233,7 +3229,7 @@ int editDistance(int refIndex, char *seq, int seqLength, char *matrix)
 			if(i == tempUp)
 				error = score[i][rIndex];
 			else if(error > score[i][rIndex])
-								error = score[i][rIndex];
+                                error = score[i][rIndex];
 		}
 		rIndex++;
 	}
@@ -3256,106 +3252,106 @@ int editDistance(int refIndex, char *seq, int seqLength, char *matrix)
 	directionIndex = seqLength;
 	rIndex = minIndex;
 	while(directionIndex != 0 || rIndex != 0)
-		{
+        {
 
 		if(rIndex == 0)
 		{	
 			if(score[directionIndex][rIndex] - score[directionIndex-1][rIndex] == 1)
-						{
-								matrix[size] = *(seq+directionIndex-1);
-								size++;
-								matrix[size] = 'I';
-								directionIndex--;
-						}	
+                        {
+                                matrix[size] = *(seq+directionIndex-1);
+                                size++;
+                                matrix[size] = 'I';
+                                directionIndex--;
+                        }	
 		}
 		else if(directionIndex == 0)
 		{
 			if(score[directionIndex][rIndex] - score[directionIndex][rIndex-1] == 1)
-						{
-								matrix[size] = *(ref+rIndex-1);
-								size++;
-								matrix[size] = 'D';
-								rIndex--;
-						}
+                        {
+                                matrix[size] = *(ref+rIndex-1);
+                                size++;
+                                matrix[size] = 'D';
+                                rIndex--;
+                        }
 		}
 		else if(directionIndex-rIndex == errThreshold)
 		{
 			if(score[directionIndex][rIndex] - score[directionIndex-1][rIndex] == 1)
 			{
 				matrix[size] = *(seq+directionIndex-1);
-								size++;
-								matrix[size] = 'I';
-								directionIndex--;
+                                size++;
+                                matrix[size] = 'I';
+                                directionIndex--;
 			}	
 			else if( score[directionIndex][rIndex] - score[directionIndex-1][rIndex-1] == 1 )
 			{
 				matrix[size] = *(ref+rIndex-1);
-							rIndex--;
-							directionIndex--;
+	                        rIndex--;
+	                        directionIndex--;
 			}	
 			else
 			{
 				matrix[size] = 'M';
-							rIndex--;
-							directionIndex--;
+	                        rIndex--;
+        	                directionIndex--;
 			}
 			
 		}
 		else if(rIndex - directionIndex == errThreshold)
 		{
-				if(score[directionIndex][rIndex] - score[directionIndex][rIndex-1] == 1)
-						{
+		        if(score[directionIndex][rIndex] - score[directionIndex][rIndex-1] == 1)
+                        {
 				matrix[size] = *(ref+rIndex-1);
-								size++;
-								matrix[size] = 'D';
-								rIndex--;
-						}
-						else if( score[directionIndex][rIndex] - score[directionIndex-1][rIndex-1] == 1 )
-						{
-								matrix[size] = *(ref+rIndex-1);
-								rIndex--;
-								directionIndex--;
-						}
-						else
-						{
-								matrix[size] = 'M';
-								rIndex--;
-								directionIndex--;
-						}
+                                size++;
+                                matrix[size] = 'D';
+                                rIndex--;
+                        }
+                        else if( score[directionIndex][rIndex] - score[directionIndex-1][rIndex-1] == 1 )
+                        {
+                                matrix[size] = *(ref+rIndex-1);
+                                rIndex--;
+                                directionIndex--;
+                        }
+                        else
+                        {
+                                matrix[size] = 'M';
+                                rIndex--;
+                                directionIndex--;
+                        }
 		}
 		else
 		{
 			if(score[directionIndex][rIndex] - score[directionIndex-1][rIndex] == 1 && directionIndex != 0)
-						{
+                        {
 				matrix[size] = *(seq+directionIndex-1);
-								size++;
-								matrix[size] = 'I';
-								directionIndex--;
-						}
+                                size++;
+                                matrix[size] = 'I';
+                                directionIndex--;
+                        }
 			else if(score[directionIndex][rIndex] - score[directionIndex][rIndex-1] == 1 && rIndex != 0)
-						{
-								matrix[size] = *(ref+rIndex-1);
-								size++;
-								matrix[size] = 'D';
-								rIndex--;
-						}
-						else if( score[directionIndex][rIndex] - score[directionIndex-1][rIndex-1] == 1 )
-						{
-								matrix[size] = *(ref+rIndex-1);
-								rIndex--;
-								directionIndex--;
-						}
-						else
-						{
-								matrix[size] = 'M';
-								rIndex--;
-								directionIndex--;
-						}
+                        {
+                                matrix[size] = *(ref+rIndex-1);
+                                size++;
+                                matrix[size] = 'D';
+                                rIndex--;
+                        }
+                        else if( score[directionIndex][rIndex] - score[directionIndex-1][rIndex-1] == 1 )
+                        {
+                                matrix[size] = *(ref+rIndex-1);
+                                rIndex--;
+                                directionIndex--;
+                        }
+                        else
+                        {
+                                matrix[size] = 'M';
+                                rIndex--;
+                                directionIndex--;
+                        }
 		}
-				size++;
-		}
+                size++;
+        }
 
-		matrix[size] = '\0';
+        matrix[size] = '\0';
 	
 	char returnString[200];
 	
@@ -3374,33 +3370,33 @@ int editDistance(int refIndex, char *seq, int seqLength, char *matrix)
 */
 int msfHashVal(char *seq)
 {
-		int i=0; 
-		int val=0, numericVal=0;
+        int i=0; 
+        int val=0, numericVal=0;
 
-		while(i<6)
-		{
-				switch (seq[i])
-				{
-						case 'A':
-								numericVal = 0;
-								break;
-						case 'C':
-								numericVal = 1;
-								break;
-						case 'G' :
-								numericVal = 2;
-								break;
-						case 'T':
-								numericVal = 3;
-								break;
-						default:
-								return -1;
-								break;
-				}
-				val = (val << 2)|numericVal;
-				i++;
-		}
-		return val;
+        while(i<6)
+        {
+                switch (seq[i])
+                {
+                        case 'A':
+                                numericVal = 0;
+                                break;
+                        case 'C':
+                                numericVal = 1;
+                                break;
+                        case 'G' :
+                                numericVal = 2;
+                                break;
+                        case 'T':
+                                numericVal = 3;
+                                break;
+                        default:
+                                return -1;
+                                break;
+                }
+                val = (val << 2)|numericVal;
+                i++;
+        }
+        return val;
 }
 
 
@@ -3415,8 +3411,8 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 	int rIndex = 0;				//reference Index
 
 	int e = errThreshold;
-	int error		= 0;
-	int error1	   = 0;
+	int error        = 0;
+	int error1       = 0;
 	int totalError   = 0;
 	
 
@@ -3478,7 +3474,7 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 	ref = _msf_refGen + refIndex - 1;
 	
 	rIndex = startIndex1+1;
-	
+    
 	int i0 = 0;
 	int i1 = 0;
 	int i2 = 0;
@@ -3486,9 +3482,9 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 	__m128i R0;
 	__m128i R1;
 
-	__m128i Side1, Side2,Side;					//side matrix
-	__m128i Down1, Down2,Down;					//down matrix
-	__m128i Diag;				   //
+	__m128i Side1, Side2,Side;                    //side matrix
+	__m128i Down1, Down2,Down;                    //down matrix
+	__m128i Diag;                   //
 
 	__m128i tmp;
 
@@ -3500,8 +3496,8 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 	Side2 = _mm_setzero_si128 ();
 	Down1 = _mm_setzero_si128 ();
 	Down2 = _mm_setzero_si128 ();
-		Down = _mm_setzero_si128 ();
-		Side = _mm_setzero_si128 ();
+        Down = _mm_setzero_si128 ();
+        Side = _mm_setzero_si128 ();
 	tmp = _mm_setzero_si128 ();
 	/* end initialize */
 
@@ -3589,11 +3585,11 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 
 				direction1[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2] && mismatch[0] == 0)  ? 3 :
 							 (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
-							 (score[i/2][i/2+1]-score[i/2][i/2]==1)	? 2 : 4;
+							 (score[i/2][i/2+1]-score[i/2][i/2]==1)    ? 2 : 4;
 
 				direction1[i/2+1][i/2] = (score[i/2+1][i/2]==score[i/2][i/2-1] && mismatch[1] == 0)  ? 3 :
-														 (score[i/2+1][i/2]-score[i/2][i/2]==1)	? 1 :
-														 (score[i/2+1][i/2]-score[i/2+1][i/2-1]==1)? 2 : 4;	
+                                                         (score[i/2+1][i/2]-score[i/2][i/2]==1)    ? 1 :
+                                                         (score[i/2+1][i/2]-score[i/2+1][i/2-1]==1)? 2 : 4;	
 
 				if(i > 2 * lSeqLength - 2) 
 				{
@@ -3627,12 +3623,12 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 
 				direction1[i/2-1][i/2+1] = (score[i/2-1][i/2+1]==score[i/2-2][i/2] && mismatch[0] == 0)  ? 3 : (score[i/2-1][i/2+1]-score[i/2-1][i/2]==1)  ? 2 : 4;
 
-								direction1[i/2][i/2] =   (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
-														 (score[i/2][i/2]-score[i/2-1][i/2]==1)	? 1 :
-														 (score[i/2][i/2]-score[i/2][i/2-1]==1)	? 2 : 4;
+                                direction1[i/2][i/2] =   (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
+                                                         (score[i/2][i/2]-score[i/2-1][i/2]==1)    ? 1 :
+                                                         (score[i/2][i/2]-score[i/2][i/2-1]==1)    ? 2 : 4;
 
 				direction1[i/2+1][i/2-1] =  (score[i/2+1][i/2-1]==score[i/2][i/2-2] && mismatch[2] == 0)  ? 3 :
-															(score[i/2+1][i/2-1]-score[i/2][i/2-1]==1) ? 1 : 4;
+                                                            (score[i/2+1][i/2-1]-score[i/2][i/2-1]==1) ? 1 : 4;
 
 				if( (i/2) % segLength == 0 && i1 == 0)	// the segment has been processed no need to process it again
 				{
@@ -3667,14 +3663,14 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 			minIndex1 = i-lSeqLength;
 
 		score[i/2-1][i/2+1] = i0;
-				score[i/2][i/2] = i1;
+                score[i/2][i/2] = i1;
 
-				direction1[i/2-1][i/2+1] = (score[i/2-1][i/2+1]==score[i/2-2][i/2] && mismatch[0] == 0)  ? 3 :										
-										   (score[i/2-1][i/2+1]-score[i/2-1][i/2])  ? 2 : 4;
+                direction1[i/2-1][i/2+1] = (score[i/2-1][i/2+1]==score[i/2-2][i/2] && mismatch[0] == 0)  ? 3 :                                        
+                                           (score[i/2-1][i/2+1]-score[i/2-1][i/2])  ? 2 : 4;
 
-				direction1[i/2][i/2] = (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
-									   (score[i/2][i/2]-score[i/2-1][i/2]==1)	? 1 :
-									   (score[i/2][i/2]-score[i/2][i/2-1]==1)? 2 : 4;
+                direction1[i/2][i/2] = (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
+                                       (score[i/2][i/2]-score[i/2-1][i/2]==1)    ? 1 :
+                                       (score[i/2][i/2]-score[i/2][i/2-1]==1)? 2 : 4;
 
 		//fill the second part of the error
 		i++;
@@ -3697,12 +3693,12 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 		score[i/2-1][i/2+2] = i0;
 		score[i/2][i/2+1] = i1;
 
-				direction1[i/2-1][i/2+2] = (score[i/2-1][i/2+2]==score[i/2-2][i/2+1] && mismatch[0] == 0)  ? 3 :					 
-										   (score[i/2-1][i/2+2]-score[i/2-1][i/2+1]==1)	? 2 : 4;
+                direction1[i/2-1][i/2+2] = (score[i/2-1][i/2+2]==score[i/2-2][i/2+1] && mismatch[0] == 0)  ? 3 :                     
+                                           (score[i/2-1][i/2+2]-score[i/2-1][i/2+1]==1)    ? 2 : 4;
 
-				direction1[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2])  ? 3 :
-										 (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
-										 (score[i/2][i/2+1]-score[i/2][i/2]==1)? 2 : 4;
+                direction1[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2])  ? 3 :
+                                         (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
+                                         (score[i/2][i/2+1]-score[i/2][i/2]==1)? 2 : 4;
 
 		//fill the last the last element of the matrix
 		i++;
@@ -3739,7 +3735,7 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 		}		
 	}
 	error1   = error;
-	error	= 0;
+	error    = 0;
 
 	directionIndex = lSeqLength;
 	rIndex = minIndex1;
@@ -3851,10 +3847,10 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 
 				direction2[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2] && mismatch[0] == 0)  ? 3 :
 										 (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
-										 (score[i/2][i/2+1]-score[i/2][i/2]==1)	? 2 : 4;
+										 (score[i/2][i/2+1]-score[i/2][i/2]==1)    ? 2 : 4;
 
 				direction2[i/2+1][i/2] = (score[i/2+1][i/2]==score[i/2][i/2-1] && mismatch[1] == 0)  ? 3 :
-										 (score[i/2+1][i/2]-score[i/2][i/2]==1)	? 1 :
+										 (score[i/2+1][i/2]-score[i/2][i/2]==1)    ? 1 :
 										 (score[i/2+1][i/2]-score[i/2+1][i/2-1]==1)? 2 : 4;
 
 
@@ -3892,8 +3888,8 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 										   (score[i/2-1][i/2+1]-score[i/2-1][i/2]==1)  ? 2 : 4;
 
 				direction2[i/2][i/2] =   (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
-										 (score[i/2][i/2]-score[i/2-1][i/2]==1)	? 1 :
-										 (score[i/2][i/2]-score[i/2][i/2-1]==1)	? 2 : 4;
+										 (score[i/2][i/2]-score[i/2-1][i/2]==1)    ? 1 :
+										 (score[i/2][i/2]-score[i/2][i/2-1]==1)    ? 2 : 4;
 
 				direction2[i/2+1][i/2-1] =  (score[i/2+1][i/2-1]==score[i/2][i/2-2] && mismatch[2]==0)  ? 3 :
 											(score[i/2+1][i/2-1]-score[i/2][i/2-1]==1) ? 1 : 4;	
@@ -3929,12 +3925,12 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 		score[i/2-1][i/2+1] = i0;
 		score[i/2][i/2] = i1;
 
-				direction2[i/2-1][i/2+1] = (score[i/2-1][i/2+1]==score[i/2-2][i/2] && mismatch[0] == 0)  ? 3 : 
-										   (score[i/2-1][i/2+1]-score[i/2-1][i/2]==1)	? 2 : 4;
+                direction2[i/2-1][i/2+1] = (score[i/2-1][i/2+1]==score[i/2-2][i/2] && mismatch[0] == 0)  ? 3 : 
+										   (score[i/2-1][i/2+1]-score[i/2-1][i/2]==1)    ? 2 : 4;
 
-				direction2[i/2][i/2] = (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
-									   (score[i/2][i/2]-score[i/2-1][i/2]==1)	? 1 :
-									   (score[i/2][i/2]-score[i/2][i/2-1]==1)? 2 : 4;
+                direction2[i/2][i/2] = (score[i/2][i/2]==score[i/2-1][i/2-1] && mismatch[1] == 0)  ? 3 :
+                                       (score[i/2][i/2]-score[i/2-1][i/2]==1)    ? 1 :
+                                       (score[i/2][i/2]-score[i/2][i/2-1]==1)? 2 : 4;
 
 
 		//fill the second part of the error
@@ -3958,12 +3954,12 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 		score[i/2-1][i/2+2] = i0;
 		score[i/2][i/2+1] = i1;
 
-				direction2[i/2-1][i/2+2] = (score[i/2-1][i/2+2]==score[i/2-2][i/2+1] && mismatch[0] == 0)  ? 3 :
-										   (score[i/2-1][i/2+2]-score[i/2-1][i/2+1]==1)  ? 2 : 3;
+                direction2[i/2-1][i/2+2] = (score[i/2-1][i/2+2]==score[i/2-2][i/2+1] && mismatch[0] == 0)  ? 3 :
+                                           (score[i/2-1][i/2+2]-score[i/2-1][i/2+1]==1)  ? 2 : 3;
 
-				direction2[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2] && mismatch[0] == 0)  ? 3 :
-										 (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
-										 (score[i/2][i/2+1]-score[i/2][i/2]==1)? 2 : 4;
+                direction2[i/2][i/2+1] = (score[i/2][i/2+1]==score[i/2-1][i/2] && mismatch[0] == 0)  ? 3 :
+                                         (score[i/2][i/2+1]-score[i/2-1][i/2+1]==1)? 1 :
+                                         (score[i/2][i/2+1]-score[i/2][i/2]==1)? 2 : 4;
 
 
 		//fill the last the last element of the matrix
@@ -4066,17 +4062,17 @@ int verifySingleEndEditDistance2(int refIndex, char *lSeq, int lSeqLength, char 
 		}
 		else if(direction1[directionIndex][rIndex] == 2)
 		{
-			matrixL[size] = 'D';					
+			matrixL[size] = 'D';                    
 			size++;
 			matrixL[size] = *(tempref-rIndex);
-			rIndex--;				 
+			rIndex--;                 
 		}
 		else
 		{
 			matrixL[size] = 'I';
 			size++;
 			matrixL[size] = *(lSeq+lSeqLength-directionIndex);
-			directionIndex--;					  
+			directionIndex--;                      
 		}
 
 		size++;
@@ -4110,8 +4106,8 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 	
 	int rIndex = 0;				//reference Index
 
-	int error		= 0;
-	int error1	   = 0;
+	int error        = 0;
+	int error1       = 0;
 
 	int error2   	 = 0;
 	int error3 	 = 0;
@@ -4197,7 +4193,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 			if(i == tempUp)
 				error = scoreB[i][rIndex];
 			else if(error > scoreB[i][rIndex])
-								error = scoreB[i][rIndex];
+                                error = scoreB[i][rIndex];
 		}
 		if(rIndex <= lSeqLength)
 		{
@@ -4225,7 +4221,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 	
 	error1   = error;
 
-	error	= 0;
+	error    = 0;
 	errorSegment = 0;
 
 	directionIndex = lSeqLength;
@@ -4256,7 +4252,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 				else if(  (i == ((rIndex - ERROR_BOUND ) > 0 ? rIndex - ERROR_BOUND : 1)) && rIndex <= rSeqLength  )
 					scoreF[i][rIndex] = min(sideValue, diagValue);
 				else if(rIndex > rSeqLength &&  (i == rSeqLength - ERROR_BOUND) )
-					scoreF[i][rIndex] = sideValue;						
+					scoreF[i][rIndex] = sideValue;	                    
 				else
 					scoreF[i][rIndex] = min(diagValue , upValue);
 
@@ -4298,7 +4294,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 	{
 		printf("ErrorF=%d, ErrorB=%d Error=%d Error=%d\n", error2,error3,error1,error);
 
-		int tmp = scanf("%d", &i);
+		scanf("%d", &i);
 	}
 
 	char matrixR[200];
@@ -4390,7 +4386,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 		size++;
 	}
 	matrixR[size] = '\0';	
-		
+        
 	size = 0;
 	directionIndex = lSeqLength;
 	rIndex = minIndex1;
@@ -4504,8 +4500,8 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 	
 	int rIndex = 0;				//reference Index
 
-	int error		= 0;
-	int error1	   = 0;
+	int error        = 0;
+	int error1       = 0;
 
 	int error2   	 = 0;
 	int error3 	 = 0;
@@ -4634,7 +4630,7 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 	}
 	error1   = error;
 
-	error	= 0;
+	error    = 0;
 	errorSegment = 0;
 
 	directionIndex = lSeqLength;
@@ -4671,7 +4667,7 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 				else if(  (i == ((rIndex - ERROR_BOUND ) > 0 ? rIndex - ERROR_BOUND : 1)) && rIndex <= rSeqLength  )
 					scoreF[i][rIndex] = min(sideValue, diagValue);
 				else if(rIndex > rSeqLength &&  (i == rSeqLength - ERROR_BOUND) )
-					scoreF[i][rIndex] = sideValue;						
+					scoreF[i][rIndex] = sideValue;	                    
 				else
 					scoreF[i][rIndex] = min(diagValue , upValue);
 
@@ -4714,7 +4710,7 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 		minIndex2 = rSeqLength;
 	}
 
-		totalError = error + error1;
+        totalError = error + error1;
 
 	if(totalError  != error2+error3)
 	{
@@ -4831,7 +4827,7 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 		size++;
 	}
 	matrixR[size] = '\0';	
-		
+        
 	size = 0;
 	directionIndex = lSeqLength;
 	rIndex = minIndex1;
@@ -4934,6 +4930,7 @@ int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLengt
 
 }
 
+
 int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *rSeq, int rSeqLength, int segLength, char *matrix, int *map_location, short *seqHashValue)
 {
 
@@ -4944,8 +4941,8 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 	
 	int rIndex = 0;				//reference Index
 
-	int error		= 0;
-	int error1	   = 0;
+	int error        = 0;
+	int error1       = 0;
 
 	int error2 	 = 0;
 	int error3	 = 0;
@@ -4972,8 +4969,6 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 	int size = 0;
 
 	ref = _msf_refGen + refIndex - 1;
-//	printf("RefIndex:%d\n", refIndex);
-//	printf("REF:%s\n", ref);
 	tempref = _msf_refGen + refIndex - 1;
 
 
@@ -4983,28 +4978,23 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 			error2 = forwardEditDistanceSSE2Odd(ref+segLength, rSeqLength, rSeq, rSeqLength);
 		else	
 			error2 = forwardEditDistanceSSE2G(ref+segLength, rSeqLength, rSeq, rSeqLength);
-		if(error2 == -1) {
+		if(error2 == -1)
 			return -1;
-		}
 	}
 
 	if(lSeqLength != 0)
 	{
-		if(errThreshold % 2 == 1) {
+		if(errThreshold % 2 == 1)
 			error3 = backwardEditDistanceSSE2Odd(ref-1, lSeqLength, lSeq+lSeqLength-1, lSeqLength);
-		}
-		else {
+		else
 			error3 = backwardEditDistanceSSE2G(ref-1, lSeqLength, lSeq+lSeqLength-1, lSeqLength);
-		}
-		//if(error3 == -1 || error3 == 0){ 	// DHL_EDIT
-		if(error3 == -1 ){
+		if(error3 == -1 || error3 == 0){
 			return -1;
 		}
 	}
 
-	if(error3 + error2 > errThreshold) {
+	if(error3 + error2 > errThreshold)
 		return -1;
-	}
 
 	for(i = 0 ; i < errThreshold + 1; i++) 
 	{
@@ -5049,7 +5039,7 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 			if(i == tempUp)
 				error = scoreB[i][rIndex];
 			else if(error > scoreB[i][rIndex])
-								error = scoreB[i][rIndex];
+                                error = scoreB[i][rIndex];
 		}
 		if(rIndex <= lSeqLength)
 		{
@@ -5076,7 +5066,7 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 	
 	error1   = error;
 
-	error	= 0;
+	error    = 0;
 	errorSegment = 0;
 
 	directionIndex = lSeqLength;
@@ -5113,7 +5103,7 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 				else if(  (i == ((rIndex - ERROR_BOUND ) > 0 ? rIndex - ERROR_BOUND : 1)) && rIndex <= rSeqLength  )
 					scoreF[i][rIndex] = min(sideValue, diagValue);
 				else if(rIndex > rSeqLength &&  (i == rSeqLength - ERROR_BOUND) )
-					scoreF[i][rIndex] = sideValue;						
+					scoreF[i][rIndex] = sideValue;	                    
 				else
 					scoreF[i][rIndex] = min(diagValue , upValue);
 
@@ -5150,24 +5140,24 @@ int verifySingleEndEditDistance(int refIndex, char *lSeq, int lSeqLength, char *
 	if(totalError != error2 + error3 && totalError > errThreshold)
 	{
 		for(i = 0; i < lSeqLength; i++)
-						printf("%c", *(tempref-1-i));
-				printf("\n");
-				for(i = 0; i < lSeqLength; i++)
-						printf("%c", *(lSeq+i));
-				printf("\n");
+                        printf("%c", *(tempref-1-i));
+                printf("\n");
+                for(i = 0; i < lSeqLength; i++)
+                        printf("%c", *(lSeq+i));
+                printf("\n");
 
-				for(i = 0; i < rSeqLength; i++)
-						printf("%c", *(tempref+segLength+i));
-				printf("\n");
+                for(i = 0; i < rSeqLength; i++)
+                        printf("%c", *(tempref+segLength+i));
+                printf("\n");
 
-				for(i = 0; i < rSeqLength; i++)
-						printf("%c", *(rSeq+i));
-				printf("\n");
+                for(i = 0; i < rSeqLength; i++)
+                        printf("%c", *(rSeq+i));
+                printf("\n");
 
 
 		printf("SSEF=%d SSEB%d\n", error2, error3);
 		printf("F=%d B=%d\n", error, error1);	
-		int tmp = scanf("%d", &i);
+		scanf("%d", &i);
 	}
 
 	char matrixR[200];
@@ -5382,61 +5372,61 @@ void generateCigar(char *matrix, int matrixLength, char *cigar)
 	cigar[0] = '\0';
 	
 	while(i < matrixLength)
-		{
-				if(matrix[i]=='M')
-				{
-						counterM++;
-						if(counterI != 0)
-						{
-					sprintf(cigar, "%s%dI", cigar, counterI);
+        {
+                if(matrix[i]=='M')
+                {
+                        counterM++;
+                        if(counterI != 0)
+                        {
+			        sprintf(cigar, "%s%dI", cigar, counterI);
 				cigarSize += addCigarSize(counterI) + 1;
 				cigar[cigarSize] = '\0';
 				counterI=0;
-						}
+                        }
 			else if(counterD != 0)
 			{
 				sprintf(cigar, "%s%dD", cigar, counterD);
 				cigarSize += addCigarSize(counterD) + 1;
 				cigar[cigarSize] = '\0';
-								counterD=0;
+                                counterD=0;
 			}
-				}
-				else if(matrix[i] == 'I')
-				{
-						if(counterM != 0)
-						{
-								sprintf(cigar, "%s%dM", cigar, counterM);
+                }
+                else if(matrix[i] == 'I')
+                {
+                        if(counterM != 0)
+                        {
+                                sprintf(cigar, "%s%dM", cigar, counterM);
 				cigarSize += addCigarSize(counterM) + 1;
 				cigar[cigarSize] = '\0';
-								counterM = 0;
-						}
-						else if(counterD != 0)
-						{
-							  	sprintf(cigar, "%s%dD", cigar, counterD);
+                                counterM = 0;
+                        }
+                        else if(counterD != 0)
+                        {
+                              	sprintf(cigar, "%s%dD", cigar, counterD);
 				cigarSize += addCigarSize(counterD) + 1;			  
 				cigar[cigarSize] = '\0';
-								counterD=0;
-						}
+                                counterD=0;
+                        }
 			counterI++;
 			i++;
 			
-				}
+                }
 		else if (matrix[i] == 'D')
 		{
 			if(counterM != 0)
-						{
-								sprintf(cigar, "%s%dM", cigar, counterM);
+                        {
+                                sprintf(cigar, "%s%dM", cigar, counterM);
 				cigarSize += addCigarSize(counterM) + 1;
 				cigar[cigarSize] = '\0';
-								counterM = 0;
-						}
-						else if(counterI != 0)
-						{
-								sprintf(cigar, "%s%dI", cigar, counterI);
+                                counterM = 0;
+                        }
+                        else if(counterI != 0)
+                        {
+                                sprintf(cigar, "%s%dI", cigar, counterI);
 				cigarSize += addCigarSize(counterI) + 1;
 				cigar[cigarSize] = '\0';
-								counterI=0;
-						}
+                                counterI=0;
+                        }
 			
 			counterD++;
 			i++;
@@ -5445,44 +5435,44 @@ void generateCigar(char *matrix, int matrixLength, char *cigar)
 		else
 		{
 			counterM++;
-						if(counterI != 0)
-						{
-								sprintf(cigar, "%s%dI", cigar, counterI);
+                        if(counterI != 0)
+                        {
+                                sprintf(cigar, "%s%dI", cigar, counterI);
 				cigarSize += addCigarSize(counterI) + 1;
 				cigar[cigarSize] = '\0';
-								counterI=0;
-						}
-						else if(counterD != 0)
-						{
-								sprintf(cigar, "%s%dD", cigar, counterD);
+                                counterI=0;
+                        }
+                        else if(counterD != 0)
+                        {
+                                sprintf(cigar, "%s%dD", cigar, counterD);
 				cigarSize += addCigarSize(counterD) + 1;
 				cigar[cigarSize] = '\0';
-								counterD=0;
-						}
+                                counterD=0;
+                        }
 		}
 		i++;
-	}		  
+	}          
 	
 	if(counterM != 0)
-		{
-				sprintf(cigar, "%s%dM", cigar, counterM);
+        {
+                sprintf(cigar, "%s%dM", cigar, counterM);
 		cigarSize += addCigarSize(counterM) + 1;
 		cigar[cigarSize] = '\0';
-				counterM = 0;
-		}
-		else if(counterI != 0)
-		{
-				sprintf(cigar, "%s%dI", cigar, counterI);
+                counterM = 0;
+        }
+        else if(counterI != 0)
+        {
+                sprintf(cigar, "%s%dI", cigar, counterI);
 		cigarSize += addCigarSize(counterI) + 1;
 		cigar[cigarSize] = '\0';
-				counterI = 0;
-		}
+                counterI = 0;
+        }
 	else if(counterD != 0)
 	{
 		sprintf(cigar, "%s%dD", cigar, counterD);
 		cigarSize += addCigarSize(counterD) + 1;
 		cigar[cigarSize] = '\0';
-				counterD = 0;
+                counterD = 0;
 	}
 	
 	cigar[cigarSize] = '\0';
@@ -5499,7 +5489,7 @@ void generateCigarFromMD(char *mismatch, int mismatchLength, char *cigar)
 	int start = 0;
 	int cigarSize = 0;
 
-		cigar[0] = '\0';
+        cigar[0] = '\0';
 
 	while(i < mismatchLength)
 	{
@@ -5531,7 +5521,7 @@ void generateCigarFromMD(char *mismatch, int mismatchLength, char *cigar)
 		else
 		{
 			 cigar[cigarSize] = 'M';
-						 cigarSize++;		 
+                         cigarSize++;		 
 		}
 		cigarSize++;
 		i++;
@@ -5564,7 +5554,7 @@ void generateSNPSAM(char *matrix, int matrixLength, char *outputSNP)
 			{
 				delete[counterD] = '\0';
 				counterD=0;
-								sprintf(outputSNP, "%s^%s", outputSNP,delete);
+                                sprintf(outputSNP, "%s^%s", outputSNP,delete);
 				snpSize += strlen(delete) + 1;
 				outputSNP[snpSize] = '\0';
 				delete[0] = '\0';
@@ -5592,27 +5582,27 @@ void generateSNPSAM(char *matrix, int matrixLength, char *outputSNP)
 			{			
 				delete[counterD] = matrix[i+1];
 				counterD++;
-								i++;
+                                i++;
 			}
 		}
 		else if(matrix[i] == 'I')
 		{
 			if(counterM != 0)
-						{
+                        {
 			  // sprintf(outputSNP, "%s%d\0", outputSNP, counterM); 
 			  //counterM++;
-						}											 
-						else if(counterD != 0)
-						{		
+                        }                                             
+                        else if(counterD != 0)
+                        {		
 				delete[counterD] = '\0';
 				sprintf(outputSNP, "%s^%s", outputSNP, delete); 
 				snpSize += strlen(delete) + 1;
 				outputSNP[snpSize] = '\0';
- 				counterD = 0;	
-				delete[0] = '\0';						 
-						}	   
+ 				counterD = 0;    
+				delete[0] = '\0';                         
+                        }       
 			i++;
-			
+            
 		}
 		else
 		{
@@ -5621,17 +5611,17 @@ void generateSNPSAM(char *matrix, int matrixLength, char *outputSNP)
 				sprintf(outputSNP, "%s%d", outputSNP, counterM);
 				snpSize += addCigarSize(counterM);
 				outputSNP[snpSize] = '\0';
-								counterM = 0;
+                                counterM = 0;
 			}
-						if(counterD != 0)
-						{
-								delete[counterD] = '\0';
-								counterD=0;
-								sprintf(outputSNP, "%s^%s", outputSNP, delete);
+                        if(counterD != 0)
+                        {
+                                delete[counterD] = '\0';
+                                counterD=0;
+                                sprintf(outputSNP, "%s^%s", outputSNP, delete);
 				snpSize += strlen(delete) + 1;
 				outputSNP[snpSize] = '\0';
 				delete[0] = '\0';
-						}
+                        }
 			sprintf(outputSNP,"%s%c",outputSNP,matrix[i]);
 			snpSize += 1;
 			outputSNP[snpSize] = '\0';
@@ -5640,45 +5630,82 @@ void generateSNPSAM(char *matrix, int matrixLength, char *outputSNP)
 	}
 	
 	if(counterM != 0)
-		{
-			sprintf(outputSNP, "%s%d", outputSNP, counterM);
+        {
+	        sprintf(outputSNP, "%s%d", outputSNP, counterM);
 		snpSize += addCigarSize(counterM);
 		outputSNP[snpSize] = '\0';
-				counterM = 0;
-		}					 
-		else if(counterD != 0)
-		{ 
-			delete[counterD] = '\0';
-				sprintf(outputSNP, "%s^%s", outputSNP, delete);
+                counterM = 0;
+        }                     
+        else if(counterD != 0)
+        { 
+        	delete[counterD] = '\0';
+                sprintf(outputSNP, "%s^%s", outputSNP, delete);
 		snpSize += strlen(delete) + 1;
 		outputSNP[snpSize] = '\0';
-				counterD = 0;
-		} 
+                counterD = 0;
+        } 
 
 	outputSNP[snpSize] = '\0';
 }
-/**********************************************/
-/*
-	direction = 0 forward 1 backward	
-*/
-// DHL
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
-					int direction, int index, key_struct* keys_input, int potential_key_number, int n_num) {
-/*
-	printf ("---------- New Call ----------\n");
-	printf ("*l1		 :%d\n", *l1);
-	printf ("s1		  :%d\n", s1);
-	printf ("readNumber  :%d\n", readNumber);
-	printf ("readSegment :%d\n", readSegment);
-	printf ("direction   :%d\n", direction);
-	printf ("index	   :%d\n", index);
-	printf ("------------------------------\n");
-*/
-	int it;
-	for (it = 0; it < 7; it++) {
-		local_search_key_level[it] = 0;
+
+// fastHASH: searchKey()
+int searchKey(int target_coor, unsigned int* entry_coor, int entry_size) {
+	if (entry_size <= 0)
+		return 0;
+	int lower_bound = 1;
+	int upper_bound = entry_size;
+	int mid = lower_bound + entry_size / 2; 
+
+	while (lower_bound < upper_bound) {
+		if (entry_coor[mid] == target_coor)
+			break;
+		else if (entry_coor[mid] < target_coor)
+			lower_bound = mid + 1;
+		else
+			upper_bound = mid - 1;
+		mid = lower_bound + (upper_bound - lower_bound) / 2;
 	}
 
+	if (entry_coor[mid] <= target_coor + errThreshold && entry_coor[mid]
+			>= target_coor - errThreshold) {
+		return 1;
+	} else
+		return 0;
+}
+
+// fastHASH: sortPrefilter()
+void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num) {
+	int i = 0;
+	int j = 0;
+	for (i = 0; i < available_key_num; i++) {
+		for (j = 0; j < available_key_num; j++) {
+			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
+				sort_input[i].order = sort_input[i].order + 1;
+			}
+		}
+	}
+	int loop_index = 0;
+	for (i = 0; i < available_key_num; i++) {
+		for (j = 0; j < available_key_num; j++) {
+			if (sort_input[j].order == i) {
+				sort_result[loop_index].key_entry = sort_input[j].key_entry;
+				sort_result[loop_index].key_number = sort_input[j].key_number;
+				sort_result[loop_index].key_entry_size = sort_input[j].key_entry_size;
+				sort_result[loop_index].order = sort_input[j].order;
+				loop_index = loop_index + 1;
+			}
+		}
+	}
+}
+
+/**********************************************/
+//	direction = 0 forward
+//		    	1 backward	
+/**********************************************/
+
+// fastHASH: mapSingleEndSeq
+void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, 
+					 int index, key_struct* keys_input, int potential_key_number, int n_num) {
 	int j = 0;
 	int z = 0;
 	int *locs = (int *) l1;
@@ -5695,6 +5722,8 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 	char cigar[MAX_CIGAR_SIZE];
 
 	short *_tmpHashValue;
+	int readId = 2*readNumber+direction;
+	int key_number = SEQ_LENGTH / WINDOW_SIZE;
 
 	if (direction) {
 		reverse(_msf_seqList[readNumber].qual, rqual, SEQ_LENGTH);
@@ -5707,43 +5736,14 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 		_tmpSeq = _msf_seqList[readNumber].seq;
 		_tmpHashValue = _msf_seqList[readNumber].hashValue;
 	}
-/*
-	// DHL: print hash table
-	int id = 0;
-	printf("hash table location:", locs[id]);
-	for (id = 0; id < s1; id++) {
-		printf("%d	", locs[id]);
-	}
-	printf("\n");
-*/
-	int readId = 2*readNumber+direction;
-	int key_number = SEQ_LENGTH / WINDOW_SIZE;
+
 	for (z = 0; z < s1; z++) {
 		int map_location = 0;
 		int a = 0;
 		int o = index;
-		
-	//	local_search_key_level[get_level(keys_input[z].hash_val)]++; // BM_DHL
 
 		genLoc = locs[z];
-/*
-		// Filter Analysis
-		printf("-------------------------------------\n");
-		printf("--genLoc 				:%d\n", genLoc);
-		printf("--_msf_samplingLocs[%d] :%d\n", o, _msf_samplingLocs[o]);
-		printf("--_msf_refGenBeg 		:%d\n", _msf_refGenBeg);
-		printf("--_msf_refGenEnd 		:%d\n", _msf_refGenEnd);
-		printf("--_msf_verifiedLocs[genLoc(%d)-_msf_samplingLocs[%d](%d)] :%d\n", 
-			genLoc, o, _msf_samplingLocs[o],  _msf_verifiedLocs[genLoc-_msf_samplingLocs[o]]);
-		printf("--genLoc-_msf_samplingLocs[o]:%d\n", genLoc-_msf_samplingLocs[o]); 
-		printf("--readId :%d\n", readId);
-		printf("-------------------------------------\n");
-		printf("--Filter:%d", genLoc-_msf_samplingLocs[o] < _msf_refGenBeg);
-		printf(" : %d", genLoc-_msf_samplingLocs[o] > _msf_refGenEnd);
-		printf(" : %d", _msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] == readId);
-		printf(" : %d\n", _msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] == -readId);
-		printf("-------------------------------------\n");
-*/
+
 		if ( genLoc-_msf_samplingLocs[o] < _msf_refGenBeg || 
 			 genLoc-_msf_samplingLocs[o] > _msf_refGenEnd ||
 			 _msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] ==  readId || 
@@ -5751,48 +5751,22 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 				continue;
 		}
 
-//		printf("_OriSeq:%s\n", _msf_seqList[readNumber].seq);
-//		printf("_tmpSeq:%s\n", _tmpSeq);
 // Adjacency Filtering Start ---------------------------------
 		int skip_edit_distance = 0;
 		int diff_num = n_num;
 		int ix = 0;
-		total_filtering++;
 		for (ix = 0; ix < potential_key_number; ix++) {
 			if (ix - diff_num >= key_number - errThreshold) {
 				break;
 			}
 			if (ix != o) {
-				int pass = 0;
-				if (keys_input[ix].key_entry_size < 10000000) { 
-					pass = searchKey(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) * WINDOW_SIZE, 
-								keys_input[ix].key_entry, keys_input[ix].key_entry_size);
-					total_binary_num++; 	// BM_DHL ok
-				}
-				else {
-					if (test_mask(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) 
-									* WINDOW_SIZE, keys_input[ix].hash_val)) {
-						pass = searchKey(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) 
-									* WINDOW_SIZE, keys_input[ix].key_entry, keys_input[ix].key_entry_size);
-						total_binary_num++;							// BM_DHL ok
-						if (!pass) {
-							record_fail(keys_input[ix].hash_val);		// BM_DHL ok
-						}
-					}
-					else {
-						pass = 0;
-						total_bit_mask_success++;
-					}
-				}
-				if (!pass) {
+				if (!searchKey(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) * WINDOW_SIZE, 
+								keys_input[ix].key_entry, keys_input[ix].key_entry_size)) {
 					diff_num++;
 					if (diff_num > errThreshold) {
 						skip_edit_distance = 1;
 						break;
 					}
-				}
-				else {
-					total_binary_success++;
 				}
 			}
 		}
@@ -5803,18 +5777,8 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 		middleSeqLength = WINDOW_SIZE;
 		a = leftSeqLength + middleSeqLength;
 		rightSeqLength = SEQ_LENGTH - a;
-/*
-		printf ("genLoc		 :%d	", genLoc);
-		printf ("leftSeqLength  :%d	", leftSeqLength);
-		printf ("rightSeqLength :%d	", rightSeqLength);
-		printf ("middleSeqLength:%d\n", middleSeqLength);
-		printf ("_tmpSeq		:%s\n", _tmpSeq);
-		printf ("_tmpSeq + a	:%s\n", _tmpSeq + a);
-		printf ("_tmpHashValue  :%d\n", *_tmpHashValue);
-*/
+
 		if(skip_edit_distance == 0) {
-//			printf("ED_Start !!!\n");
-			total_edit_num++;
 			if(errThreshold == 2) {
 				err = verifySingleEndEditDistance2(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
@@ -5828,12 +5792,10 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 				err = verifySingleEndEditDistanceExtention(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
 		} else {
-//			printf("ED Skipped by Adjacency Filtering!!!\n");
 			err = -1;
 		}
 
 		if(err != -1) {
-			total_pass_num++;
 			generateSNPSAM(matrix, strlen(matrix), editString);
 			generateCigar(matrix, strlen(matrix), cigar);
 		}
@@ -5842,15 +5804,12 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 			mappingCnt++;
 			int j = 0;
 			int k = 0;
-//			printf("**verified Locs");
 			for(j = -errThreshold ; j <= errThreshold; j++) {
 				if(genLoc-(readSegment*WINDOW_SIZE)+j >= _msf_refGenBeg && 
 					genLoc-(readSegment*WINDOW_SIZE)+j <= _msf_refGenEnd) {
 					_msf_verifiedLocs[genLoc-(readSegment*WINDOW_SIZE)+j] = readId;
-//					printf(" : %d", genLoc-(readSegment*WINDOW_SIZE)+j); 
 				}
 			}
-//			printf("\n");
 
 			_msf_seqList[readNumber].hits[0]++;
 			_msf_output.QNAME		= _msf_seqList[readNumber].name;
@@ -5914,66 +5873,7 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment,
 	}
 }
 
-int searchKey(int target_coor, unsigned int* entry_coor, int entry_size) {
-/*
-	printf("## target:%d entry_size:%d ##\n## ", target_coor, entry_size);
-	int i;
-	for (i = 0; i < entry_size; i++) {
-		printf("%d :", entry_coor[i+1]);
-	}
-	printf("\n");
-*/
-	if (entry_size <= 0)
-		return 0;
-	int lower_bound = 1;
-	int upper_bound = entry_size;
-	int mid = lower_bound + entry_size / 2; 
-
-	while (lower_bound < upper_bound) {
-		if (entry_coor[mid] == target_coor)
-			break;
-		else if (entry_coor[mid] < target_coor)
-			lower_bound = mid + 1;
-		else
-			upper_bound = mid - 1;
-		mid = lower_bound + (upper_bound - lower_bound) / 2;
-	}
-
-	if (entry_coor[mid] <= target_coor + errThreshold && entry_coor[mid]
-			>= target_coor - errThreshold) {
-//		printf("Matched\n");
-		return 1;
-	} else
-//		printf("non-matched\n");
-		return 0;
-}
-
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num) {
-	int i = 0;
-	int j = 0;
-	for (i = 0; i < available_key_num; i++) {
-		for (j = 0; j < available_key_num; j++) {
-			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
-				sort_input[i].order = sort_input[i].order + 1;
-			}
-		}
-	}
-	int loop_index = 0;
-	for (i = 0; i < available_key_num; i++) {
-		for (j = 0; j < available_key_num; j++) {
-			if (sort_input[j].order == i) {
-				sort_result[loop_index].key_entry = sort_input[j].key_entry;
-				sort_result[loop_index].key_number = sort_input[j].key_number;
-				sort_result[loop_index].key_entry_size = sort_input[j].key_entry_size;
-				sort_result[loop_index].order = sort_input[j].order;
-				sort_result[loop_index].hash_val = sort_input[j].hash_val;
-				loop_index = loop_index + 1;
-			}
-		}
-	}
-}
-
-// DHL
+// fastHASH: mapAllSingleEndSeq()
 int mapAllSingleEndSeq() {
 	int i = 0;
 	int j = 0;
@@ -5985,22 +5885,19 @@ int mapAllSingleEndSeq() {
 	key_struct* sort_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
 	key_struct* keys_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
 
+	// Forward Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
-//		int no_more_operation = 0;
 		int available_key_num = 0;	
 		int it = 0;
 		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].seq + it * WINDOW_SIZE);
-	//		printf("Forward key_hash :%d\n", key_hash);
 			if (key_hash >= 0) {
-//				printf("key :%d\n", key_hash);
 				locs_tmp = getCandidates(key_hash);
 			}
 			else {
 				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				int j;
 				for(j = 0; j < WINDOW_SIZE; j++) {
 					if(tmp_seq[j] == 'N') {
 						n_num++;
@@ -6008,77 +5905,34 @@ int mapAllSingleEndSeq() {
 				}
 			}
 
-	//		if (locs_tmp == NULL) {
-	//			printf("ERROR\n");
-	//		}
-
 			if (locs_tmp != NULL) {
 				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
-				sort_input[available_key_num].hash_val = key_hash;
 				available_key_num++;
 			}
 		}
-	//	printf("\n");
-		//int n_num = key_number - available_key_num;
-		//n_num = key_number - available_key_num;
-/*
-		// DHL: Cheap Key Selection Verify
-		printf("Before Cheap Key Selection\n");
-		printf("number of N  :%d\n", n_num);
-		printf("available key:%d\n", available_key_num);
-		for (it = 0; it < available_key_num; it++) {
-			printf("pri key[%d]	%d	%d	%d	\n", it, sort_input[i].key_number,
-					sort_input[it].key_entry_size, sort_input[it].order);
-		}
-		printf("\n");
-*/
-//		if (n_num > errThreshold){ 
-//			no_more_operation = 1;
-//		}	
-//		int potential_diff_num = errThreshold - n_num;
+
 		int operating_key_num = _msf_samplingLocsSize - n_num;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
 	
 		sortPrefilter(keys_input, sort_input, available_key_num);
-/*
-		// DHL: Verify Cheap Key Selection
-		printf("After Cheap Key Selection\n");
-		printf("number of N  :%d\n", n_num);
-		printf("available key:%d\n", available_key_num);
-		for (it = 0; it < available_key_num; it++) {
-			printf("pri key[%d]	%d	%d	%d	\n", it, keys_input[it].key_number,
-					keys_input[it].key_entry_size, keys_input[it].order);
-		}
-		printf("\n");
-*/	
 		if (n_num <= errThreshold){
-			//for(j = 0; j < _msf_samplingLocsSize; j++) {
 			for(j = 0; j < operating_key_num; j++) {
-/*
-				// DHL: Hash Read
-				printf("Forward\n");
-				printf("_msf_seqList[k].seq+_msf_samplingLocs[j]:%s\n",
-					 	_msf_seqList[k].seq+_msf_samplingLocs[j]);
-				printf("_msf_seqList[k].seq:%s\n", _msf_seqList[k].seq);
-				printf("_msf_samplingLocs[j]:%d\n", keys_input[j].key_number*WINDOW_SIZE);
-				printf("hashVal:%d\n", hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
-*/
 				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
 				locs = getCandidates(hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
 				if ( locs != NULL) {
-					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 0, j, keys_input, available_key_num, n_num);
+					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 0, j, keys_input, 
+									available_key_num, n_num);
 				}
-//				prev_hash = hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]);
 			}
 		}
 	}
 
-	i = 0;
+	// Reverse Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
 		int no_more_operation = 0;
@@ -6088,88 +5942,40 @@ int mapAllSingleEndSeq() {
 		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].rseq + it * WINDOW_SIZE);
-//			printf("Reverse key_hash :%d\n", key_hash);
 			if (key_hash >= 0) {
-		//		printf("key :%d\n", key_hash);
 				locs_tmp = getCandidates(key_hash);
 			}
 			else {
 				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				int j;
 				for(j = 0; j < WINDOW_SIZE; j++) {
 					if(tmp_seq[j] == 'N') {
 						n_num++;
 					}
 				}
 			}
-/*
-			if (locs_tmp == NULL) {
-				printf("ERROR\n");
-			}
-*/
 			if (locs_tmp != NULL) {
 				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
-				sort_input[available_key_num].hash_val = key_hash;
 				available_key_num++;
 			}
 		}
-//		printf("\n");
-		//int n_num = key_number - available_key_num;
-//		n_num = key_number - available_key_num;
-/*
-		// DHL: Cheap Key Selection
-		printf("Before Cheap Key Selection\n");
-		printf("number of N  :%d\n", n_num);
-		printf("available key:%d\n", available_key_num);
-		for (it = 0; it < available_key_num; it++) {
-			printf("pri key[%d]	%d	%d	%d	\n", it, sort_input[i].key_number,
-					sort_input[it].key_entry_size, sort_input[it].order);
-		}
-		printf("\n");
-*/
-//		if (n_num > errThreshold){ 
-//			no_more_operation = 1;
-//		}	
-//		int potential_diff_num = errThreshold - n_num;
-		//int operating_key_num = _msf_samplingLocsSize - (key_number - available_key_num);
+
 		int operating_key_num = _msf_samplingLocsSize - n_num;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
 	
 		sortPrefilter(keys_input, sort_input, available_key_num);
-/*
-		// DHL: Cheap Key Selection Verify
-		printf("After Cheap Key Selection\n");
-		printf("number of N  :%d\n", n_num);
-		printf("available key:%d\n", available_key_num);
-		for (it = 0; it < available_key_num; it++) {
-			printf("pri key[%d]	%d	%d	%d	\n", it, keys_input[it].key_number,
-					keys_input[it].key_entry_size, keys_input[it].order);
-		}
-		printf("\n");
-*/
 		if (n_num <= errThreshold) {
-			//for(j = 0; j < _msf_samplingLocsSize; j++) {
 			for(j = 0; j < operating_key_num; j++) {
-/*
-			// DHL: Hash Read
-				printf("Reverse\n");
-				printf("_msf_seqList[k].seq+_msf_samplingLocs[j]:%s\n",
-					 	_msf_seqList[k].seq+_msf_samplingLocs[j]);
-				printf("_msf_seqList[k].seq:%s\n", _msf_seqList[k].seq);
-				printf("_msf_samplingLocs[j]:%d\n", keys_input[j].key_number*WINDOW_SIZE);
-				printf("hashVal:%d\n", hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
-*/
 				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
 				locs = getCandidates(hashVal(_msf_seqList[k].rseq+_msf_samplingLocs[j]));
 				if ( locs != NULL) {
-					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 1, j, keys_input, available_key_num, n_num);
+					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 1, j, keys_input, 
+									available_key_num, n_num);
 				}
-//				prev_hash = hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]);
 			}
 		}
 	}
@@ -6177,6 +5983,8 @@ int mapAllSingleEndSeq() {
 	free(keys_input);
 	return 1;
 }
+
+/**********************************************/
 int compareOut (const void *a, const void *b)
 {
 	FullMappingInfo *aInfo = (FullMappingInfo *)a;
@@ -6185,174 +5993,267 @@ int compareOut (const void *a, const void *b)
 }
 
 /**********************************************/
-
-/*
-	direction 0: Forward
-			  1: Reverse
-*/
-
-// DHL
-void mapPairEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction) {
+//	direction 	0: Forward
+//		  		1: Reverse
+/**********************************************/
+// fastHASH: mapPairEndSeqList()
+void mapPairEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction,
+					   int index, key_struct* keys_input, int potential_key_number, int n_num) {
+	int j = 0;
 	int z = 0;
 	int *locs = (int *) l1;
 	char *_tmpSeq;
 	char rqual[SEQ_LENGTH+1];
+	rqual[SEQ_LENGTH]='\0';
+	int genLoc = 0;
+	int leftSeqLength = 0;
+	int rightSeqLength = 0;
+	int middleSeqLength = 0; 
+	int r = readNumber;
+
 	char matrix[200];
 	char editString[200];
 	char cigar[MAX_CIGAR_SIZE];
-	short *_tmpHashValue;
-	int leftSeqLength = 0;
-	int middleSeqLength = 0;
-	int rightSeqLength =0;
-	int a = 0;
-	rqual[SEQ_LENGTH]='\0';
-	int r = readNumber;
-	char d = (direction==1)?-1:1;
+    char d = (direction==1)?-1:1;
 
-	if (d==-1) {
+	short *_tmpHashValue;
+	int readId = 2*readNumber+direction;
+	int key_number = SEQ_LENGTH / WINDOW_SIZE;
+
+	if (d == -1) {
 		_tmpSeq = _msf_seqList[readNumber].rseq;
-		_tmpHashValue = _msf_seqList[r].rhashValue;
+		_tmpHashValue = _msf_seqList[readNumber].rhashValue;
 	}
 	else {
 		_tmpSeq = _msf_seqList[readNumber].seq;
-		_tmpHashValue = _msf_seqList[r].hashValue;
+		_tmpHashValue = _msf_seqList[readNumber].hashValue;
 	}
 
-	int readId = 2*readNumber+direction;
-	for (z=0; z<s1; z++) {
-		int genLoc = locs[z];
-		int err = -1;
+	for (z = 0; z < s1; z++) {
 		int map_location = 0;
-		int o = readSegment;
+		int a = 0;
+		int o = index;
+		genLoc = locs[z];
 
+		if (genLoc-_msf_samplingLocs[o] < _msf_refGenBeg || 
+			genLoc-_msf_samplingLocs[o] > _msf_refGenEnd ||
+			_msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] ==  readId || 
+  			_msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] == -readId ) {
+			continue;
+		}
+
+// Adjacency Filtering Start ---------------------------------
+		int skip_edit_distance = 0;
+		int diff_num = n_num;
+		int ix = 0;
+		for (ix = 0; ix < potential_key_number; ix++) {
+			if (ix - diff_num >= key_number - errThreshold) {
+				break;
+			}
+			if (ix != o) {
+				if (!searchKey(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) * WINDOW_SIZE, 
+								keys_input[ix].key_entry, keys_input[ix].key_entry_size)) {
+					diff_num++;
+					if (diff_num > errThreshold) {
+						skip_edit_distance = 1;
+						break;
+					}
+				}
+			}
+		}
+// Adjacency Filtering End -----------------------------------
+		int err = -1;
+		map_location = 0;						
 		leftSeqLength = _msf_samplingLocs[o];
 		middleSeqLength = WINDOW_SIZE;
 		a = leftSeqLength + middleSeqLength;
 		rightSeqLength = SEQ_LENGTH - a;
-			
-		if(genLoc - leftSeqLength < _msf_refGenBeg || 
-			genLoc + rightSeqLength + middleSeqLength > _msf_refGenEnd ||
-			_msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] == readId || 
-			_msf_verifiedLocs[genLoc-_msf_samplingLocs[o]] == -readId)
-			continue;
 
-		if(errThreshold == 2) {
-			err = verifySingleEndEditDistance2(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
-		}
-		else if(errThreshold == 4) {
-			err = verifySingleEndEditDistance4(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
-		}
-		else if(errThreshold ==3) {
-			err = verifySingleEndEditDistance(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
-		}
-		else {
-			err = verifySingleEndEditDistanceExtention(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
-		}
-		
-		if (err != -1) {
-			int j = 0;
-			int k = 0;
-
-			for(k = 0; k < readSegment+1; k++) {
-				for(j = -errThreshold ; j <= errThreshold; j++) {
-					if(genLoc-(k*(_msf_samplingLocs[1]-_msf_samplingLocs[0]))+j >= _msf_refGenBeg && genLoc-(k*(_msf_samplingLocs[1]-_msf_samplingLocs[0]))+j <= _msf_refGenEnd) {
-							_msf_verifiedLocs[genLoc-(k*(_msf_samplingLocs[1]-_msf_samplingLocs[0]))+j] = readId;
-					}
-				}
+		if(skip_edit_distance == 0) {
+			if(errThreshold == 2) {
+				err = verifySingleEndEditDistance2(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
-
-			generateSNPSAM(matrix, strlen(matrix), editString);
-				generateCigar(matrix, strlen(matrix), cigar);
-
-				MappingLocations *parent = NULL;
-				MappingLocations *child = _msf_mappingInfo[r].next;
-					
-				genLoc = map_location + _msf_refGenOffset;
-				int i = 0;
-				for (i=0; i<(_msf_mappingInfo[r].size/MAP_CHUNKS); i++) {
-					parent = child;
-					child = child->next;
-				}
-
-				if (child==NULL) {
-					MappingLocations *tmp = getMem(sizeof(MappingLocations));
-
-					tmp->next = NULL;
-					tmp->loc[0]=genLoc * d;
-					tmp->err[0]=err; 
-
-					tmp->cigarSize[0] = strlen(cigar);
-					sprintf(tmp->cigar[0],"%s", cigar);
-
-					tmp->mdSize[0] = strlen(editString);
-					sprintf(tmp->md[0],"%s", editString);
-
-					if (parent == NULL)
-						_msf_mappingInfo[r].next = tmp;
-					else
-						parent->next = tmp;
-				}
-				else {
-					if(strlen(cigar) > SEQ_LENGTH || strlen(editString) > SEQ_LENGTH) {
-					  printf("ERROR in %d read size(After mapping) exceedes cigar=%d md =%d cigar=%s md =%s\n", r,  (int)strlen(cigar), (int)strlen(editString), cigar, editString);
-					}
-
-					child->loc[_msf_mappingInfo[r].size % MAP_CHUNKS] = genLoc * d;
-					child->err[_msf_mappingInfo[r].size % MAP_CHUNKS] = err;	
-
-					child->cigarSize[_msf_mappingInfo[r].size % MAP_CHUNKS] = strlen(cigar);
-					sprintf(child->cigar[_msf_mappingInfo[r].size % MAP_CHUNKS],"%s",cigar);
-					
-					child->mdSize[_msf_mappingInfo[r].size % MAP_CHUNKS] = strlen(editString);
-					sprintf(child->md[_msf_mappingInfo[r].size % MAP_CHUNKS],"%s",editString);
-				}
-				_msf_mappingInfo[r].size++;
-
+			else if(errThreshold == 4) {
+				err = verifySingleEndEditDistance4(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
+			}
+			else if(errThreshold ==3) {
+				err = verifySingleEndEditDistance(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
 			else {
-				_msf_verifiedLocs[genLoc] = -readId;
+				err = verifySingleEndEditDistanceExtention(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
+			}
+		} else {
+			err = -1;
+		}
+
+		if(err != -1) { 
+			int i = 0;
+			int j = 0;
+			int k = 0;
+			for(j = -errThreshold ; j <= errThreshold; j++) {
+				if(genLoc-(readSegment*WINDOW_SIZE)+j >= _msf_refGenBeg && 
+					genLoc-(readSegment*WINDOW_SIZE)+j <= _msf_refGenEnd) {
+					_msf_verifiedLocs[genLoc-(readSegment*WINDOW_SIZE)+j] = readId;
+				}
+			}
+//----------------------------------------------------
+			generateSNPSAM(matrix, strlen(matrix), editString);
+			generateCigar(matrix, strlen(matrix), cigar);
+			MappingLocations *parent = NULL;
+			MappingLocations *child = _msf_mappingInfo[r].next;
+			genLoc = map_location + _msf_refGenOffset;
+
+			for (i = 0; i < (_msf_mappingInfo[r].size/MAP_CHUNKS); i++) {
+				parent = child;
+				child = child->next;
 			}
 
+			if (child == NULL) {
+				MappingLocations *tmp = getMem(sizeof(MappingLocations));
+				tmp->next = NULL;
+				tmp->loc[0]=genLoc * d;		// d is required: DHL
+				tmp->err[0]=err; 
+				tmp->cigarSize[0] = strlen(cigar);
+				sprintf(tmp->cigar[0],"%s", cigar);
+				tmp->mdSize[0] = strlen(editString);
+				sprintf(tmp->md[0],"%s", editString);
+
+				if (parent == NULL)
+					_msf_mappingInfo[r].next = tmp;
+				else
+					parent->next = tmp;
+			}
+			else {
+				if(strlen(cigar) > SEQ_LENGTH || strlen(editString) > SEQ_LENGTH) {
+					printf("ERROR in %d read size(After mapping) exceedes cigar=%d md =%d cigar=%s md =%s\n", 
+							r, (int)strlen(cigar), (int)strlen(editString), cigar, editString);
+				}
+				child->loc[_msf_mappingInfo[r].size % MAP_CHUNKS] = genLoc * d;
+				child->err[_msf_mappingInfo[r].size % MAP_CHUNKS] = err;	
+				child->cigarSize[_msf_mappingInfo[r].size % MAP_CHUNKS] = strlen(cigar);
+				sprintf(child->cigar[_msf_mappingInfo[r].size % MAP_CHUNKS],"%s",cigar);
+				child->mdSize[_msf_mappingInfo[r].size % MAP_CHUNKS] = strlen(editString);
+				sprintf(child->md[_msf_mappingInfo[r].size % MAP_CHUNKS],"%s",editString);
+			}
+			_msf_mappingInfo[r].size++;
 		}
+		else {
+			_msf_verifiedLocs[genLoc] = -readId;
+		}
+	}
 }
 
-/**********************************************/
-void mapPairedEndSeq()
-{
+// fastHASH: mapPairedendSeq()
+void mapPairedEndSeq() {
+	// DHL: Changed Start
 	int i = 0;
 	int j = 0;
 	int k = 0;
+	int prev_hash = 0;
+	unsigned int *locs 	   = NULL;
+	unsigned int *locs_tmp = NULL;
+	int key_number = SEQ_LENGTH / WINDOW_SIZE;
+	key_struct* sort_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
+	key_struct* keys_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
 
-	unsigned int *locs = NULL;
-	while ( i < _msf_seqListSize )
-	{
-		for(j = 0; j < _msf_samplingLocsSize; j++)
-		{
-			k = _msf_sort_seqList[i].readNumber;
-			locs = getCandidates ( hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
-			if ( locs != NULL)
-			{
-				mapPairEndSeqList(locs+1, locs[0],k ,j, 0);
+	// Forward Mode
+	for(i = 0; i < _msf_seqListSize; i++) {
+		k = _msf_sort_seqList[i].readNumber;
+		int available_key_num = 0;	
+		int it = 0;
+		int n_num = 0;
+		for (it = 0; it < key_number; it++) {
+			int key_hash = hashVal(_msf_seqList[k].seq + it * WINDOW_SIZE);
+			if (key_hash >= 0) {
+				locs_tmp = getCandidates(key_hash);
+			}
+			else {
+				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
+				for(j = 0; j < WINDOW_SIZE; j++) {
+					if(tmp_seq[j] == 'N') {
+						n_num++;
+					}
+				}
+			}
+
+			if (locs_tmp != NULL) {
+				sort_input[available_key_num].order = 0;
+				sort_input[available_key_num].key_number = it;
+				sort_input[available_key_num].key_entry = locs_tmp;
+				sort_input[available_key_num].key_entry_size = locs_tmp[0];
+				available_key_num++;
 			}
 		}
-		i++;
-	}
-	i = 0;
 
-	while ( i < _msf_seqListSize )
-	{
-		for(j = 0; j < _msf_samplingLocsSize; j++)
-		{
-			k = _msf_sort_seqList[i].readNumber;
-			locs = getCandidates ( hashVal(_msf_seqList[k].rseq+_msf_samplingLocs[j]));
-			if ( locs != NULL)
-			{
-				mapPairEndSeqList(locs+1, locs[0],k ,j, 1);
+		int operating_key_num = _msf_samplingLocsSize - n_num;
+		if (available_key_num < operating_key_num){
+			operating_key_num = available_key_num;
+		}
+	
+		sortPrefilter(keys_input, sort_input, available_key_num);
+		if (n_num <= errThreshold){
+			for(j = 0; j < operating_key_num; j++) {
+				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
+				locs = getCandidates(hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
+				if ( locs != NULL) {
+					mapPairEndSeqList(locs+1, locs[0], k, keys_input[j].key_number, 0, j, keys_input, 
+									  available_key_num, n_num);
+				}
+			}
+		}
+	}
+
+	// Reverse Mode
+	for(i = 0; i < _msf_seqListSize; i++) {
+		k = _msf_sort_seqList[i].readNumber;
+		int no_more_operation = 0;
+		int key_number = SEQ_LENGTH / WINDOW_SIZE;									
+		int available_key_num = 0;	
+		int it = 0;
+		int n_num = 0;
+		for (it = 0; it < key_number; it++) {
+			int key_hash = hashVal(_msf_seqList[k].rseq + it * WINDOW_SIZE);
+			if (key_hash >= 0) {
+				locs_tmp = getCandidates(key_hash);
+			}
+			else {
+				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
+				for(j = 0; j < WINDOW_SIZE; j++) {
+					if(tmp_seq[j] == 'N') {
+						n_num++;
+					}
+				}
+			}
+			if (locs_tmp != NULL) {
+				sort_input[available_key_num].order = 0;
+				sort_input[available_key_num].key_number = it;
+				sort_input[available_key_num].key_entry = locs_tmp;
+				sort_input[available_key_num].key_entry_size = locs_tmp[0];
+				available_key_num++;
 			}
 		}
 
-		i++;
+		int operating_key_num = _msf_samplingLocsSize - n_num;
+		if (available_key_num < operating_key_num){
+			operating_key_num = available_key_num;
+		}
+	
+		sortPrefilter(keys_input, sort_input, available_key_num);
+		if (n_num <= errThreshold) {
+			for(j = 0; j < operating_key_num; j++) {
+				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
+				locs = getCandidates(hashVal(_msf_seqList[k].rseq+_msf_samplingLocs[j]));
+				if ( locs != NULL) {
+					mapPairEndSeqList(locs+1, locs[0], k, keys_input[j].key_number, 1, j, keys_input, 
+									  available_key_num, n_num);
+				}
+			}
+		}
 	}
+	free(sort_input);
+	free(keys_input);
+	// DHL: Changed End
+
 	char fname1[FILE_NAME_LENGTH];
 	char fname2[FILE_NAME_LENGTH];
 	MappingLocations *cur; 
@@ -6368,64 +6269,46 @@ void mapPairedEndSeq()
 
 	_msf_openFiles++;
 
-	for (i=0; i<_msf_seqListSize; i++)
-	{
-
-		if (i%2==0)
-		{
+	for (i=0; i<_msf_seqListSize; i++) {
+		if (i%2==0) {
 			out = out1;
-
-			if (lmax <  _msf_mappingInfo[i].size)
-			{
+			if (lmax <  _msf_mappingInfo[i].size) {
 				lmax = _msf_mappingInfo[i].size;
 			}
 		}
-		else
-		{
+		else {
 			out = out2;
-			if (rmax < _msf_mappingInfo[i].size)
-			{	
+			if (rmax < _msf_mappingInfo[i].size) {	
 				rmax = _msf_mappingInfo[i].size;
 			}
 		}
-
 		tmpOut = fwrite(&(_msf_mappingInfo[i].size), sizeof(int), 1, out);					
-		if (_msf_mappingInfo[i].size > 0)
-		{
+		if (_msf_mappingInfo[i].size > 0) {
 			cur = _msf_mappingInfo[i].next;
-			for (j=0; j < _msf_mappingInfo[i].size; j++)
-			{
-				if ( j>0  && j%MAP_CHUNKS==0)
-				{
+			for (j=0; j < _msf_mappingInfo[i].size; j++) {
+				if ( j>0  && j%MAP_CHUNKS==0) {
 					cur = cur->next;
 				}
-				if(cur->cigarSize[j % MAP_CHUNKS] > SEQ_LENGTH || cur->mdSize[j % MAP_CHUNKS] > SEQ_LENGTH)
-				{
-					printf("ERROR in %d read size exceeds cigar=%d md =%d cigar=%s md =%s\n", i,  cur->cigarSize[j % MAP_CHUNKS], cur->mdSize[j % MAP_CHUNKS], cur->cigar[j % MAP_CHUNKS], cur->md[j % MAP_CHUNKS]);	
+				if(cur->cigarSize[j % MAP_CHUNKS] > SEQ_LENGTH || cur->mdSize[j % MAP_CHUNKS] > SEQ_LENGTH) {
+					printf("ERROR in %d read size exceeds cigar=%d md =%d cigar=%s md =%s\n", i,  
+							cur->cigarSize[j % MAP_CHUNKS], cur->mdSize[j % MAP_CHUNKS], 
+							cur->cigar[j % MAP_CHUNKS], cur->md[j % MAP_CHUNKS]);	
 				}
 				
 				tmpOut = fwrite(&(cur->loc[j % MAP_CHUNKS]), sizeof(int), 1, out);
-
 				tmpOut = fwrite(&(cur->err[j % MAP_CHUNKS]), sizeof(int), 1, out);
-				
 				tmpOut = fwrite(&(cur->cigarSize[j % MAP_CHUNKS]), sizeof(int), 1, out);
 				tmpOut = fwrite((cur->cigar[j % MAP_CHUNKS]), sizeof(char), (cur->cigarSize[j % MAP_CHUNKS]), out);
-				
 				tmpOut = fwrite(&(cur->mdSize[j % MAP_CHUNKS]), sizeof(int), 1, out);
 				tmpOut = fwrite((cur->md[j % MAP_CHUNKS]), sizeof(char), (cur->mdSize[j % MAP_CHUNKS]), out);
-	
 			}
 			_msf_mappingInfo[i].size = 0;
-			//_msf_mappingInfo[i].next = NULL;
 		}
 	}
-
 	_msf_maxLSize += lmax;
 	_msf_maxRSize += rmax;
-
 	fclose(out1);
 	fclose(out2);
-
 }
 
 void outputPairFullMappingInfo(FILE *fp, int readNumber)
@@ -6461,8 +6344,8 @@ void outputPairFullMappingInfo(FILE *fp, int readNumber)
 		int isize;
 		int proper=0;
 		// ISIZE CALCULATION
-		// The distance between outer edges															 
-		isize = abs(bestHitMappingInfo[readNumber*2].loc - bestHitMappingInfo[readNumber*2+1].loc)+SEQ_LENGTH - 2;											  
+		// The distance between outer edges                                                             
+		isize = abs(bestHitMappingInfo[readNumber*2].loc - bestHitMappingInfo[readNumber*2+1].loc)+SEQ_LENGTH - 2;                                              
 
 		if (bestHitMappingInfo[readNumber*2].loc - bestHitMappingInfo[readNumber*2+1].loc > 0)
 		{
@@ -6491,19 +6374,19 @@ void outputPairFullMappingInfo(FILE *fp, int readNumber)
 			proper = 0;
 		}
 
-		_msf_output.POS				 = bestHitMappingInfo[readNumber*2].loc;
-		_msf_output.MPOS				= bestHitMappingInfo[readNumber*2+1].loc;
-		_msf_output.FLAG				= 1+proper+16*d1+32*d2+64;
-		_msf_output.ISIZE			   = isize;
-		_msf_output.SEQ				 = seq,
-		_msf_output.QUAL				= qual;
-		_msf_output.QNAME			   = _msf_seqList[readNumber*2].name;
-		_msf_output.RNAME			   = bestHitMappingInfo[readNumber*2].chr;
-		_msf_output.MAPQ				= 255;
-		_msf_output.CIGAR			   = bestHitMappingInfo[readNumber*2].cigar;
-		_msf_output.MRNAME			  = "=";
+		_msf_output.POS                 = bestHitMappingInfo[readNumber*2].loc;
+		_msf_output.MPOS                = bestHitMappingInfo[readNumber*2+1].loc;
+		_msf_output.FLAG                = 1+proper+16*d1+32*d2+64;
+		_msf_output.ISIZE               = isize;
+		_msf_output.SEQ                 = seq,
+		_msf_output.QUAL                = qual;
+		_msf_output.QNAME               = _msf_seqList[readNumber*2].name;
+		_msf_output.RNAME               = bestHitMappingInfo[readNumber*2].chr;
+		_msf_output.MAPQ                = 255;
+		_msf_output.CIGAR               = bestHitMappingInfo[readNumber*2].cigar;
+		_msf_output.MRNAME              = "=";
 
-		_msf_output.optSize	 = 2;
+		_msf_output.optSize     = 2;
 		_msf_output.optFields   = _msf_optionalFields;
 
 		_msf_optionalFields[0].tag = "NM";
@@ -6528,19 +6411,19 @@ void outputPairFullMappingInfo(FILE *fp, int readNumber)
 			qual = qual2;
 		}
 
-		_msf_output.POS				 = bestHitMappingInfo[readNumber*2+1].loc;
-		_msf_output.MPOS				= bestHitMappingInfo[readNumber*2].loc;
-		_msf_output.FLAG				= 1+proper+16*d2+32*d1+128;
-		_msf_output.ISIZE			   = -isize;
-		_msf_output.SEQ				 = seq,
-		_msf_output.QUAL				= qual;
-		_msf_output.QNAME			   = _msf_seqList[readNumber*2].name;
-		_msf_output.RNAME			   = bestHitMappingInfo[readNumber*2].chr;
-		_msf_output.MAPQ				= 255;
-		_msf_output.CIGAR			   = bestHitMappingInfo[readNumber*2+1].cigar;
-		_msf_output.MRNAME			  = "=";
+		_msf_output.POS                 = bestHitMappingInfo[readNumber*2+1].loc;
+		_msf_output.MPOS                = bestHitMappingInfo[readNumber*2].loc;
+		_msf_output.FLAG                = 1+proper+16*d2+32*d1+128;
+		_msf_output.ISIZE               = -isize;
+		_msf_output.SEQ                 = seq,
+		_msf_output.QUAL                = qual;
+		_msf_output.QNAME               = _msf_seqList[readNumber*2].name;
+		_msf_output.RNAME               = bestHitMappingInfo[readNumber*2].chr;
+		_msf_output.MAPQ                = 255;
+		_msf_output.CIGAR               = bestHitMappingInfo[readNumber*2+1].cigar;
+		_msf_output.MRNAME              = "=";
 
-		_msf_output.optSize	 = 2;
+		_msf_output.optSize     = 2;
 		_msf_output.optFields   = _msf_optionalFields;
 
 		_msf_optionalFields[0].tag = "NM";
@@ -6579,21 +6462,29 @@ int findNearest(int x1, int x2, int c)
 
 void initBestConcordantDiscordant(int readNumber)
 {
-		char bestConcordantFileName[FILE_NAME_LENGTH];
-		char bestDiscordantFileName[FILE_NAME_LENGTH];
+        char bestConcordantFileName[FILE_NAME_LENGTH];
+        //char bestDiscordantFileName[FILE_NAME_LENGTH];
 
 	//OPEN THE BEST CONCORDANT FILE
-		//BEGIN{Farhad Hormozdiari}
-		sprintf(bestConcordantFileName, "%s%s__BEST.CONCORDANT", mappingOutputPath, mappingOutput);
-		bestConcordantFILE = fileOpen(bestConcordantFileName, "w");
-		//END{Farhad Hormozdiari}
+        //BEGIN{Farhad Hormozdiari}
+	/* begin {calkan} */
+        //sprintf(bestConcordantFileName, "%s%s__BEST.CONCORDANT", mappingOutputPath, mappingOutput);
+        sprintf(bestConcordantFileName, "%s%s_BEST.sam", mappingOutputPath, mappingOutput);
+
+        bestConcordantFILE = fileOpen(bestConcordantFileName, "w");
+	bestDiscordantFILE = bestConcordantFILE;
+	/* end {calkan} */
+        //END{Farhad Hormozdiari}
 
 
-		//OPEN THE BEST DISCORDANT FILE
-		//BEGIN{Farhad Hormozdiari}
-		sprintf(bestDiscordantFileName, "%s%s__BEST.DISCORDANT", mappingOutputPath, mappingOutput);
-		bestDiscordantFILE = fileOpen(bestDiscordantFileName, "w");
-		//END{Farhad Hormozdiari}
+        //OPEN THE BEST DISCORDANT FILE
+        //BEGIN{Farhad Hormozdiari}
+	/* begin {calkan} 
+        sprintf(bestDiscordantFileName, "%s%s__BEST.DISCORDANT", mappingOutputPath, mappingOutput);
+        bestDiscordantFILE = fileOpen(bestDiscordantFileName, "w");
+	 end {calkan} */
+
+        //END{Farhad Hormozdiari}
 	
 	initBestMapping(readNumber);
 }
@@ -6611,7 +6502,7 @@ void finalizeBestConcordantDiscordant()
 	}	
 	
 	fclose(bestConcordantFILE);
-	fclose(bestDiscordantFILE);
+	//	fclose(bestDiscordantFILE);
 
 	freeMem(bestHitMappingInfo, _msf_seqListSize * sizeof(FullMappingInfo));
 }
@@ -6623,9 +6514,9 @@ void setFullMappingInfo(int readNumber, int loc, int dir, int err, int score, ch
 	bestHitMappingInfo[readNumber].err   = err;
 	bestHitMappingInfo[readNumber].score = score;
 
-	strncpy(bestHitMappingInfo[readNumber].md,  md, strlen(md));
-	strncpy(bestHitMappingInfo[readNumber].chr, refName, strlen(refName));
-	strncpy(bestHitMappingInfo[readNumber].cigar, cigar, strlen(cigar));
+	strncpy(bestHitMappingInfo[readNumber].md,  md, strlen(md)+1);
+	strncpy(bestHitMappingInfo[readNumber].chr, refName, strlen(refName)+1);
+	strncpy(bestHitMappingInfo[readNumber].cigar, cigar, strlen(cigar)+1);
 }
 
 
@@ -6638,8 +6529,10 @@ void setPairFullMappingInfo(int readNumber, FullMappingInfo mi1, FullMappingInfo
 	bestHitMappingInfo[readNumber*2].score = mi1.score;
 	snprintf(bestHitMappingInfo[readNumber*2].chr, MAX_REF_SIZE, "%s", _msf_refGenName);
 	
-	strncpy(bestHitMappingInfo[readNumber*2].md, mi1.md, strlen(mi1.md));
-	strncpy(bestHitMappingInfo[readNumber*2].cigar, mi1.cigar, strlen(mi1.cigar));
+
+	strncpy(bestHitMappingInfo[readNumber*2].md, mi1.md, strlen(mi1.md)+1);
+	strncpy(bestHitMappingInfo[readNumber*2].cigar, mi1.cigar, strlen(mi1.cigar)+1);
+
 
 	/*
 	sprintf(bestHitMappingInfo[readNumber*2].md, "%s\0",  mi1.md);
@@ -6658,10 +6551,10 @@ void setPairFullMappingInfo(int readNumber, FullMappingInfo mi1, FullMappingInfo
 	sprintf(bestHitMappingInfo[readNumber*2+1].md, "%s\0", mi2.md);
 	sprintf(bestHitMappingInfo[readNumber*2+1].cigar, "%s\0", mi2.cigar);
 	*/
-	
-	strncpy(bestHitMappingInfo[readNumber*2+1].md, mi2.md, strlen(mi2.md));
-	strncpy(bestHitMappingInfo[readNumber*2+1].cigar, mi2.cigar, strlen(mi2.cigar));
-	
+
+	strncpy(bestHitMappingInfo[readNumber*2+1].md, mi2.md, strlen(mi2.md)+1);
+	strncpy(bestHitMappingInfo[readNumber*2+1].cigar, mi2.cigar, strlen(mi2.cigar)+1);
+
 }
 
 /**********************************************/
@@ -7094,12 +6987,12 @@ void outputPairedEnd()
 				for(k = 0; k < size2; k++)
 				{
 				  if((mi2[k].loc-mi1[j].loc >= minPairEndedDistance && 
-					  mi2[k].loc-mi1[j].loc <= maxPairEndedDistance && 
-					  mi1[j].dir > 0 && mi2[k].dir < 0)
-					 ||
-					 (mi1[j].loc-mi2[k].loc >= minPairEndedDistance &&
-					  mi1[j].loc-mi2[k].loc <= maxPairEndedDistance &&
-					  mi1[j].dir < 0 && mi2[k].dir > 0)
+				      mi2[k].loc-mi1[j].loc <= maxPairEndedDistance && 
+				      mi1[j].dir > 0 && mi2[k].dir < 0)
+				     ||
+				     (mi1[j].loc-mi2[k].loc >= minPairEndedDistance &&
+				      mi1[j].loc-mi2[k].loc <= maxPairEndedDistance &&
+				      mi1[j].dir < 0 && mi2[k].dir > 0)
 					   )
 					{
 						char *seq;
@@ -7134,7 +7027,7 @@ void outputPairedEnd()
 						}
 
 						if ((mi1[j].loc < mi2[k].loc && !d1 && d2) ||
-							(mi1[j].loc > mi2[k].loc && d1 && !d2) )
+						    (mi1[j].loc > mi2[k].loc && d1 && !d2) )
 						{
 							proper = 2;
 						}
@@ -7218,10 +7111,10 @@ void outputPairedEnd()
 								{
 									
 									if( bestHitMappingInfo[i*2].err + bestHitMappingInfo[i*2+1].err == mi1[j].err + mi2[k].err &&
-										findNearest(abs(bestHitMappingInfo[i*2+1].loc - bestHitMappingInfo[i*2].loc),
-											  abs(mi2[k].loc - mi1[j].loc),
-											  meanDistanceMapping	
-										) == 0 )
+									    findNearest(abs(bestHitMappingInfo[i*2+1].loc - bestHitMappingInfo[i*2].loc),
+										      abs(mi2[k].loc - mi1[j].loc),
+										      meanDistanceMapping	
+									    ) == 0 )
 									{
 										continue;
 									}
@@ -7386,7 +7279,7 @@ void convertCigarToMatrix(char *cigar, int cigar_size, char * matrix)
 	int start = 0;
 	int size = 0;
 
-	matrix[0] = '\0';
+    matrix[0] = '\0';
 
 	while(i < cigar_size)
 	{
@@ -7424,7 +7317,7 @@ void convertMDToMatrix(char *md, int md_size, char * matrix)
 	int start = 0;
 	int size = 0;
 
-	matrix[0] = '\0';
+    matrix[0] = '\0';
 
 	while(i < md_size)
 	{
@@ -7451,7 +7344,7 @@ void convertMDToMatrix(char *md, int md_size, char * matrix)
 		else
 		{
 			 matrix[size] = md[i];
-			 size++;		 
+             size++;		 
 		}
 		//size++;
 		i++;
@@ -7586,7 +7479,7 @@ void outputPairedEndDiscPP()
 	
 	char seq1[SEQ_LENGTH+1];
 	char qual1[SEQ_LENGTH+1];
-	
+    
 	char seq2[SEQ_LENGTH+1];
 	char qual2[SEQ_LENGTH+1];
    	
@@ -7594,6 +7487,7 @@ void outputPairedEndDiscPP()
 	char fname1[FILE_NAME_LENGTH];
 	char fname2[FILE_NAME_LENGTH];
 	char l;
+	int l_size;
 	int loc1, loc2;
 	int err1, err2;
 	char dir1, dir2;
@@ -7635,28 +7529,28 @@ void outputPairedEndDiscPP()
 
 		//tmp = fwrite (&(mi2[k].cigarSize), sizeof(int), 1, out);
 		
-		tmp = fread(&l, sizeof(int), 1, in);
-		tmp = fread(cigar1, sizeof(char), l, in);
-		cigar1[(int)l]='\0';
+		tmp = fread(&l_size, sizeof(int), 1, in);
+		tmp = fread(cigar1, sizeof(char), l_size, in);
+		cigar1[(int)l_size]='\0';
 		//tmp = fwrite ((mi2[k].cigar), sizeof(char), mi2[k].cigarSize, out);
 
 		//tmp = fwrite (&(mi2[k].mdSize), sizeof(int), 1, out);
-		tmp = fread(&l, sizeof(int), 1, in);
-		tmp = fread(editString1, sizeof(char), l, in);
-		editString1[(int)l]='\0';
+		tmp = fread(&l_size, sizeof(int), 1, in);
+		tmp = fread(editString1, sizeof(char), l_size, in);
+		editString1[(int)l_size]='\0';
 		//tmp = fwrite ((mi2[k].md), sizeof(char), mi2[k].mdSize, out);
 
 		tmp = fread(&loc2, sizeof(int), 1, in);
 		tmp = fread(&err2, sizeof(int), 1, in);
 		tmp = fread(&sc2, sizeof(float), 1, in);
 
-		tmp = fread(&l, sizeof(int), 1, in);
-		tmp = fread(cigar2, sizeof(char), l, in);
-		cigar2[(int)l]='\0';
-		/* FARHAD:  l is of type char; and you fread into it with sizeof(char) above; but as sizeof(int) here; are you sure? 1 byte vs. 4 bytes */
-		tmp = fread(&l, sizeof(int), 1, in);
-		tmp = fread(editString2, sizeof(char), l, in);
-		editString2[(int)l]='\0';
+		tmp = fread(&l_size, sizeof(int), 1, in);
+		tmp = fread(cigar2, sizeof(char), l_size, in);
+		cigar2[(int)l_size]='\0';
+
+		tmp = fread(&l_size, sizeof(int), 1, in);
+		tmp = fread(editString2, sizeof(char), l_size, in);
+		editString2[(int)l_size]='\0';
 	
 		convertMDCigarToMatrix(cigar1, strlen(cigar1), editString1, strlen(editString1), tmp_matrix1);
 		convertMDCigarToMatrix(cigar2, strlen(cigar2), editString2, strlen(editString2), tmp_matrix2);
@@ -7790,7 +7684,7 @@ void finalizeOEAReads(char *fileName)
 
 	char *seq1, *seq2, *qual1, *qual2;
 	char *rqual1, *rqual2;
-	
+
 	seq1=NULL; seq2=NULL; qual1=NULL; qual2=NULL;
 
 	rqual1 = getMem(200*sizeof(char));
@@ -7799,7 +7693,17 @@ void finalizeOEAReads(char *fileName)
 	rqual1[0] = '\0';
 	rqual2[0] = '\0';
 
-	sprintf(fname1, "%s%s_OEA", mappingOutputPath, mappingOutput);
+	/*
+	char mappingOutput2[2 * SEQ_LENGTH];
+	int mo_len;
+	mo_len = strlen(mappingOutput);
+	strcpy(mappingOutput2, mappingOutput);
+
+	if (mappingOutput[mo_len-1]=='m' && mappingOutput[mo_len-2]=='a' && mappingOutput[mo_len-3]=='s' && mappingOutput[mo_len-4]=='.')
+	  mappingOutput2[mo_len-4] = 0;
+	*/
+
+	sprintf(fname1, "%s%s_OEA.sam", mappingOutputPath, mappingOutput);
 
 	fp_out1 = fileOpen(fname1, "w");
 
@@ -7874,20 +7778,20 @@ void finalizeOEAReads(char *fileName)
 		
 		if(_msf_seqHits[rNo] != 0 && _msf_seqHits[(rNo%2==0)?rNo+1:rNo-1] == 0)
 		{	
-			_msf_output.POS				 = loc1;
-			_msf_output.MPOS				= 0;
-			_msf_output.FLAG				= (rNo % 2 ==0)? 1+4+32*d+128  : 1+8+16*d+64 ;
-			_msf_output.ISIZE			   = 0;
-			_msf_output.SEQ				 = seq1;
-			_msf_output.QUAL				= qual1;
-			_msf_output.QNAME			   = _msf_seqList[rNo].name;
-			_msf_output.RNAME			   = genName;
-			_msf_output.MAPQ				= 255;
-			_msf_output.CIGAR			   = cigar;
-			_msf_output.MRNAME			  = "=";
+			_msf_output.POS                 = loc1;
+			_msf_output.MPOS                = 0;
+			_msf_output.FLAG                = (rNo % 2 ==0)? 1+4+32*d+128  : 1+8+16*d+64 ;
+			_msf_output.ISIZE               = 0;
+			_msf_output.SEQ                 = seq1;
+			_msf_output.QUAL                = qual1;
+			_msf_output.QNAME               = _msf_seqList[rNo].name;
+			_msf_output.RNAME               = genName;
+			_msf_output.MAPQ                = 255;
+			_msf_output.CIGAR               = cigar;
+			_msf_output.MRNAME              = "=";
 
 
-			_msf_output.optSize	 = 4;
+			_msf_output.optSize     = 4;
 			_msf_output.optFields   = _msf_optionalFields;
 
 			_msf_optionalFields[0].tag = "NM";
@@ -7926,213 +7830,6 @@ void finalizeOEAReads(char *fileName)
 	fclose(fp_out1);
 }
 
-/*
-
-void outputOEA(char *fileName1, FILE * fp_out, int readSegment)
-{
-	int i = 0; 
-	int j = 0;
-	
-	char *index;
-
-	int size1 = 0;
-
-	FILE *fp1;
-
-	char geneFileName1[FILE_NAME_LENGTH];
-
-	char matrix[200];
-	char cigar[MAX_CIGAR_SIZE];
-	char editString[200];
-
-	FullMappingInfoLink *miL = getMem(_msf_seqListSize * sizeof(FullMappingInfoLink));
-
-	if(fileName1 != NULL)
-	{
-
-		fp1 = fileOpen(fileName1, "r");
-		
-		index = strstr(fileName1, "__");
-		strncpy(geneFileName1, index + 2 * sizeof(char), strstr(index + 2, "__") - index - 2);
-		geneFileName1[strstr(index + 2, "__") - index - 2] = '\0';
-
-		for(i = 0; i < _msf_seqListSize / 2; i++)
-		{
-			fread(&size1, sizeof(int), 1, fp1);
-
-			miL[i].mi = getMem(size1 * sizeof(FullMappingInfo) );
-
-			miL[i].size = size1;
-
-			for(j = 0; j < size1; j++)
-			{
-				fread(&(miL[i].mi[j].loc), sizeof(int), 1, fp1);
-
-				fread (&(miL[i].mi[j].err), sizeof(int), 1, fp1);
-
-				fread (&(miL[i].mi[j].cigarSize), sizeof(int), 1, fp1);
-				fread ((miL[i].mi[j].cigar), sizeof(char), miL[i].mi[j].cigarSize+1, fp1);
-
-				fread (&(miL[i].mi[j].mdSize), sizeof(int), 1, fp1);
-				fread ((miL[i].mi[j].md), sizeof(char), miL[i].mi[j].mdSize+1, fp1);
-
-				miL[i].mi[j].dir = 1;
-				if(miL[i].mi[j].loc < 1) 
-				{
-					miL[i].mi[j].loc *= -1;
-					miL[i].mi[j].dir = -1;
-				}
-			}
-			
-			int tmpSize = (readSegment==0) ? _msf_seqHits[i*2+1]  : _msf_seqHits[i*2];
-			
-			if(_msf_seqHits[i*2+readSegment] == 0 && size1 != 0 && _msf_oeaMapping[i*2+(readSegment == 0 ? 1: 0)] <= maxOEAOutput)
-			{	
-				int d1 = 0;
-		
-				char *seq, *qual;
-				char *seq1, *seq2, *rseq1, *rseq2, *qual1, *qual2;
-				char rqual1[SEQ_LENGTH+1], rqual2[SEQ_LENGTH+1];
-				
-				rqual1[SEQ_LENGTH] = rqual2[SEQ_LENGTH] = '\0';
-				seq1 = _msf_seqList[i*2].seq;
-				rseq1 = _msf_seqList[i*2].rseq;
-				qual1 = _msf_seqList[i*2].qual;
-				reverse(_msf_seqList[i*2].qual, rqual1, SEQ_LENGTH);
-
-				seq2 = _msf_seqList[i*2+1].seq;
-				rseq2 = _msf_seqList[i*2+1].rseq;
-				qual2 = _msf_seqList[i*2+1].qual;
-				reverse(_msf_seqList[i*2+1].qual, rqual2, SEQ_LENGTH);
-
-				for(j = 0; j < size1 && _msf_oeaMapping[i*2+(readSegment == 0 ? 1: 0)] <= maxOEAOutput; j++)
-				{
-					d1 = (miL[i].mi[j].dir == -1)?1:0;
-
-					if(readSegment == 0)
-					{
-						if ( d1 )
-						{
-							seq = rseq2;
-							qual = rqual2;
-						}
-						else
-						{
-							seq = seq2;
-							qual = qual2;
-						}
-					}
-					else
-					{
-						if ( d1 )
-						{
-							seq = rseq1;
-							qual = rqual1;
-						}
-						else
-						{
-							seq = seq1;
-							qual = qual1;
-						}
-					}
-
-					_msf_oeaMapping[i*2+(readSegment == 0 ? 1: 0)]++;
-
-					_msf_output.POS				 = (readSegment==1)?miL[i].mi[j].loc:0;
-					_msf_output.MPOS				= (readSegment==0)?miL[i].mi[j].loc:0;
-					_msf_output.FLAG				= (readSegment==0)? 1+4+32*d1+128  : 1+8+16*d1+64 ;
-					_msf_output.ISIZE			   = 0;
-					_msf_output.SEQ				 = seq,
-					_msf_output.QUAL				= qual;
-					_msf_output.QNAME			   = _msf_seqList[i*2+(readSegment==0?1:0)].name;
-					_msf_output.RNAME			   = geneFileName1;
-					_msf_output.MAPQ				= 255;
-					_msf_output.CIGAR			   = miL[i].mi[j].cigar;
-					_msf_output.MRNAME			  = "=";
-					//_msf_output.NSEQ				= (readSegment == 0)?seq1:seq2;
-					//_msf_output.NQUAL			   = (readSegment == 0)?qual1:qual2;
-
-					
-					_msf_output.optSize	 = 4;
-					_msf_output.optFields   = _msf_optionalFields;
-
-					_msf_optionalFields[0].tag = "NM";
-					_msf_optionalFields[0].type = 'i';
-					_msf_optionalFields[0].iVal = miL[i].mi[j].err;
-
-					_msf_optionalFields[1].tag = "MD";
-					_msf_optionalFields[1].type = 'Z';
-					_msf_optionalFields[1].sVal = miL[i].mi[j].md;
-
-
-
-					//for the OEA reads
-					_msf_optionalFields[2].tag = "NS";
-					_msf_optionalFields[2].type = 'Z';
-					_msf_optionalFields[2].sVal = (readSegment == 0)?seq1:seq2;
-
-
-					_msf_optionalFields[3].tag = "NQ";
-					_msf_optionalFields[3].type = 'Z';
-					_msf_optionalFields[3].sVal = (readSegment == 0)?qual1:qual2;
-
-					outputSAM(fp_out, _msf_output);
-							   
-				}
-			}
-		}
-		
-	}
-
-	for(i = 0; i < _msf_seqListSize / 2; i++)
-	{
-		freeMem(miL[i].mi, miL[i].size * sizeof(FullMappingInfo));
-	}
-	
-	freeMem(miL, _msf_seqListSize * sizeof(FullMappingInfoLink));
-
-	fclose(fp1);
-}
-
-void finalizeOEAReads(char *fileName)
-{
-
-	int i = 0;
-	int k = 0;
-
-	FILE *fp_out1;
-	char fname1[200];
-
-	_msf_oeaMapping = getMem(_msf_seqListSize * sizeof(int));
-	for(i = 0; i < _msf_seqListSize; i++)
-	{
-		_msf_oeaMapping[i] = 0;
-	}
-	
-	sprintf(fname1, "%s%s_OEA", mappingOutputPath, mappingOutput);
-
-	fp_out1 = fileOpen(fname1, "w");
-	for(i = 0; i < _msf_maxFile; i++)
-	{
-		for(k = 0; k < _msf_fileCount[i]; k++)
-		{
-			outputOEA(_msf_fileName[i][k][1], fp_out1, 0);
-		}// for k	   
-	} //for i
-
-
-	for(i = 0; i < _msf_maxFile; i++)
-	{
-		for(k = 0; k < _msf_fileCount[i]; k++)
-		{
-			outputOEA(_msf_fileName[i][k][0], fp_out1, 1);
-		}// for k	   
-	} //for i
-
-	fclose(fp_out1);
-
-}
-*/
 
 void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 {
@@ -8165,15 +7862,15 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 		strncpy(geneFileName1, index + 2 * sizeof(char), strstr(index + 2, "__") - index - 2);
 		geneFileName1[strstr(index + 2, "__") - index - 2] = '\0';
 
-				index = strstr(fileName2, "__");
-				strncpy(geneFileName2, index + 2 * sizeof(char), strstr(index + 2, "__") - index - 2);
+                index = strstr(fileName2, "__");
+                strncpy(geneFileName2, index + 2 * sizeof(char), strstr(index + 2, "__") - index - 2);
 		geneFileName2[strstr(index + 2, "__") - index - 2] = '\0';
 
 
 		for(i = 0; i < _msf_seqListSize / 2; i++)
 		{
-			int tmp = fread(&size1, sizeof(int), 1, fp1);
-			tmp = fread(&size2, sizeof(int), 1, fp2);
+			fread(&size1, sizeof(int), 1, fp1);
+			fread(&size2, sizeof(int), 1, fp2);
 
 			miL[i].mi = getMem(size1 * sizeof(FullMappingInfo) );
 			miR[i].mi = getMem(size2 * sizeof(FullMappingInfo) );
@@ -8183,12 +7880,15 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 
 			for(j = 0; j < size1; j++)
 			{
-				tmp = fread (&(miL[i].mi[j].loc), sizeof(int), 1, fp1);
-				tmp = fread (&(miL[i].mi[j].err), sizeof(int), 1, fp1);
-				tmp = fread (&(miL[i].mi[j].cigarSize), sizeof(int), 1, fp1);
-				tmp = fread ((miL[i].mi[j].cigar), sizeof(char), miL[i].mi[j].cigarSize+1, fp1);
-				tmp = fread (&(miL[i].mi[j].mdSize), sizeof(int), 1, fp1);
-				tmp = fread ((miL[i].mi[j].md), sizeof(char), miL[i].mi[j].mdSize+1, fp1);
+				fread(&(miL[i].mi[j].loc), sizeof(int), 1, fp1);
+
+				fread (&(miL[i].mi[j].err), sizeof(int), 1, fp1);
+
+                                fread (&(miL[i].mi[j].cigarSize), sizeof(int), 1, fp1);
+                                fread ((miL[i].mi[j].cigar), sizeof(char), miL[i].mi[j].cigarSize+1, fp1);
+
+                                fread (&(miL[i].mi[j].mdSize), sizeof(int), 1, fp1);
+                                fread ((miL[i].mi[j].md), sizeof(char), miL[i].mi[j].mdSize+1, fp1);
 
 				miL[i].mi[j].dir = 1;
 				if(miL[i].mi[j].loc < 1) 
@@ -8199,18 +7899,22 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 			}
 			for(k = 0; k < size2; k++)
 			{
-				tmp = fread(&(miR[i].mi[k].loc), sizeof(int), 1, fp2);
-				tmp = fread (&(miR[i].mi[k].err), sizeof(int), 1, fp2);
-				tmp = fread (&(miR[i].mi[k].cigarSize), sizeof(int), 1, fp2);
-				tmp = fread ((miR[i].mi[k].cigar), sizeof(char), miR[i].mi[k].cigarSize+1, fp2);
-				tmp = fread (&(miR[i].mi[k].mdSize), sizeof(int), 1, fp2);
-				tmp = fread ((miR[i].mi[k].md), sizeof(char), miR[i].mi[k].mdSize+1, fp2);
+                                fread(&(miR[i].mi[k].loc), sizeof(int), 1, fp2);
+
+				fread (&(miR[i].mi[k].err), sizeof(int), 1, fp2);
+
+                                fread (&(miR[i].mi[k].cigarSize), sizeof(int), 1, fp2);
+                                fread ((miR[i].mi[k].cigar), sizeof(char), miR[i].mi[k].cigarSize+1, fp2);
+
+                                fread (&(miR[i].mi[k].mdSize), sizeof(int), 1, fp2);
+                                fread ((miR[i].mi[k].md), sizeof(char), miR[i].mi[k].mdSize+1, fp2);
+
  	 			miR[i].mi[k].dir = 1;
-				if(miR[i].mi[k].loc < 1)
-								{
-										miR[i].mi[k].loc *= -1;
-										miR[i].mi[k].dir = -1;
-								}
+                                if(miR[i].mi[k].loc < 1)
+                                {
+                                        miR[i].mi[k].loc *= -1;
+                                        miR[i].mi[k].dir = -1;
+                                }
 			}
 			if(_msf_readHasConcordantMapping[i] == 0 && size1 != 0 && size2 != 0 && (size1 * size2 < MAX_TRANS_CHROMOSAL_OUTPUT))
 			{	
@@ -8218,23 +7922,23 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 				int d2 = 0;
 				char *seq, *qual;
 				char *seq1, *seq2, *rseq1, *rseq2, *qual1, *qual2;
-						char rqual1[SEQ_LENGTH+1], rqual2[SEQ_LENGTH+1];
-						rqual1[SEQ_LENGTH] = rqual2[SEQ_LENGTH] = '\0';
-					seq1 = _msf_seqList[i*2].seq;
-						rseq1 = _msf_seqList[i*2].rseq;
-					qual1 = _msf_seqList[i*2].qual;
-						reverse(_msf_seqList[i*2].qual, rqual1, SEQ_LENGTH);
+		                char rqual1[SEQ_LENGTH+1], rqual2[SEQ_LENGTH+1];
+		                rqual1[SEQ_LENGTH] = rqual2[SEQ_LENGTH] = '\0';
+			        seq1 = _msf_seqList[i*2].seq;
+		                rseq1 = _msf_seqList[i*2].rseq;
+			        qual1 = _msf_seqList[i*2].qual;
+		                reverse(_msf_seqList[i*2].qual, rqual1, SEQ_LENGTH);
 	
-						seq2 = _msf_seqList[i*2+1].seq;
-						rseq2 = _msf_seqList[i*2+1].rseq;
-						qual2 = _msf_seqList[i*2+1].qual;
-						reverse(_msf_seqList[i*2+1].qual, rqual2, SEQ_LENGTH);
+        		        seq2 = _msf_seqList[i*2+1].seq;
+		                rseq2 = _msf_seqList[i*2+1].rseq;
+                		qual2 = _msf_seqList[i*2+1].qual;
+		                reverse(_msf_seqList[i*2+1].qual, rqual2, SEQ_LENGTH);
 
 				for(j = 0; j < size1; j++)
 				{
 					d1 = (miL[i].mi[j].dir == -1)?1:0;
 
-										if ( d1 )
+                                        if ( d1 )
 					{
 						seq = rseq1;
 						qual = rqual1;
@@ -8248,70 +7952,70 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 					for(k = 0; k < size2; k++)
 					{
 	
-											d2 = (miR[i].mi[k].dir == -1)?1:0;
+                	                        d2 = (miR[i].mi[k].dir == -1)?1:0;
 
-												_msf_output.POS				 = miL[i].mi[j].loc;
-												_msf_output.MPOS				= miR[i].mi[k].loc;
-												_msf_output.FLAG				= 0;
-												_msf_output.ISIZE			   = 0;
-												_msf_output.SEQ				 = seq,
-												_msf_output.QUAL				= qual;
-												_msf_output.QNAME			   = _msf_seqList[i*2].name;
-												_msf_output.RNAME			   = geneFileName1;
-												_msf_output.MAPQ				= 255;
-												_msf_output.CIGAR			   = miL[i].mi[j].cigar;
-												_msf_output.MRNAME			  = "=";
+                                                _msf_output.POS                 = miL[i].mi[j].loc;
+                                                _msf_output.MPOS                = miR[i].mi[k].loc;
+                                                _msf_output.FLAG                = 0;
+                                                _msf_output.ISIZE               = 0;
+                                                _msf_output.SEQ                 = seq,
+                                                _msf_output.QUAL                = qual;
+                                                _msf_output.QNAME               = _msf_seqList[i*2].name;
+                                                _msf_output.RNAME               = geneFileName1;
+                                                _msf_output.MAPQ                = 255;
+                                                _msf_output.CIGAR               = miL[i].mi[j].cigar;
+                                                _msf_output.MRNAME              = "=";
 
-												_msf_output.optSize	 = 2;
-												_msf_output.optFields   = _msf_optionalFields;
+                                                _msf_output.optSize     = 2;
+                                                _msf_output.optFields   = _msf_optionalFields;
 
-												_msf_optionalFields[0].tag = "NM";
-												_msf_optionalFields[0].type = 'i';
-												_msf_optionalFields[0].iVal = miL[i].mi[j].err;
+                                                _msf_optionalFields[0].tag = "NM";
+                                                _msf_optionalFields[0].type = 'i';
+                                                _msf_optionalFields[0].iVal = miL[i].mi[j].err;
 
-												_msf_optionalFields[1].tag = "MD";
-												_msf_optionalFields[1].type = 'Z';
-												_msf_optionalFields[1].sVal = miL[i].mi[j].md;
+                                                _msf_optionalFields[1].tag = "MD";
+                                                _msf_optionalFields[1].type = 'Z';
+                                                _msf_optionalFields[1].sVal = miL[i].mi[j].md;
 
 
 						if ( d2 )
-												{
-														seq = rseq2;
-														qual = rqual2;
-												}
-												else
-												{
-														seq = seq2;
-														qual = qual2;
-												}
+                                                {
+                                                        seq = rseq2;
+                                                        qual = rqual2;
+                                                }
+                                                else
+                                                {
+                                                        seq = seq2;
+                                                        qual = qual2;
+                                                }
 
-												outputSAM(fp_out, _msf_output);
+                                                outputSAM(fp_out, _msf_output);
 						
 
-	   					 	_msf_output.POS				 = miR[i].mi[k].loc;
-												_msf_output.MPOS				= miL[i].mi[j].loc;
-												_msf_output.FLAG				= 0;
-												_msf_output.ISIZE			   = 0;
-												_msf_output.SEQ				 = seq,
-												_msf_output.QUAL				= qual;
-												_msf_output.QNAME			   = _msf_seqList[i*2+1].name;
-												_msf_output.RNAME			   = geneFileName2;
-												_msf_output.MAPQ				= 255;
-												_msf_output.CIGAR			   = miR[i].mi[k].cigar;
-												_msf_output.MRNAME			  = "=";
+       					 	_msf_output.POS                 = miR[i].mi[k].loc;
+                                                _msf_output.MPOS                = miL[i].mi[j].loc;
+                                                _msf_output.FLAG                = 0;
+                                                _msf_output.ISIZE               = 0;
+                                                _msf_output.SEQ                 = seq,
+                                                _msf_output.QUAL                = qual;
+                                                _msf_output.QNAME               = _msf_seqList[i*2+1].name;
+                                                _msf_output.RNAME               = geneFileName2;
+                                                _msf_output.MAPQ                = 255;
+                                                _msf_output.CIGAR               = miR[i].mi[k].cigar;
+                                                _msf_output.MRNAME              = "=";
 
-												_msf_output.optSize	 = 2;
-												_msf_output.optFields   = _msf_optionalFields;
+                                                _msf_output.optSize     = 2;
+                                                _msf_output.optFields   = _msf_optionalFields;
 						
-												_msf_optionalFields[0].tag = "NM";
-												_msf_optionalFields[0].type = 'i';
-												_msf_optionalFields[0].iVal = miR[i].mi[k].err;
+                                                _msf_optionalFields[0].tag = "NM";
+                                                _msf_optionalFields[0].type = 'i';
+                                                _msf_optionalFields[0].iVal = miR[i].mi[k].err;
 
-												_msf_optionalFields[1].tag = "MD";
-												_msf_optionalFields[1].type = 'Z';
-												_msf_optionalFields[1].sVal = miR[i].mi[k].md;
+                                                _msf_optionalFields[1].tag = "MD";
+                                                _msf_optionalFields[1].type = 'Z';
+                                                _msf_optionalFields[1].sVal = miR[i].mi[k].md;
 
-												outputSAM(fp_out, _msf_output);
+                                                outputSAM(fp_out, _msf_output);
 
 					}							   
 				}
@@ -8327,7 +8031,7 @@ void outputTransChromosal(char *fileName1, char *fileName2, FILE * fp_out)
 	}
 	
 	freeMem(miL, _msf_seqListSize * sizeof(FullMappingInfoLink));
-		freeMem(miR, _msf_seqListSize * sizeof(FullMappingInfoLink));
+        freeMem(miR, _msf_seqListSize * sizeof(FullMappingInfoLink));
 
 	fclose(fp1);
 	fclose(fp2);
@@ -8352,9 +8056,9 @@ void outputAllTransChromosal(int flag)
 
 	if(flag)
 	{
-			fp_out = fileOpen(fname1, "w");
+	        fp_out = fileOpen(fname1, "w");
 
-			sprintf(fname1, "%s%s_TRANSCHROMOSOMAL", mappingOutputPath, mappingOutput);
+	        sprintf(fname1, "%s%s_TRANSCHROMOSOMAL", mappingOutputPath, mappingOutput);
 
 	//	for(i = 0; i < _msf_maxFile; i++)
 	//	{

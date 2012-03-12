@@ -63,8 +63,10 @@ int hashVal(char *seq)
 	int i=0;
 	int val=0, numericVal=0;
 
-	while(i < WINDOW_SIZE) {
-		switch (seq[i]) {
+	while(i<WINDOW_SIZE)
+	{
+		switch (seq[i])
+		{
 			case 'A':
 				numericVal = 0;
 				break;
@@ -79,18 +81,7 @@ int hashVal(char *seq)
 				break;
 			default:
 				return -1;
-/*
-				val = 1;
-				int j;
-				for(j = i+1; j < WINDOW_SIZE; j++) {
-					if(seq[j] == 'N') {
-						val++;
-					}
-				}
-			//	printf("TEST: %d\n", val*(-1));
-				return val*(-1);
 				break;
-*/	
 		}
 		val = (val << 2)|numericVal;
 		i++;
