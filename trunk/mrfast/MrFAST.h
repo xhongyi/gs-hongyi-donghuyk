@@ -50,10 +50,6 @@
 #define MAP_CHUNKS 15
 #define MAX_CIGAR_SIZE 100
 
-// DHL: Cheap key selection
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num);
-int searchKey(int target_coor, unsigned int* entry_coor, int entry_size);
-//int CheapKeySelection();
 
 // Pair is used to pre-processing and making the read index table
 typedef struct
@@ -147,6 +143,7 @@ void initFAST(	Read *seqList,
 				int samplingLocsSize, 
 				char *fileName);
 
+void initVerifiedLocs();
 void initLookUpTable();
 void initBestMapping();
 void initBestConcordantDiscordant(int readNumber);
@@ -156,15 +153,15 @@ void finalizeBestSingleMapping();
 void finalizeBestConcordantDiscordant();
 void finalizeOEAReads(char *);
 
-//int mapAllSingleEndSeq(int flag_first);
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);
-void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction);
-
+int  mapAllSingleEndSeq();
 void mapPairedEndSeq();
+void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);		// fashHASH
+void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);	// fastHASH
+void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num);		// fastHASH
+int  searchKey(int target_coor, unsigned int* entry_coor, int entry_size);						// fastHASH
 
 void outputPairedEnd();
 void outputPairedEndDiscPP();
-
 
 void outputPairFullMappingInfo(FILE *fp, int readNumber);
 void setPairFullMappingInfo(int readNumber, FullMappingInfo mi1, FullMappingInfo mi2);
@@ -190,7 +187,6 @@ int backwardEditDistance4SSE2(char *a, int lena, char *b,int lenb);
 
 int forwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb);
 int backwardEditDistanceSSE2Extention(char *a, int lena, char *b,int lenb);
-
 
 /***********************************/
 

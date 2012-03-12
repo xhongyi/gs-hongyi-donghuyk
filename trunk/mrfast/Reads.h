@@ -32,7 +32,7 @@
 /*
   Authors: 
 	Farhad Hormozdiari
-        Faraz Hach
+		Faraz Hach
 	Can Alkan
   Emails: 
 	farhadh AT uw DOT edu
@@ -43,13 +43,14 @@
 
 #ifndef __READ__
 #define __READ__
+
+// fastHASH: key_struct
 typedef struct
 {
-    unsigned int* key_entry;
-    int key_entry_size;
-    int key_number;
-	int hash_val;
-    int order;
+	unsigned int* key_entry;
+	int key_entry_size;
+	int key_number;
+	int order;
 } key_struct;
 
 typedef struct
@@ -63,13 +64,9 @@ typedef struct
 	short *hashValue;
 	short *rhashValue;
 	int *hashValSampleSize;
-//	key_struct keys_input[10];
-//	key_struct keys_input_r[10];
-//	int available_key_num;
-//	int available_key_num_r;
 } Read;
 
-int  readAllReads(char *fileName1, char *fileName2, int compressed, unsigned char *fastq, unsigned char pe, Read **seqList, unsigned int *seqListSize);
+int readAllReads(char *fileName1, char *fileName2, int compressed, unsigned char *fastq, unsigned char pe, Read **seqList, unsigned int *seqListSize);
 void loadSamplingLocations(int **samplingLocs, int *samplingLocsSize);
 void finalizeReads(char *fileName);
 void adjustQual(Read *list, int seqCnt);

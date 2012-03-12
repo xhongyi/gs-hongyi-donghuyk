@@ -55,8 +55,8 @@
 #define MAX_TRANS_CHROMOSAL_OUTPUT 50
 #define MAX_OEA_OUT		500
 
-extern unsigned long int		CONTIG_SIZE;
-extern unsigned long int		CONTIG_MAX_SIZE;
+extern unsigned int		CONTIG_SIZE;
+extern unsigned int		CONTIG_MAX_SIZE;
 
 
 extern unsigned char	WINDOW_SIZE				;		// WINDOW SIZE for indexing/searching
