@@ -155,9 +155,8 @@ void finalizeOEAReads(char *);
 
 int  mapAllSingleEndSeq();
 void mapPairedEndSeq();
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);		// fashHASH
-void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number, int n_num);	// fastHASH
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num);		// fastHASH
+void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);		// fashHASH
+void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);	// fastHASH
 int  searchKey(int target_coor, unsigned int* entry_coor, int entry_size);						// fastHASH
 
 void outputPairedEnd();
@@ -203,5 +202,7 @@ int verifySingleEndEditDistance4(int refIndex, char *lSeq, int lSeqLength, char 
 
 int verifySingleEndEditDistanceExtention(int refIndex, char *lSeq, int lSeqLength, char *rSeq, int rSeqLength, int segLength,
                                 char *matrix, int *map_location, short *seqHashValue);
+
+int compareEntrySize (const void *a, const void *b);
 
 #endif

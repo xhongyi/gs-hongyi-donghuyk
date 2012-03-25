@@ -5648,6 +5648,10 @@ void generateSNPSAM(char *matrix, int matrixLength, char *outputSNP)
 	outputSNP[snpSize] = '\0';
 }
 
+int compareEntrySize (const void *a, const void *b) {
+    return( (*(key_struct*)a).key_entry_size - (*(key_struct*)b).key_entry_size);
+}
+
 // fastHASH: searchKey()
 int searchKey(int target_coor, unsigned int* entry_coor, int entry_size) {
 	if (entry_size <= 0)
@@ -5673,31 +5677,6 @@ int searchKey(int target_coor, unsigned int* entry_coor, int entry_size) {
 		return 0;
 }
 
-// fastHASH: sortPrefilter()
-void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int available_key_num) {
-	int i = 0;
-	int j = 0;
-	for (i = 0; i < available_key_num; i++) {
-		for (j = 0; j < available_key_num; j++) {
-			if (sort_input[i].key_entry_size > sort_input[j].key_entry_size) {
-				sort_input[i].order = sort_input[i].order + 1;
-			}
-		}
-	}
-	int loop_index = 0;
-	for (i = 0; i < available_key_num; i++) {
-		for (j = 0; j < available_key_num; j++) {
-			if (sort_input[j].order == i) {
-				sort_result[loop_index].key_entry = sort_input[j].key_entry;
-				sort_result[loop_index].key_number = sort_input[j].key_number;
-				sort_result[loop_index].key_entry_size = sort_input[j].key_entry_size;
-				sort_result[loop_index].order = sort_input[j].order;
-				loop_index = loop_index + 1;
-			}
-		}
-	}
-}
-
 /**********************************************/
 //	direction = 0 forward
 //		    	1 backward	
@@ -5705,7 +5684,7 @@ void sortPrefilter(key_struct* sort_result, key_struct* sort_input, int availabl
 
 // fastHASH: mapSingleEndSeq
 void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, 
-					 int index, key_struct* keys_input, int potential_key_number, int n_num) {
+					 int index, key_struct* keys_input, int potential_key_number) {
 	int j = 0;
 	int z = 0;
 	int *locs = (int *) l1;
@@ -5753,10 +5732,10 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 
 // Adjacency Filtering Start ---------------------------------
 		int skip_edit_distance = 0;
-		int diff_num = n_num;
+		int diff_num = 0;
 		int ix = 0;
 		for (ix = 0; ix < potential_key_number; ix++) {
-			if (ix - diff_num >= key_number - errThreshold) {
+			if (ix >= key_number - errThreshold) {
 				break;
 			}
 			if (ix != o) {
@@ -5882,31 +5861,17 @@ int mapAllSingleEndSeq() {
 	unsigned int *locs 	   = NULL;
 	unsigned int *locs_tmp = NULL;
 	int key_number = SEQ_LENGTH / WINDOW_SIZE;
-	key_struct* sort_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
-	key_struct* keys_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
+	key_struct* sort_input = getMem(key_number*sizeof(key_struct));
 
 	// Forward Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
 		int available_key_num = 0;	
 		int it = 0;
-		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].seq + it * WINDOW_SIZE);
-			if (key_hash >= 0) {
-				locs_tmp = getCandidates(key_hash);
-			}
-			else {
-				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				for(j = 0; j < WINDOW_SIZE; j++) {
-					if(tmp_seq[j] == 'N') {
-						n_num++;
-					}
-				}
-			}
-
+			locs_tmp = getCandidates(key_hash);
 			if (locs_tmp != NULL) {
-				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
@@ -5914,47 +5879,29 @@ int mapAllSingleEndSeq() {
 			}
 		}
 
-		int operating_key_num = _msf_samplingLocsSize - n_num;
+		int operating_key_num = _msf_samplingLocsSize;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
-	
-		sortPrefilter(keys_input, sort_input, available_key_num);
-		if (n_num <= errThreshold){
-			for(j = 0; j < operating_key_num; j++) {
-				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
-				locs = getCandidates(hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
-				if ( locs != NULL) {
-					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 0, j, keys_input, 
-									available_key_num, n_num);
-				}
-			}
+
+        qsort(sort_input, available_key_num, sizeof(key_struct), compareEntrySize);
+
+		for(j = 0; j < operating_key_num; j++) {
+            _msf_samplingLocs[j] = sort_input[j].key_number*WINDOW_SIZE;
+			mapSingleEndSeq(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 0, j, sort_input, available_key_num);
 		}
 	}
 
 	// Reverse Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
-		int no_more_operation = 0;
 		int key_number = SEQ_LENGTH / WINDOW_SIZE;									
 		int available_key_num = 0;	
 		int it = 0;
-		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].rseq + it * WINDOW_SIZE);
-			if (key_hash >= 0) {
-				locs_tmp = getCandidates(key_hash);
-			}
-			else {
-				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				for(j = 0; j < WINDOW_SIZE; j++) {
-					if(tmp_seq[j] == 'N') {
-						n_num++;
-					}
-				}
-			}
+			locs_tmp = getCandidates(key_hash);
 			if (locs_tmp != NULL) {
-				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
@@ -5962,25 +5909,19 @@ int mapAllSingleEndSeq() {
 			}
 		}
 
-		int operating_key_num = _msf_samplingLocsSize - n_num;
+        qsort(sort_input, available_key_num, sizeof(key_struct), compareEntrySize);
+
+		int operating_key_num = _msf_samplingLocsSize;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
 	
-		sortPrefilter(keys_input, sort_input, available_key_num);
-		if (n_num <= errThreshold) {
-			for(j = 0; j < operating_key_num; j++) {
-				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
-				locs = getCandidates(hashVal(_msf_seqList[k].rseq+_msf_samplingLocs[j]));
-				if ( locs != NULL) {
-					mapSingleEndSeq(locs+1, locs[0], k, keys_input[j].key_number, 1, j, keys_input, 
-									available_key_num, n_num);
-				}
-			}
-		}
+        for(j = 0; j < operating_key_num; j++) {
+         	_msf_samplingLocs[j] = sort_input[j].key_number*WINDOW_SIZE;
+            mapSingleEndSeq(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 1, j, sort_input, available_key_num);
+        }
 	}
-	free(sort_input);
-	free(keys_input);
+	freeMem(sort_input, key_number*sizeof(key_struct));
 	return 1;
 }
 
@@ -5998,25 +5939,32 @@ int compareOut (const void *a, const void *b)
 /**********************************************/
 // fastHASH: mapPairEndSeqList()
 void mapPairEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction,
-					   int index, key_struct* keys_input, int potential_key_number, int n_num) {
+					   int index, key_struct* keys_input, int potential_key_number) {
 	int j = 0;
 	int z = 0;
 	int *locs = (int *) l1;
 	char *_tmpSeq;
+
 	char rqual[SEQ_LENGTH+1];
-	rqual[SEQ_LENGTH]='\0';
-	int genLoc = 0;
-	int leftSeqLength = 0;
-	int rightSeqLength = 0;
-	int middleSeqLength = 0; 
-	int r = readNumber;
 
 	char matrix[200];
 	char editString[200];
 	char cigar[MAX_CIGAR_SIZE];
-    char d = (direction==1)?-1:1;
 
 	short *_tmpHashValue;
+
+	int leftSeqLength = 0;
+	int rightSeqLength = 0;
+	int middleSeqLength = 0; 
+	int a = 0;
+
+	rqual[SEQ_LENGTH]='\0';
+
+	int genLoc = 0;
+	int r = readNumber;
+
+    char d = (direction==1)?-1:1;
+
 	int readId = 2*readNumber+direction;
 	int key_number = SEQ_LENGTH / WINDOW_SIZE;
 
@@ -6044,10 +5992,10 @@ void mapPairEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment
 
 // Adjacency Filtering Start ---------------------------------
 		int skip_edit_distance = 0;
-		int diff_num = n_num;
+		int diff_num = 0;
 		int ix = 0;
 		for (ix = 0; ix < potential_key_number; ix++) {
-			if (ix - diff_num >= key_number - errThreshold) {
+			if (ix >= key_number - errThreshold) {
 				break;
 			}
 			if (ix != o) {
@@ -6090,10 +6038,12 @@ void mapPairEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment
 			int i = 0;
 			int j = 0;
 			int k = 0;
-			for(j = -errThreshold ; j <= errThreshold; j++) {
-				if(genLoc-(readSegment*WINDOW_SIZE)+j >= _msf_refGenBeg && 
-					genLoc-(readSegment*WINDOW_SIZE)+j <= _msf_refGenEnd) {
-					_msf_verifiedLocs[genLoc-(readSegment*WINDOW_SIZE)+j] = readId;
+			for (k = 0; k < readSegment + 1; k++) {
+				for(j = -errThreshold ; j <= errThreshold; j++) {
+					if(genLoc-(k*WINDOW_SIZE)+j >= _msf_refGenBeg && 
+						genLoc-(k*WINDOW_SIZE)+j <= _msf_refGenEnd) {
+						_msf_verifiedLocs[genLoc-(k*WINDOW_SIZE)+j] = readId;
+					}
 				}
 			}
 //----------------------------------------------------
@@ -6153,31 +6103,17 @@ void mapPairedEndSeq() {
 	unsigned int *locs 	   = NULL;
 	unsigned int *locs_tmp = NULL;
 	int key_number = SEQ_LENGTH / WINDOW_SIZE;
-	key_struct* sort_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
-	key_struct* keys_input = (key_struct*) malloc(key_number*sizeof(key_struct));	
+    key_struct* sort_input = getMem(key_number*sizeof(key_struct));
 
 	// Forward Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
 		int available_key_num = 0;	
 		int it = 0;
-		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].seq + it * WINDOW_SIZE);
-			if (key_hash >= 0) {
-				locs_tmp = getCandidates(key_hash);
-			}
-			else {
-				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				for(j = 0; j < WINDOW_SIZE; j++) {
-					if(tmp_seq[j] == 'N') {
-						n_num++;
-					}
-				}
-			}
-
+			locs_tmp = getCandidates(key_hash);
 			if (locs_tmp != NULL) {
-				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
@@ -6185,47 +6121,29 @@ void mapPairedEndSeq() {
 			}
 		}
 
-		int operating_key_num = _msf_samplingLocsSize - n_num;
+		int operating_key_num = _msf_samplingLocsSize;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
 	
-		sortPrefilter(keys_input, sort_input, available_key_num);
-		if (n_num <= errThreshold){
-			for(j = 0; j < operating_key_num; j++) {
-				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
-				locs = getCandidates(hashVal(_msf_seqList[k].seq+_msf_samplingLocs[j]));
-				if ( locs != NULL) {
-					mapPairEndSeqList(locs+1, locs[0], k, keys_input[j].key_number, 0, j, keys_input, 
-									  available_key_num, n_num);
-				}
-			}
+        qsort(sort_input, available_key_num, sizeof(key_struct), compareEntrySize);
+
+		for(j = 0; j < operating_key_num; j++) {
+			_msf_samplingLocs[j] = sort_input[j].key_number*WINDOW_SIZE;
+            mapPairEndSeqList(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 0, j, sort_input, available_key_num);
 		}
 	}
 
 	// Reverse Mode
 	for(i = 0; i < _msf_seqListSize; i++) {
 		k = _msf_sort_seqList[i].readNumber;
-		int no_more_operation = 0;
 		int key_number = SEQ_LENGTH / WINDOW_SIZE;									
 		int available_key_num = 0;	
 		int it = 0;
-		int n_num = 0;
 		for (it = 0; it < key_number; it++) {
 			int key_hash = hashVal(_msf_seqList[k].rseq + it * WINDOW_SIZE);
-			if (key_hash >= 0) {
-				locs_tmp = getCandidates(key_hash);
-			}
-			else {
-				char * tmp_seq = _msf_seqList[k].seq + it * WINDOW_SIZE;
-				for(j = 0; j < WINDOW_SIZE; j++) {
-					if(tmp_seq[j] == 'N') {
-						n_num++;
-					}
-				}
-			}
+			locs_tmp = getCandidates(key_hash);
 			if (locs_tmp != NULL) {
-				sort_input[available_key_num].order = 0;
 				sort_input[available_key_num].key_number = it;
 				sort_input[available_key_num].key_entry = locs_tmp;
 				sort_input[available_key_num].key_entry_size = locs_tmp[0];
@@ -6233,25 +6151,19 @@ void mapPairedEndSeq() {
 			}
 		}
 
-		int operating_key_num = _msf_samplingLocsSize - n_num;
+		int operating_key_num = _msf_samplingLocsSize;
 		if (available_key_num < operating_key_num){
 			operating_key_num = available_key_num;
 		}
+
+        qsort(sort_input, available_key_num, sizeof(key_struct), compareEntrySize);
 	
-		sortPrefilter(keys_input, sort_input, available_key_num);
-		if (n_num <= errThreshold) {
-			for(j = 0; j < operating_key_num; j++) {
-				_msf_samplingLocs[j] = keys_input[j].key_number*WINDOW_SIZE;
-				locs = getCandidates(hashVal(_msf_seqList[k].rseq+_msf_samplingLocs[j]));
-				if ( locs != NULL) {
-					mapPairEndSeqList(locs+1, locs[0], k, keys_input[j].key_number, 1, j, keys_input, 
-									  available_key_num, n_num);
-				}
-			}
+		for(j = 0; j < operating_key_num; j++) {
+			_msf_samplingLocs[j] = sort_input[j].key_number*WINDOW_SIZE;
+            mapPairEndSeqList(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 1, j, sort_input, available_key_num);
 		}
 	}
-	free(sort_input);
-	free(keys_input);
+    freeMem(sort_input, key_number*sizeof(key_struct));
 	// DHL: Changed End
 
 	char fname1[FILE_NAME_LENGTH];
@@ -6272,7 +6184,7 @@ void mapPairedEndSeq() {
 	for (i=0; i<_msf_seqListSize; i++) {
 		if (i%2==0) {
 			out = out1;
-			if (lmax <  _msf_mappingInfo[i].size) {
+			if (lmax < _msf_mappingInfo[i].size) {
 				lmax = _msf_mappingInfo[i].size;
 			}
 		}
