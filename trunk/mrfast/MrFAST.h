@@ -50,6 +50,15 @@
 #define MAP_CHUNKS 15
 #define MAX_CIGAR_SIZE 100
 
+typedef struct {
+	long long checking;
+	long long binary_search;
+	long long af_success;
+	long long edit_perform;
+	long long correct_num;
+
+	//int search_key_level[7];
+} final_result;
 
 // Pair is used to pre-processing and making the read index table
 typedef struct
@@ -155,7 +164,7 @@ void finalizeOEAReads(char *);
 
 int  mapAllSingleEndSeq();
 void mapPairedEndSeq();
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);		// fashHASH
+final_result mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);		// fashHASH
 void mapPairedEndSeqList(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, int index, key_struct* keys_input, int available_key_number);	// fastHASH
 int  searchKey(int target_coor, unsigned int* entry_coor, int entry_size);						// fastHASH
 
