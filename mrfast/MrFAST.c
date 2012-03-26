@@ -5683,8 +5683,9 @@ int searchKey(int target_coor, unsigned int* entry_coor, int entry_size) {
 /**********************************************/
 
 // fastHASH: mapSingleEndSeq
-void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction, 
+final_result mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, int direction,
 					 int index, key_struct* keys_input, int potential_key_number) {
+	final_result result = {0, 0, 0, 0, 0};
 	int j = 0;
 	int z = 0;
 	int *locs = (int *) l1;
@@ -5731,6 +5732,8 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 		}
 
 // Adjacency Filtering Start ---------------------------------
+		result.checking++;
+
 		int skip_edit_distance = 0;
 		int diff_num = 0;
 		int ix = 0;
@@ -5739,6 +5742,7 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 				break;
 			}
 			if (ix != o) {
+				result.binary_search++;
 				if (!searchKey(genLoc + (keys_input[ix].key_number - keys_input[o].key_number) * WINDOW_SIZE, 
 								keys_input[ix].key_entry, keys_input[ix].key_entry_size)) {
 					diff_num++;
@@ -5758,6 +5762,7 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 		rightSeqLength = SEQ_LENGTH - a;
 
 		if(skip_edit_distance == 0) {
+			result.edit_perform++;
 			if(errThreshold == 2) {
 				err = verifySingleEndEditDistance2(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
@@ -5771,10 +5776,12 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 				err = verifySingleEndEditDistanceExtention(genLoc, _tmpSeq, leftSeqLength, _tmpSeq + a, rightSeqLength, middleSeqLength, matrix, &map_location, _tmpHashValue);
 			}
 		} else {
+			result.af_success++;
 			err = -1;
 		}
 
 		if(err != -1) {
+			result.correct_num++;
 			generateSNPSAM(matrix, strlen(matrix), editString);
 			generateCigar(matrix, strlen(matrix), cigar);
 		}
@@ -5850,10 +5857,13 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 			}
 		}
 	}
+	return result;
 }
 
 // fastHASH: mapAllSingleEndSeq()
 int mapAllSingleEndSeq() {
+	final_result result = {0,0,0,0,0}, temp_result;
+
 	int i = 0;
 	int j = 0;
 	int k = 0;
@@ -5888,7 +5898,12 @@ int mapAllSingleEndSeq() {
 
 		for(j = 0; j < operating_key_num; j++) {
             _msf_samplingLocs[j] = sort_input[j].key_number*WINDOW_SIZE;
-			mapSingleEndSeq(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 0, j, sort_input, available_key_num);
+			temp_result = mapSingleEndSeq(sort_input[j].key_entry+1, sort_input[j].key_entry_size, k, sort_input[j].key_number, 0, j, sort_input, available_key_num);
+			result.af_success += temp_result.af_success;
+			result.binary_search += temp_result.binary_search;
+			result.checking += temp_result.checking;
+			result.correct_num += temp_result.correct_num;
+			result.edit_perform += temp_result.edit_perform;
 		}
 	}
 
@@ -5922,7 +5937,18 @@ int mapAllSingleEndSeq() {
         }
 	}
 	freeMem(sort_input, key_number*sizeof(key_struct));
+
+	//Write to file
+	FILE *outfile;
+	outfile = fopen("/home/hxin/Workspace/aligner_compare/mrfast_detail", "w");
+	fprintf(outfile, "%i\n", result.checking);
+	fprintf(outfile, "%i\n", result.binary_search);
+	fprintf(outfile, "%i\n", result.af_success);
+	fprintf(outfile, "%i\n", result.edit_perform);
+	fprintf(outfile, "%i\n", result.correct_num);
+	fclose(outfile);
 	return 1;
+
 }
 
 /**********************************************/
