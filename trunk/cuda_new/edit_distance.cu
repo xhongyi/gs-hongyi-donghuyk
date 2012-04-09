@@ -194,20 +194,24 @@ __device__ void fillPath(char const* test_read, char const* ref_read,
 
 	//i for rows and j for columns
 
-	//Fill up the first default row
+
+	//Fill up the first default row (just fill the columns)
+	//For the default columns we fill 0
 	for (int j = 1; j <= cons->max_indel_num; j++) {
 		path[0][j] = 0;
 	}
-
+	//Starting from max_indel_num we fill numbers.
 	for (int j = cons->max_indel_num + 1; j <= 2 * cons->max_indel_num + 1; j++) {
-		path[0][j] = j - cons->max_indel_num;
+		path[0][j] = j - cons->max_indel_num - 1;
 	}
 
+
 	//Fill up the beginning rows
-	for (int i = 1; i <= cons->max_indel_num; i++) {
+	for (int i = 1; i <= 0 + cons->max_indel_num; i++) {
 		//fill 0 for imaginary columns
-		for (j = 1; j <= error_num - i; j++) {
-			path[i][i] = 0;
+		for (j = 1; j <= error_num + 1 - i; j++) {
+			unsigned char distance = minDistance(Path, i, j);
+			path[i][j] = distance + 1;
 		}
 
 		//compare and fill the real rows
@@ -218,6 +222,22 @@ __device__ void fillPath(char const* test_read, char const* ref_read,
 			else
 				path[i][j] = distance + 1;
 		}
+	}
+
+	//Normal fill
+	for (i = 0 + cons->max_indel_num + 1; i <= READ_LENGTH - cons->max_indel_num) {
+		for (j = 1; j <= 2 * cons->max_indel_num + 1; j++) {
+			unsigned char distance = minDistance(path, i, j)
+			if (test_read[i - 1] == ref_read[j + i - cons->max_indel_num - 2])
+				path[i][j] = distance;
+			else
+				path[i][j] = distance + 1;
+		}
+	}
+
+	//End process. Cleaning up process
+	for (i = READ_LENGTH - cons->max_indel_num + 1; i <= READ_LENGTH; i++) {
+		for (j = 1; j <= READ_LENGTH + 2 * cons->max_indel_num + 1 - i)
 	}
 	return;
 }
