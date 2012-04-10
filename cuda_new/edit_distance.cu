@@ -227,7 +227,7 @@ __device__ void fillPath(char const* test_read, char const* ref_read,
 	//Normal fill
 	for (i = 0 + cons->max_indel_num + 1; i <= READ_LENGTH - cons->max_indel_num) {
 		for (j = 1; j <= 2 * cons->max_indel_num + 1; j++) {
-			unsigned char distance = minDistance(path, i, j)
+			unsigned char distance = minDistance(path, i, j);
 			if (test_read[i - 1] == ref_read[j + i - cons->max_indel_num - 2])
 				path[i][j] = distance;
 			else
@@ -237,7 +237,19 @@ __device__ void fillPath(char const* test_read, char const* ref_read,
 
 	//End process. Cleaning up process
 	for (i = READ_LENGTH - cons->max_indel_num + 1; i <= READ_LENGTH; i++) {
-		for (j = 1; j <= READ_LENGTH + 2 * cons->max_indel_num + 1 - i)
+		for (j = 1; j <= READ_LENGTH + 2 + cons->max_indel_num - i; j++) {
+			unsigned char distance = minDistance(path, i, j);
+			if (test_read[i - 1] == ref_read[j + i - cons->max_indel_num - 2])
+				path[i][j] = distance;
+			else
+				path[i][j] = distance + 1;
+		}
+
+		for (j = READ_LENGTH + 2 + cons->max_indel_num - i + 1;
+				j <= 2 * cons->max_indel_num + 1; j++) {
+			unsigned char distance = minDistance(path, i, j);
+			path[i][j] = distance + 1;
+		}
 	}
 	return;
 }
