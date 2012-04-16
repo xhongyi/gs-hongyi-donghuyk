@@ -42,7 +42,6 @@ struct ED_result {
  * Function: Erase old data and fill the matrix with max_diff_num + 1
  */
 
-__device__ ED_result editDistanceCal(char* test_read, char* ref_read, int key_num, ED_path* path, int main_lane);
-
+void fillPath(char const* test_read, char const* ref_read, int key_num, unsigned char** path, ED_constant const* cons);
 #include "edit_distance.cu"
 #endif /* EDIT_DISTANCE_H_ */
