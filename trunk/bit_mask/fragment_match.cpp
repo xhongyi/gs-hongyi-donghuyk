@@ -30,6 +30,7 @@ void getCoordinatePtr(int ** ptr) {
 
 void loadHash(string hash_name, int hash_file_num) {
 	hashReconstructor(&hash_table, &coordinate, hash_name.c_str());
+	if (bit_mask_on)
 		bm.load_mask(hash_file_num);
 }
 
