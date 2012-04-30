@@ -5694,17 +5694,17 @@ void mapSingleEndSeq(unsigned int *l1, int s1, int readNumber, int readSegment, 
 		int err = -1;
 		map_location = 0;
 
-		//leftSeqLength = _msf_samplingLocs[o];
-		//middleSeqLength = WINDOW_SIZE;
-		//a = leftSeqLength + middleSeqLength;
-		//rightSeqLength = SEQ_LENGTH - a;
-		
-		printf("_msf_samplingLocs[o]: %i\n", _msf_samplingLocs[o]);
-		genLoc = genLoc - _msf_samplingLocs[o];
-		leftSeqLength = 0;
-		middleSeqLength = 0;
+		leftSeqLength = _msf_samplingLocs[o];
+		middleSeqLength = WINDOW_SIZE;
 		a = leftSeqLength + middleSeqLength;
 		rightSeqLength = SEQ_LENGTH - a;
+		
+		printf("_msf_samplingLocs[o]: %i\n", _msf_samplingLocs[o]);
+		//genLoc = genLoc - _msf_samplingLocs[o];
+		//leftSeqLength = 0;
+		//middleSeqLength = 0;
+		//a = leftSeqLength + middleSeqLength;
+		//rightSeqLength = SEQ_LENGTH - a;
 
 		if (skip_edit_distance == 0) {
 			if(errThreshold == 2) {
