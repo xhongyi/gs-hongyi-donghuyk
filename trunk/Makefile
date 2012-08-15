@@ -45,3 +45,6 @@ hash_generator: hash_generator.h hash_generator.cpp common.h ref_db_generator.h 
 
 test_normal:common.h common.cpp fragment_match.h fragment_match.cpp ref_db_generator.h ref_db_generator.cpp edit_normal.h hash_loader.cpp edit_normal.cpp edit_distance.h edit_distance.cpp fragment_match.cpp 
 	$(CC) $(CFLAGS) edit_normal.cpp fragment_match.cpp ref_db_generator.cpp hash_loader.cpp common.cpp edit_distance.cpp test_normal.c -o test_align
+	
+get_reference: get_reference.cc
+	$(CC) $(CFLAGS) get_reference.cc -o get_reference

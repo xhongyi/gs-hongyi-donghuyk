@@ -12,8 +12,19 @@
 #include <fstream>
 #include "common.h"
 
+struct DNA_info {
+	string seq_72;
+	string seq_108;
+	string seq_180;
+	string seq_360;
+	string seq_720;
+	string original_seq;
+	int chromo_num;
+	int location;
+};
+
 using namespace std;
 
-void loadTestRead(string test_file_name);
+void loadTestRead(string test_file_name, int error_num);
 
 #endif /* LOAD_SHUFFLED_READ_H_ */
