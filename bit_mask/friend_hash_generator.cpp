@@ -145,16 +145,20 @@ void analyzeContig(char ref_name[]) {
 
 void writeFriendHash(char store_file_name[]) {
 	ofstream friend_file;
-	for (int i = 0; i <= MAX_INDEL_NUM_; i++) {
+	for (int i = 0; i <= 0/*MAX_INDEL_NUM_*/; i++) {
 		char temp_file_name[50];
 		sprintf(temp_file_name, "%s_%i", store_file_name, i);
 		friend_file.open(temp_file_name);
 		unsigned char mask[2];
 		for (int j = 0; j < INDEX_NUM; j++) {
+			mask[0] = 0;
+			mask[1] = 0;
 			for (int k = 0; k < MAX_SEGMENT_NUM_; k++) {
-				mask[k / 8] |= (int) (friend_hash[j][k][i]) << (k % 8);
+				if (friend_hash[j][k][i] == true)
+					mask[k / 8] |= 1 << (k % 8);
 			}
-			friend_file << (int) mask[0] << " " << mask[1] << endl;
+			//cout << (int) mask[0] << " " << (int) mask[1] << endl;
+			friend_file << (int) mask[0] << " " << (int) mask[1] << endl;
 		}
 		friend_file.close();
 	}
