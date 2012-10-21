@@ -71,7 +71,6 @@ void loadTestRead(string test_file_name, int error_num) {
 
 	for (int chromo_count = 0; chromo_count < 20; chromo_count++) {
 		int location = 0;
-		int inner_size = 0;
 
 		cout << "chromo_count: " << chromo_count << endl;
 
@@ -113,7 +112,6 @@ void loadTestRead(string test_file_name, int error_num) {
 			temp_info.seq_720 = temp;
 
 			unshuffled_set.push_back(temp_info);
-			inner_size++;
 
 			//Read out random number of blank bp for next read.
 			int skip = rand() % 100;
@@ -122,8 +120,8 @@ void loadTestRead(string test_file_name, int error_num) {
 				input_file >> test_char;
 			}
 
-			cout << "inner_size: " << inner_size << endl;
-		} while (inner_size < SINGLE_CHROMO_SIZE);
+			cout << "inner_size: " << unshuffled_set.size() % SINGLE_CHROMO_SIZE << endl;
+		} while (unshuffled_set.size() % SINGLE_CHROMO_SIZE != 0);
 
 		//Finish the last chromosome
 		do {
