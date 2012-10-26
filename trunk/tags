@@ -1,0 +1,205 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AF_count	common.h	/^	int AF_count;$/;"	m	struct:GPU_data
+CC	Makefile	/^CC=g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -O3 -pg$/;"	m
+COMMOM_H_	common.h	9;"	d
+DELETION	edit_distance.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+DELETION	edit_distance_dynamic.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+DNA_info	load_shuffled_read.h	/^struct DNA_info {$/;"	s
+EDIT_DISTANCE_DYNAMIC_H_	edit_distance_dynamic.h	9;"	d
+EDIT_DISTANCE_H_	edit_distance.h	9;"	d
+EDIT_DISTRIBUTION_	edit_distribution.h	9;"	d
+EDIT_DISTRIBUTION_NOFILTER_	edit_distribution_nofilter.h	9;"	d
+EDIT_NORMAL_	edit_normal.h	9;"	d
+ED_count	common.h	/^	int ED_count;$/;"	m	struct:GPU_data
+ED_error	edit_distance.h	/^struct ED_error {$/;"	s
+ED_error	edit_distance_dynamic.h	/^struct ED_error {$/;"	s
+ED_path	edit_distance.cpp	/^struct ED_path {$/;"	s	file:
+ED_path	edit_distance_dynamic.cpp	/^struct ED_path {$/;"	s	file:
+ED_result	edit_distance.h	/^struct ED_result {$/;"	s
+ED_result	edit_distance_dynamic.h	/^struct ED_result {$/;"	s
+EN_SKIP_BINARY_SEARCH	common.h	25;"	d
+EXECUTABLE	Makefile	/^EXECUTABLE = db_generator ref_db_generator$/;"	m
+FRAGMENT_MATCH_H_	fragment_match.h	9;"	d
+GPU_data	common.h	/^struct GPU_data {$/;"	s
+HASH_GENERATOR_H_	hash_generator.h	9;"	d
+HASH_LOADER_H_	hash_loader.h	9;"	d
+HASH_TEST_	hash_test.h	9;"	d
+INDEX_NUM	common.h	13;"	d
+INSERTION	edit_distance.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+INSERTION	edit_distance_dynamic.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+KEY_LENGTH	common.h	11;"	d
+LDFLAGS	Makefile	/^LDFLAGS = -lz -lm $/;"	m
+LOAD_SHUFFLED_READ_H_	load_shuffled_read.h	9;"	d
+MATCH_DISTRIBUTION_	match_distribution.h	9;"	d
+MAX_CONTIG_FILE	common.h	18;"	d
+MAX_CONTIG_NAME	common.h	16;"	d
+MAX_ERROR_NUM	common.h	26;"	d
+MAX_FRAGMENT_LENGTH	common.h	19;"	d
+MAX_UPPER_BOUND	fragment_match.h	16;"	d
+MIN_LOWER_BOUND	fragment_match.h	17;"	d
+MISMATCH	edit_distance.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+MISMATCH	edit_distance_dynamic.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	e	enum:diff_type
+OBJECTS	Makefile	/^OBJECTS = $(SOURCES:.c=.o)$/;"	m
+PREFILTER_SIZE	common.h	22;"	d
+PREFIL_DISTRIBUTION_H_	GPU_distribution.h	9;"	d
+PREFIL_DISTRIBUTION_H_	prefil_distribution.h	9;"	d
+READ_SIZE	common.h	23;"	d
+REF_DB_GENERATOR_	ref_db_generator.h	9;"	d
+REF_TABLE_SIZE	common.h	15;"	d
+RELEVENCE_NUM	common.h	14;"	d
+SINGLE_CHROMO_SIZE	load_shuffled_read.cpp	14;"	d	file:
+SKIP_BINARY_SEARCH	common.h	24;"	d
+SOURCES	Makefile	/^SOURCES = ref_db_generator.c$/;"	m
+_DELETE_PATH_	edit_distance.cpp	9;"	d	file:
+_DELETE_PATH_	edit_distance_dynamic.cpp	9;"	d	file:
+_INSERT_PATH_	edit_distance.cpp	10;"	d	file:
+_INSERT_PATH_	edit_distance_dynamic.cpp	10;"	d	file:
+_MAIN_PATH_	edit_distance.cpp	8;"	d	file:
+_MAIN_PATH_	edit_distance_dynamic.cpp	8;"	d	file:
+_UN_FILLED_	edit_distance.cpp	11;"	d	file:
+_UN_FILLED_	edit_distance_dynamic.cpp	11;"	d	file:
+_hash_entry	hash_generator.cpp	/^list<int> _hash_entry;$/;"	v
+allocatePath	edit_distance.cpp	/^void allocatePath() {$/;"	f
+allocatePath	edit_distance_dynamic.cpp	/^void allocatePath() {$/;"	f
+binary_filtering_GPU_cost	fragment_match.cpp	/^GPU_data binary_filtering_GPU_cost(string fragment) {$/;"	f
+binary_filtering_cost	fragment_match.cpp	/^int binary_filtering_cost(string fragment) {$/;"	f
+chromo_num	load_shuffled_read.h	/^	int chromo_num;$/;"	m	struct:DNA_info
+coor	fragment_match.h	/^	int coor[PREFILTER_SIZE];$/;"	m	struct:previous_coor
+coordinate	fragment_match.cpp	/^int* coordinate;$/;"	v
+coordinate	fragment_match.h	/^	int coordinate;$/;"	m	struct:match_result
+correct	edit_distance.h	/^	bool	correct;$/;"	m	struct:ED_result
+correct	edit_distance_dynamic.h	/^	bool	correct;$/;"	m	struct:ED_result
+correct	fragment_match.h	/^	bool correct;$/;"	m	struct:match_result
+correctness_checker	correctness_checker.cpp	/^void correctness_checker(string hash_file_name, string ref_file_name, string ref2_file_name, string output_file_name) {$/;"	f
+cur_dist	edit_distance.cpp	/^int cur_dist;$/;"	v
+cur_dist	edit_distance_dynamic.cpp	/^int cur_dist;$/;"	v
+cur_lane	edit_distance.cpp	/^int cur_lane;$/;"	v
+cur_lane	edit_distance_dynamic.cpp	/^int cur_lane;$/;"	v
+deletion_num	fragment_match.h	/^	int deletion_num;$/;"	m	struct:match_result
+diff	edit_distance.h	/^	diff_type	diff;$/;"	m	struct:ED_error
+diff	edit_distance_dynamic.h	/^	diff_type	diff;$/;"	m	struct:ED_error
+diff_char	edit_distance.h	/^	char		diff_char;$/;"	m	struct:ED_error
+diff_char	edit_distance_dynamic.h	/^	char		diff_char;$/;"	m	struct:ED_error
+diff_num	edit_distance.h	/^	int		diff_num;$/;"	m	struct:ED_result
+diff_num	edit_distance_dynamic.h	/^	int		diff_num;$/;"	m	struct:ED_result
+diff_type	edit_distance.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	g
+diff_type	edit_distance_dynamic.h	/^enum diff_type {MISMATCH, INSERTION, DELETION};$/;"	g
+editDistanceCal	edit_distance.cpp	/^ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {$/;"	f
+editDistanceCal	edit_distance_dynamic.cpp	/^ED_result editDistanceCal(char* test_read, char* ref_read, int key_num) {$/;"	f
+editDistanceCalBWD	edit_distance.cpp	/^ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {$/;"	f
+editDistanceCalBWD	edit_distance_dynamic.cpp	/^ED_result editDistanceCalBWD(char* test_read, char* ref_read, int key_num) {$/;"	f
+editDistanceCalFWD	edit_distance.cpp	/^ED_result editDistanceCalFWD(char* test_read, char* ref_read, int key_num) {$/;"	f
+editDistanceCal_helper	edit_distance_dynamic.cpp	/^ED_result editDistanceCal_helper(char* test_read, char* ref_read, int key_num,$/;"	f
+edit_distribution	edit_distribution.cpp	/^void edit_distribution(string hash_file_name, string ref_file_name,$/;"	f
+edit_distribution_nofilter	edit_distribution_nofilter.cpp	/^void edit_distribution_nofilter(string hash_file_name, string ref_file_name,$/;"	f
+edit_normal	edit_normal.cpp	/^void edit_normal(string hash_file_name, string ref_file_name,$/;"	f
+error	edit_distance.h	/^	ED_error	error[10];$/;"	m	struct:ED_result
+error	edit_distance_dynamic.h	/^	ED_error	error[10];$/;"	m	struct:ED_result
+final_result	fragment_match.h	/^struct final_result {$/;"	s
+fragment_length_	common.cpp	/^int fragment_length_ = 108;$/;"	v
+freeHash	fragment_match.cpp	/^void freeHash() {$/;"	f
+front_idx	edit_distance.cpp	/^	int front_idx;$/;"	m	struct:ED_path	file:
+getCoordinatePtr	fragment_match.cpp	/^void getCoordinatePtr(int ** ptr) {$/;"	f
+getHashTablePtr	fragment_match.cpp	/^void getHashTablePtr(int ** ptr) {$/;"	f
+getRefSeq	ref_db_generator.cpp	/^string getRefSeq(int coordinate, int size,  string ref_filename) {$/;"	f
+hashDistribution	hash_loader.c	/^void hashDistribution(char * hash_table_name) {$/;"	f
+hashDistribution	hash_loader.cpp	/^void hashDistribution(char * hash_table_name) {$/;"	f
+hashFileWriter	hash_generator.cpp	/^void hashFileWriter(string hash_name) {$/;"	f
+hashReconstructor	hash_loader.c	/^void hashReconstructor(int ** index_db, int ** coordinate_db, const char * hash_table_name){$/;"	f
+hashReconstructor	hash_loader.cpp	/^void hashReconstructor(int ** index_db, int ** coordinate_db,$/;"	f
+hashReconstructorChar	hash_loader.c	/^void hashReconstructorChar(int ** index_db, int ** coordinate_db, char * hash_table_name){$/;"	f
+hashTableGenerator	hash_generator.cpp	/^void hashTableGenerator(string ref_name) {$/;"	f
+hashTestFull	hash_test.c	/^void hashTestFull(char * hash_file_name, char * ref_file_name, char * output_file_name) {$/;"	f
+hashTestFull	hash_test.cpp	/^void hashTestFull(char * hash_file_name, char * ref_file_name,$/;"	f
+hashVal	common.cpp	/^int hashVal(string key) {$/;"	f
+hash_table	fragment_match.cpp	/^int* hash_table;$/;"	v
+hash_table_counter	hash_generator.cpp	/^int hash_table_counter = 0;$/;"	v
+initializeBWDFront	edit_distance.cpp	/^void initializeBWDFront(int key_num) {$/;"	f
+initializeFWDFront	edit_distance.cpp	/^void initializeFWDFront(int key_num) {$/;"	f
+initializePath	edit_distance.cpp	/^void initializePath() {$/;"	f
+initializePath	edit_distance_dynamic.cpp	/^void initializePath() {$/;"	f
+insersion_num	fragment_match.h	/^	int insersion_num;$/;"	m	struct:match_result
+intToChar	hash_test.c	/^char intToChar(int number) {$/;"	f
+intToChar	hash_test.cpp	/^char intToChar(int number) {$/;"	f
+key_entry	fragment_match.h	/^	int key_entry;$/;"	m	struct:key_struct
+key_entry_size	fragment_match.h	/^	int key_entry_size;$/;"	m	struct:key_struct
+key_number	fragment_match.h	/^	int key_number;$/;"	m	struct:key_struct
+key_number	fragment_match.h	/^	int key_number;$/;"	m	struct:match_result
+key_number_	common.cpp	/^int key_number_ = 9;$/;"	v
+key_struct	fragment_match.h	/^struct key_struct {$/;"	s
+loadHash	fragment_match.cpp	/^void loadHash(string hash_name) {$/;"	f
+loadTestRead	load_shuffled_read.cpp	/^void loadTestRead(string test_file_name) {$/;"	f
+location	edit_distance.h	/^	int			location;$/;"	m	struct:ED_error
+location	edit_distance_dynamic.h	/^	int			location;$/;"	m	struct:ED_error
+location	load_shuffled_read.h	/^	int location;$/;"	m	struct:DNA_info
+main	ED_test.cpp	/^int main() {$/;"	f
+main	test.cpp	/^int main() {$/;"	f
+main	test_GPU.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_correctness.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_dhl.c	/^int main() {$/;"	f
+main	test_distribution.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_distribution_toy.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_edit.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_edit_nofilter.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_hash.c	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_match.cpp	/^int main() {$/;"	f
+main	test_prefil.cpp	/^int main(int argc, char* argv[]) {$/;"	f
+main	test_ref_loader.cpp	/^int main() {$/;"	f
+main	test_shuffle.cpp	/^int main() {$/;"	f
+main_lane	edit_distance.cpp	/^int main_lane;$/;"	v
+main_lane	edit_distance_dynamic.cpp	/^int main_lane;$/;"	v
+match_distribution	match_distribution.cpp	/^void match_distribution(string hash_file_name, string ref_file_name, string output_file_name) {$/;"	f
+match_result	fragment_match.h	/^struct match_result {$/;"	s
+max_diff_num	common.cpp	/^int max_diff_num = 0;$/;"	v
+max_indel_num	common.cpp	/^int max_indel_num = 0;$/;"	v
+min_cost	edit_distance_dynamic.cpp	/^int min_cost(int a, int b, int c) {$/;"	f
+mismatch_num	fragment_match.h	/^	int mismatch_num;$/;"	m	struct:match_result
+noFilterSearch	fragment_match.cpp	/^list<match_result> noFilterSearch(string fragment) {$/;"	f
+order	fragment_match.h	/^	int order;$/;"	m	struct:key_struct
+path	edit_distance.cpp	/^ED_path * path;$/;"	v
+path	edit_distance_dynamic.cpp	/^ED_path * path;$/;"	v
+path_cost	edit_distance.cpp	/^	int path_cost[MAX_FRAGMENT_LENGTH + 1];$/;"	m	struct:ED_path	file:
+path_cost	edit_distance_dynamic.cpp	/^	int path_cost[MAX_FRAGMENT_LENGTH + 1];$/;"	m	struct:ED_path	file:
+prefil_distribution	GPU_distribution.cpp	/^void prefil_distribution(string hash_file_name, string ref_file_name,$/;"	f
+prefil_distribution	prefil_distribution.cpp	/^void prefil_distribution(string hash_file_name, string ref_file_name,$/;"	f
+previous_coor	fragment_match.h	/^struct previous_coor {$/;"	s
+previous_result	fragment_match.cpp	/^previous_coor previous_result;$/;"	v
+print_detail	common.cpp	/^bool print_detail = true;$/;"	v
+randomBP	load_shuffled_read.cpp	/^char randomBP() {$/;"	f
+reconstructSeq	hash_test.c	/^void reconstructSeq (char * decoded_char, int number){$/;"	f
+reconstructSeq	hash_test.cpp	/^void reconstructSeq(char * decoded_char, int number) {$/;"	f
+refGenerator	ref_db_generator.cpp	/^void refGenerator(char * gen_file_name, char * ref_file) {$/;"	f
+refLoader	hash_loader.cpp	/^void refLoader(string & ref_db, char * ref_name) {$/;"	f
+relevance	fragment_match.h	/^	int relevance;$/;"	m	struct:match_result
+reverseComplete	common.cpp	/^void reverseComplete (const char *seq, char *rcSeq , int length) {$/;"	f
+reverseCompleteChar	common.cpp	/^char reverseCompleteChar(char c) {$/;"	f
+reverse_mode	common.cpp	/^bool reverse_mode = false;$/;"	v
+searchFragment	fragment_match.cpp	/^final_result searchFragment(string fragment, string* ref) {$/;"	f
+searchFragment_fastq	fragment_match.cpp	/^final_result searchFragment_fastq(string fragment, string* ref, ofstream * output_file,$/;"	f
+searchKey	fragment_match.cpp	/^bool searchKey(int target_coor, int entry_coor, int entry_size) {$/;"	f
+searchPrevious	fragment_match.cpp	/^bool searchPrevious(int coor_value, int start_key_entry,$/;"	f
+select_cheapest	common.cpp	/^bool select_cheapest = true;$/;"	v
+seq_108	load_shuffled_read.h	/^	string seq_108;$/;"	m	struct:DNA_info
+seq_180	load_shuffled_read.h	/^	string seq_180;$/;"	m	struct:DNA_info
+seq_360	load_shuffled_read.h	/^	string seq_360;$/;"	m	struct:DNA_info
+seq_72	load_shuffled_read.h	/^	string seq_72;$/;"	m	struct:DNA_info
+seq_720	load_shuffled_read.h	/^	string seq_720;$/;"	m	struct:DNA_info
+set_fragment_length	common.cpp	/^void set_fragment_length(int num) {$/;"	f
+set_key_number	common.cpp	/^void set_key_number(int num) {$/;"	f
+set_max_diff_num	common.cpp	/^void set_max_diff_num(int num) {$/;"	f
+set_max_indel_num	common.cpp	/^void set_max_indel_num(int num) {$/;"	f
+set_print_detail	common.cpp	/^void set_print_detail(bool set_print_detail) {$/;"	f
+set_reverse_mode	common.cpp	/^void set_reverse_mode(bool set_reverse_mode) {$/;"	f
+set_select_cheapest	common.cpp	/^void set_select_cheapest(bool choose) {$/;"	f
+size	fragment_match.h	/^	int size;$/;"	m	struct:previous_coor
+sortPrefilter	fragment_match.cpp	/^bool sortPrefilter(key_struct* sort_result, key_struct* sort_input) {$/;"	f
+sortPrefilterAllowN	fragment_match.cpp	/^bool sortPrefilterAllowN(key_struct* sort_result, key_struct* sort_input, int available_key_num) {$/;"	f
+total_binary_search	fragment_match.h	/^	long long total_binary_search;$/;"	m	struct:final_result
+total_correct_num	fragment_match.h	/^	long long total_correct_num;$/;"	m	struct:final_result
+total_edit_perform	fragment_match.h	/^	long long total_edit_perform;$/;"	m	struct:final_result
