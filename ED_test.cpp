@@ -13,14 +13,16 @@
 using namespace std;
 
 int main() {
-	char test_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
-	char ref_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
+	int FRAGMENT_LENGTH = 108;
+
+	char* test_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
+	char* ref_read = (char*) malloc((FRAGMENT_LENGTH + 1)*sizeof(char));
 	set_max_indel_num(3);
 	set_max_diff_num(3);
 	allocatePath();
 	cout << "started" << endl;
 	strcpy(test_read, "CACGTTTTATTTTATTTTTTGAGATGGAGTCTCACTCTGTCACCCAGGCTGGAGTGTGGTGGCGCAATCTTTGCTCACTGCAACCTCCGCCTCCCGGGTTCAAGCGAT" );
-	strcpy(ref_read,  "TTACTATATATATATTTTTTGAGATAGGGTCTCACTCTGTCACCCAGGCTGGAGTGCCCTGACATGATCTTGGCTCACTGCAACCTCCACCTCCCGGGTTCAAGCGAT" );
+	strcpy(ref_read,  "ACAGTTTTATTTTATTTTTTGAGATGGAGTCTCACTCTGTCACCCAGGCTGGAGTGTGGTGGCGCAATCTTTGCTCACTGCAACCTCCGCCTCCCGGGTTCAAGCGAT" );
 	ED_result result = editDistanceCal(test_read, ref_read, 1);
 	if (result.correct) {
 		cout << "Correct, passed the ED test" << endl;
